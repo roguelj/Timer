@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Timer.WPF
+namespace Timer.WPF.Dialogs
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for TimeLogDetailDialog.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class TimeLogDetailDialog : UserControl
     {
-        public MainWindow()
+        public TimeLogDetailDialog()
         {
             InitializeComponent();
         }
