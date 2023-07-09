@@ -68,5 +68,14 @@ namespace Timer.Shared.Resources {
                 return ResourceManager.GetString("Log", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Log Detail.
+        /// </summary>
+        public static string TimeLogDetailDialogTitle {
+            get {
+                return ResourceManager.GetString("TimeLogDetailDialogTitle", resourceCulture);
+            }
+        }
     }
 }

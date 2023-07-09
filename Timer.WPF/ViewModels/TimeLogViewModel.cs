@@ -29,10 +29,38 @@ namespace Timer.WPF.ViewModels
         }
 
 
-        private async void LogTimeAsync()
+        private void LogTimeAsync()
         {
+
+            // determine the most sensible start & end dates
+            var startDate = DateTime.Now.AddHours(-1);          // TODO: dummy date. get this from the API
+            var endDate = DateTime.Now;                         // TODO: dummy date. get this from the API
+
+            
+            // determine the most recent tags, tasks and projects
+
+
+            // create the parameters to pass along to the dialog
+            var parameters = new DialogParameters
+            {
+                { StartTimeDialogParameterName, startDate }, 
+                { EndTimeDialogParameterName, endDate}
+            };
+
+
             // open a new dialog with the details
-            this.DialogService.ShowDialog("TimeLogDetail");
+            this.DialogService.ShowDialog(TimeLogDialogName, parameters, Callback);
+
+        }
+
+        private void Callback(IDialogResult dialogResult) 
+        {
+
+            if (dialogResult.Result == ButtonResult.OK)
+            {
+                
+            }
+
         }
 
     }

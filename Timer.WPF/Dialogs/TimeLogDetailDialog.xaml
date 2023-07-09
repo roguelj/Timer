@@ -5,8 +5,39 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Timer.WPF.Dialogs"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:Background="White">
+    
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!-- Start & End times -->
+        <Label Grid.Row="0" Grid.Column="0" Content="Start" />
+        <Label Grid.Row="0" Grid.Column="1" Content="{Binding StartDateTime, FallbackValue=undefined}" />
+        <Label Grid.Row="0" Grid.Column="2" Content="End" />
+        <Label Grid.Row="0" Grid.Column="3" Content="{Binding EndDateTime, FallbackValue=undefined}" />
+
+        
+        <!-- Tags -->
+        
+        <!-- tasks & projects -->
+        
+        
+        <!-- Ok / Cancel etc-->
+        <Button Grid.Row="3" Grid.Column="0" Content="Ok" Command="{Binding CloseDialogCommand}" CommandParameter="True"/>
+        <Button Grid.Row="3" Grid.Column="2" Content="Cancel" Command="{Binding CloseDialogCommand}" CommandParameter="False"/>
+        
     </Grid>
+    
 </UserControl>

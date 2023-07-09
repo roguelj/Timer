@@ -11,11 +11,24 @@ namespace Timer.Shared.ViewModels
         // member variables
         private Type? _cachedType;
 
+
         // injected services
         public ILogger Logger { get; }
         public ITimeLogService? TimeLogService { get; set; }
 
+
+        // get the cached type. set it if not already done so
         private Type CachedType => this._cachedType ??= this._cachedType = this.GetType();
+
+
+        // dialog names
+        public const string TimeLogDialogName = "time-log-dialog";
+
+
+        // dialog parameter names
+        protected const string StartTimeDialogParameterName = "start-date-time";
+        protected const string EndTimeDialogParameterName = "end-date-time";
+
 
         public Base(ILogger logger)
         {

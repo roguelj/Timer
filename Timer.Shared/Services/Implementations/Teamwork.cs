@@ -2,6 +2,7 @@
 using Serilog;
 using Timer.Shared.Models.ProjectManagementSystem;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 
@@ -126,6 +127,20 @@ namespace Timer.Shared.Services.Implementations
             return request;
         }
 
+        private HttpRequestMessage RequestInsertTimeEntryForProject(string token, int projectId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{V3EndpointUrlBase}/projects/{projectId}/time.json");
+            request.Headers.Add("Authorization", $"Bearer {token}");
+            return request;
+        }
+
+        private HttpRequestMessage RequestInsertTimeEntryForTask(string token, int taskId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{V3EndpointUrlBase}/tasks/{taskId}/time.json");
+            request.Headers.Add("Authorization", $"Bearer {token}");
+            return request;
+        }
+
 
         // ---------------------------------
         // V1 method implementations
@@ -156,7 +171,7 @@ namespace Timer.Shared.Services.Implementations
 
         // ---------------------------------
         // V3 method implementations
-        public async Task<Models.ProjectManagementSystem.TeamworkV3.Token?> ObtainToken(string temporaryToken, CancellationToken cancellationToken)
+        public async Task<Token?> ObtainToken(string temporaryToken, CancellationToken cancellationToken)
         {
 
             var options = this.Options.Value;
@@ -186,7 +201,7 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        public async Task<List<Models.ProjectManagementSystem.TeamworkV3.TimeLog>> TimeEntries(string token, ApiQueryParameters apiQueryParameters, CancellationToken cancellationToken)
+        public async Task<List<TimeLog>> TimeEntries(string token, ApiQueryParameters apiQueryParameters, CancellationToken cancellationToken)
         {
 
             int page = 1;
@@ -228,7 +243,7 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        public async Task<Models.ProjectManagementSystem.TeamworkV3.UserResponse?> Users(string token, CancellationToken cancellationToken)
+        public async Task<UserResponse?> Users(string token, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
@@ -251,7 +266,7 @@ namespace Timer.Shared.Services.Implementations
             }
         }
 
-        public async Task<Models.ProjectManagementSystem.TeamworkV3.ProjectResponse?> Projects(string token, CancellationToken cancellationToken)
+        public async Task<ProjectResponse?> Projects(string token, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
@@ -275,7 +290,7 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        public async Task<Models.ProjectManagementSystem.TeamworkV3.ProjectResponse?> StarredProjects(string token, CancellationToken cancellationToken)
+        public async Task<ProjectResponse?> StarredProjects(string token, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
@@ -299,7 +314,7 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        public async Task<Models.ProjectManagementSystem.TeamworkV3.TagResponse?> Tags(string token, CancellationToken cancellationToken)
+        public async Task<TagResponse?> Tags(string token, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
@@ -323,6 +338,32 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
+//        public async Task CreateTimeEntryForProject(string token, int minutes, DateTime start, int projectId, CancellationToken cancellationToken)
+//        {
+
+//            var client = this.HttpClientFactory.CreateClient();
+//            var response = await client.PostAsJsonAsync(RequestInsertTimeEntryForProject(token, projectId), cancellationToken);
+
+//            if (response.IsSuccessStatusCode)
+//            {
+
+
+
+//#if DEBUG
+//                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+//                this.Logger.Verbose(responseContent);
+//#endif
+
+//                return await response.Content.ReadAsAsync<Models.ProjectManagementSystem.TeamworkV3.TagResponse>();
+
+//            }
+//            else
+//            {
+//                return null;
+//            }
+
+
+//        }
 
     }
 

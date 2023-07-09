@@ -120,4 +120,7 @@
   <data name="Log" xml:space="preserve">
     <value>Log</value>
   </data>
+  <data name="TimeLogDetailDialogTitle" xml:space="preserve">
+    <value>Time Log Detail</value>
+  </data>
 </root>

@@ -18,16 +18,20 @@ namespace Timer.WPF
 
         private IConfiguration Configuration { get; }
 
-        public App() => this.Configuration = Shared.Application.ConfigurationServices.GetConfiguration();
+        public App()
+        {
+            PrismContainerExtension.Init(); // REF: see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
+            this.Configuration = Shared.Application.ConfigurationServices.GetConfiguration();
+        }
 
 
         protected override Window CreateShell() => this.Container.Resolve<Shell>();
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {      
-            Shared.PrismSupport.PrismConfig.RegisterTypes(containerRegistry, this.Configuration);
+            Shared.Application.ServiceContainer.RegisterTypes(containerRegistry, this.Configuration);
 
-            containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>("TimeLogDetail");
+            containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(Base.TimeLogDialogName);
   
         }
 
