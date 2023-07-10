@@ -28,6 +28,9 @@ namespace Timer.Shared.ViewModels
         // dialog parameter names
         protected const string StartTimeDialogParameterName = "start-date-time";
         protected const string EndTimeDialogParameterName = "end-date-time";
+        protected const string RecentTagsDialogParameterName = "recent-tags";
+        protected const string RecentTasksDialogParameterName = "recent-tasks";
+        protected const string RecentProjectsDialogParameterName = "recent-projects";
 
 
         public Base(ILogger logger)

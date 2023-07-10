@@ -6,6 +6,12 @@
              xmlns:res="clr-namespace:Timer.Shared.Resources;assembly=Timer.Shared"
              mc:Ignorable="d" >
 
-    <Button Content="{x:Static res:Resources.Log}"  Command="{Binding LogTimeCommand}"/>
-    
+    <Button Content="{x:Static res:Resources.Log}"  Command="{Binding LogTimeCommand}">
+        <Button.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Settings" Command="{Binding OpenSettingsCommand}" />
+            </ContextMenu>
+        </Button.ContextMenu>
+    </Button>
+     
 </UserControl>
