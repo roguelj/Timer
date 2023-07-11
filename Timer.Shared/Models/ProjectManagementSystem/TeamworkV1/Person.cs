@@ -38,7 +38,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV1
         public string UserName { get; set; }
 
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("companyname")]
         public string CompanyName { get; set; }

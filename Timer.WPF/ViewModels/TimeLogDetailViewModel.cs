@@ -4,7 +4,6 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Documents;
 using Timer.Shared.Models;
 using Timer.Shared.ViewModels;
 using ResMan = Timer.Shared.Resources.Resources;
@@ -13,14 +12,30 @@ namespace Timer.WPF.ViewModels
 {
     internal class TimeLogDetailViewModel : Base, IDialogAware
     {
-     
+
+        // member variables
+        private KeyedEntity? _selectedProject;
+        private KeyedEntity? _selectedTask;
+
+
         // bound properties
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public ObservableCollection<KeyedEntity> Tags { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> Tasks { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> Projects { get; } = new ObservableCollection<KeyedEntity>();
+        
+        public KeyedEntity SelectedProject
+        {
+            get => this._selectedProject;
+            set => this.SetProperty(ref this._selectedProject, value);
+        }
 
+        public KeyedEntity SelectedTask
+        {
+            get => this._selectedTask;
+            set => this.SetProperty(ref this._selectedTask, value);
+        }
 
         public string Title => ResMan.TimeLogDetailDialogTitle;
 
@@ -43,7 +58,9 @@ namespace Timer.WPF.ViewModels
                 var parameters = new DialogParameters
                 {
                     { StartTimeDialogParameterName, this.StartDateTime },
-                    { EndTimeDialogParameterName, this.EndDateTime}
+                    { EndTimeDialogParameterName, this.EndDateTime},
+                    { SelectedProjectDialogParameterName, this.SelectedProject },
+                    { SelectedTaskDialogParameterName, this.SelectedTask }
                 };
 
                 RequestClose?.Invoke(new DialogResult(ButtonResult.OK, parameters));

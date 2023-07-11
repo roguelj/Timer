@@ -1,6 +1,7 @@
 ﻿using Prism.Services.Dialogs;
 using Serilog;
 using System;
+using System.Threading;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 
@@ -39,7 +40,7 @@ namespace Timer.WPF.ViewModels
             // determine the most sensible start & end dates.
             // get the start date as the time stamp of the last entry end point.
             // the assumption is that the Time Log Entry button is pressed on task finish, so the end date is now
-            var startDate = await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync();
+            var startDate = await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None);
             var endDate = DateTime.Now;
 
 

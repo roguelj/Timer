@@ -32,7 +32,33 @@
         <!-- Tags -->
         
         <!-- tasks & projects -->
-        
+        <Label Grid.Row="1" Grid.Column="0" Content="Project" />
+        <ListBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding Projects}" IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedProject}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Task" />
+        <ListBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding Tasks}" IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding SelectedTask}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         
         <!-- Ok / Cancel etc-->
         <Button Grid.Row="3" Grid.Column="0" Content="Ok" Command="{Binding CloseDialogCommand}" CommandParameter="True"/>

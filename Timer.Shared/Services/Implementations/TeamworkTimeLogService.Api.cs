@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using Serilog;
+using System.Security.Policy;
+using System.Text;
+using Timer.Shared.Extensions;
 using Timer.Shared.Models.ProjectManagementSystem;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
-using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 
 
@@ -34,18 +37,38 @@ namespace Timer.Shared.Services.Implementations
             this.MemoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
 
+        public async Task<string> AccessToken()
+        {
+
+            if(this.Options.Value is null)
+            {
+                throw new ArgumentNullException("options value is null");
+            }
+            else
+            {
+                return this.Options.Value.ApiKey;
+            }
+
+        }
+
+        private bool IsBasicAuth()
+        {
+            return true; // TODO: fix this
+        }
+
 
         // ---------------------------------
         // HttpRequestMessage factories
 
-        private HttpRequestMessage RequestMe(string token)
+  
+        private async Task<HttpRequestMessage> RequestMeAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V1EndpointUrlBase}/me.json");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
             return request;
         }
 
-        private HttpRequestMessage RequestTimeEntries(string token, ApiQueryParameters apiQueryParameters, int page, int pageSize)
+        private async Task<HttpRequestMessage> RequestTimeEntriesAsync(ApiQueryParameters apiQueryParameters, int page, int pageSize)
         {
 
             // build the query parameter string
@@ -72,13 +95,13 @@ namespace Timer.Shared.Services.Implementations
 
 
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/time.json?{string.Join("&", queryParameters)}");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
             return request;
 
         }
 
-        private HttpRequestMessage RequestMyLastTimeEntry(string token, int myUserId)
+        private async Task<HttpRequestMessage> RequestMyLastTimeEntryAsync(int myUserId)
         {
 
             // build the query parameter string
@@ -91,13 +114,13 @@ namespace Timer.Shared.Services.Implementations
             };
 
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/time.json?{string.Join("&", queryParameters)}");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
             return request;
 
         }
 
-        private HttpRequestMessage RequestTasks(string token, ApiQueryParameters apiQueryParameters, bool includeTasksWithNoDueDate)
+        private async Task<HttpRequestMessage> RequestTasksAsync(ApiQueryParameters apiQueryParameters, bool includeTasksWithNoDueDate)
         {
 
             // build the query parameter string
@@ -123,51 +146,51 @@ namespace Timer.Shared.Services.Implementations
             // construct the full endpoint url and request
             var fullQuery = $"{V1EndpointUrlBase}/tasks.json?{string.Join("&", queryParameters)}";
             var request = new HttpRequestMessage(HttpMethod.Get, fullQuery);
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
             return request;
 
         }
 
-        private HttpRequestMessage RequestPeople(string token)
+        private async Task<HttpRequestMessage> RequestPeopleAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/people.json");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
             return request;
         }
 
-        private HttpRequestMessage RequestProjects(string token)
+        private async Task<HttpRequestMessage> RequestProjectsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/projects.json?pageSize=250");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
             return request;
         }
 
-        private HttpRequestMessage RequestStarredProjects(string token)
+        private async Task<HttpRequestMessage> RequestStarredProjectsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/projects/starred.json?include=projectUpdates,tags,projectBudgets");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
             return request;
         }
 
-        private HttpRequestMessage RequestTags(string token)
+        private async Task<HttpRequestMessage> RequestTagsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/tags.json?pageSize=250");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
             return request;
         }
 
-        private HttpRequestMessage RequestInsertTimeEntryForProject(string token, int projectId)
+        private async Task<HttpRequestMessage> RequestInsertTimeEntryForProjectAsync(int projectId)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"{V3EndpointUrlBase}/projects/{projectId}/time.json");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
             return request;
         }
 
-        private HttpRequestMessage RequestInsertTimeEntryForTask(string token, int taskId)
+        private async Task<HttpRequestMessage> RequestInsertTimeEntryForTaskAsync(int taskId)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"{V3EndpointUrlBase}/tasks/{taskId}/time.json");
-            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
             return request;
         }
 
@@ -178,7 +201,7 @@ namespace Timer.Shared.Services.Implementations
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var response = await client.SendAsync(RequestTasks(token, apiQueryParameters, includeTasksWithNoDueDate), cancellationToken);
+            var response = await client.SendAsync(await RequestTasksAsync(apiQueryParameters, includeTasksWithNoDueDate), cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -197,16 +220,16 @@ namespace Timer.Shared.Services.Implementations
             }
         }
 
-        private async Task<Person?> Me(string token, CancellationToken cancellationToken)
+        private async Task<Person?> Me(CancellationToken cancellationToken)
         {
 
-            var cacheKey = "itimelogservice:teamwork:me";
+            var cacheKey = "itimelogservice:teamwork:me"; // TODO: eliminate magic string
 
             if (!this.MemoryCache.TryGetValue(cacheKey, out Person? cacheValue))
             {
 
                 var client = this.HttpClientFactory.CreateClient();
-                var response = await client.SendAsync(RequestMe(token), cancellationToken);
+                var response = await client.SendAsync(await RequestMeAsync(), cancellationToken);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -279,7 +302,7 @@ namespace Timer.Shared.Services.Implementations
             {
 
                 var client = this.HttpClientFactory.CreateClient();
-                var endPoint = RequestTimeEntries(token, apiQueryParameters, page, pageSize);
+                var endPoint = await RequestTimeEntriesAsync(apiQueryParameters, page, pageSize);
                 var response = await client.SendAsync(endPoint, cancellationToken);
 
                 this.Logger.Verbose(endPoint.RequestUri!.AbsoluteUri);
@@ -313,7 +336,7 @@ namespace Timer.Shared.Services.Implementations
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var response = await client.SendAsync(RequestPeople(token), cancellationToken);
+            var response = await client.SendAsync(await RequestPeopleAsync(), cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -336,7 +359,7 @@ namespace Timer.Shared.Services.Implementations
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var response = await client.SendAsync(RequestProjects(token), cancellationToken);
+            var response = await client.SendAsync(await RequestProjectsAsync(), cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -360,7 +383,7 @@ namespace Timer.Shared.Services.Implementations
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var response = await client.SendAsync(RequestStarredProjects(token), cancellationToken);
+            var response = await client.SendAsync(await RequestStarredProjectsAsync(), cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -384,7 +407,7 @@ namespace Timer.Shared.Services.Implementations
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var response = await client.SendAsync(RequestTags(token), cancellationToken);
+            var response = await client.SendAsync(await this.RequestTagsAsync(), cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -404,11 +427,11 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        private async Task<TimeLog?> MyLastTimeEntry(string token, int myUserId, CancellationToken cancellationToken)
+        private async Task<TimeLog?> MyLastTimeEntry(int myUserId, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var endPoint = RequestMyLastTimeEntry(token, myUserId);
+            var endPoint = await RequestMyLastTimeEntryAsync( myUserId);
             var response = await client.SendAsync(endPoint, cancellationToken);
 
             if (response.IsSuccessStatusCode)
