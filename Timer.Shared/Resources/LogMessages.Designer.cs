@@ -61,6 +61,24 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HttpRequest Failure {code} during {method}.
+        /// </summary>
+        public static string IsSuccessStatusCodeFailure {
+            get {
+                return ResourceManager.GetString("IsSuccessStatusCodeFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to read response string during {method}.
+        /// </summary>
+        public static string ResponseReadFailure {
+            get {
+                return ResourceManager.GetString("ResponseReadFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {method} for {view-model}.
         /// </summary>
         public static string TraceMethodHit {

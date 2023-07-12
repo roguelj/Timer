@@ -45,15 +45,15 @@ namespace Timer.WPF.ViewModels
 
 
             // determine the most recent tags, tasks and projects
-            var tags = await this.TimeLogService.GetRecentTagsAsync();
-            var tasks = await this.TimeLogService.GetRecentTasksAsync();
-            var projects = await this.TimeLogService.GetRecentProjectsAsync();
+            var tags = await this.TimeLogService.GetRecentTagsAsync(CancellationToken.None);
+            var tasks = await this.TimeLogService.GetRecentTasksAsync(CancellationToken.None);
+            var projects = await this.TimeLogService.GetRecentProjectsAsync(CancellationToken.None);
 
 
             // create the parameters to pass along to the dialog
             var parameters = new DialogParameters
             {
-                { StartTimeDialogParameterName, startDate }, 
+                { StartTimeDialogParameterName, startDate.DateTime }, 
                 { EndTimeDialogParameterName, endDate},
                 { RecentTagsDialogParameterName, tags },
                 { RecentTasksDialogParameterName, tasks },

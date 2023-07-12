@@ -20,7 +20,7 @@ namespace Timer.WPF
 
         public App()
         {
-            PrismContainerExtension.Init(); // REF: see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
+            PrismContainerExtension.Init(); // REQUIRED. see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
             this.Configuration = Shared.Application.ConfigurationServices.GetConfiguration();
         }
 

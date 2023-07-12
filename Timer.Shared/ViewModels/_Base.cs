@@ -33,6 +33,7 @@ namespace Timer.Shared.ViewModels
         protected const string RecentProjectsDialogParameterName = "recent-projects";
         protected const string SelectedTaskDialogParameterName = "selected-task";
         protected const string SelectedProjectDialogParameterName = "selected-project";
+        protected const string SelectedTagsDialogParameterName = "selected-tags";
 
 
         public Base(ILogger logger)

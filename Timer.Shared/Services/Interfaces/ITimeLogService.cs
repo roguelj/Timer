@@ -6,9 +6,9 @@ namespace Timer.Shared.Services.Interfaces
     {
 
         Task<DateTimeOffset> GetEndTimeOfLastTimeLogEntryAsync(CancellationToken cancellationToken);
-        Task<List<KeyedEntity>> GetRecentTagsAsync();
-        Task<List<KeyedEntity>> GetRecentTasksAsync();
-        Task<List<KeyedEntity>> GetRecentProjectsAsync();
+        Task<List<KeyedEntity>?> GetRecentTagsAsync(CancellationToken cancellationToken);
+        Task<List<KeyedEntity>?> GetRecentTasksAsync(CancellationToken cancellationToken);
+        Task<List<KeyedEntity>?> GetRecentProjectsAsync(CancellationToken cancellationToken);
 
     }
 

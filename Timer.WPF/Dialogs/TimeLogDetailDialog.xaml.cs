@@ -1,28 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Timer.Shared.Models;
+using Timer.WPF.ViewModels;
 
 namespace Timer.WPF.Dialogs
 {
-    /// <summary>
-    /// Interaction logic for TimeLogDetailDialog.xaml
-    /// </summary>
+
     public partial class TimeLogDetailDialog : UserControl
     {
-        public TimeLogDetailDialog()
+        public TimeLogDetailDialog() => InitializeComponent();
+
+        private void SelectedTagsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            InitializeComponent();
+
+            // we need to do this as we cannot bind to the SelectedItems property on the ListBox
+            (this.DataContext as TimeLogDetailViewModel)!.SelectedTags.Clear();
+            (this.DataContext as TimeLogDetailViewModel)!.SelectedTags.AddRange((sender as ListBox)!.SelectedItems.OfType<KeyedEntity>());
+
         }
+
     }
+
 }

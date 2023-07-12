@@ -8,19 +8,38 @@ using Timer.Shared.Models;
 using Timer.Shared.ViewModels;
 using ResMan = Timer.Shared.Resources.Resources;
 
+// TODO: must filter tasks on currently selected project
+
 namespace Timer.WPF.ViewModels
 {
     internal class TimeLogDetailViewModel : Base, IDialogAware
     {
 
         // member variables
+        private DateTime _startDateTime;
+        private DateTime _endDateTime;
         private KeyedEntity? _selectedProject;
         private KeyedEntity? _selectedTask;
 
 
         // bound properties
-        public DateTime StartDateTime { get; set; }
-        public DateTime EndDateTime { get; set; }
+        public DateTime StartDateTime
+        {
+            get => this._startDateTime;
+            set => this.SetProperty(ref this._startDateTime, value);
+        }
+
+        public DateTime EndDateTime
+        {
+            get => this._endDateTime;
+            set => this.SetProperty(ref this._endDateTime, value);
+        }
+
+        public TimeSpan Duration
+        {
+            get => this.EndDateTime - this.StartDateTime;
+        }
+
         public ObservableCollection<KeyedEntity> Tags { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> Tasks { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> Projects { get; } = new ObservableCollection<KeyedEntity>();
@@ -36,6 +55,8 @@ namespace Timer.WPF.ViewModels
             get => this._selectedTask;
             set => this.SetProperty(ref this._selectedTask, value);
         }
+
+        public ObservableCollection<KeyedEntity> SelectedTags { get; } = new ObservableCollection<KeyedEntity>();
 
         public string Title => ResMan.TimeLogDetailDialogTitle;
 
@@ -60,7 +81,8 @@ namespace Timer.WPF.ViewModels
                     { StartTimeDialogParameterName, this.StartDateTime },
                     { EndTimeDialogParameterName, this.EndDateTime},
                     { SelectedProjectDialogParameterName, this.SelectedProject },
-                    { SelectedTaskDialogParameterName, this.SelectedTask }
+                    { SelectedTaskDialogParameterName, this.SelectedTask },
+                    { SelectedTagsDialogParameterName, this.SelectedTags}
                 };
 
                 RequestClose?.Invoke(new DialogResult(ButtonResult.OK, parameters));
@@ -85,7 +107,7 @@ namespace Timer.WPF.ViewModels
 
             this.StartDateTime = parameters.GetValue<DateTime>(StartTimeDialogParameterName);
             this.EndDateTime = parameters.GetValue<DateTime>(EndTimeDialogParameterName);
-
+            
             this.Tags.AddRange(parameters.GetValue<List<KeyedEntity>>(RecentTagsDialogParameterName));
             this.Tasks.AddRange(parameters.GetValue<List<KeyedEntity>>(RecentTasksDialogParameterName));
             this.Projects.AddRange(parameters.GetValue<List<KeyedEntity>>(RecentProjectsDialogParameterName));

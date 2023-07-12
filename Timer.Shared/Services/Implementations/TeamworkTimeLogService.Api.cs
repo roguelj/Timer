@@ -1,14 +1,15 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
 using Serilog;
-using System.Security.Policy;
-using System.Text;
+using Timer.Shared.Application;
 using Timer.Shared.Extensions;
+using Timer.Shared.Models;
 using Timer.Shared.Models.ProjectManagementSystem;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
 using Timer.Shared.ViewModels;
+using LogMessages = Timer.Shared.Resources.LogMessages;
 
 
 namespace Timer.Shared.Services.Implementations
@@ -21,6 +22,7 @@ namespace Timer.Shared.Services.Implementations
         private IHttpClientFactory HttpClientFactory { get; }
         private IOptions<TeamworkOptions> Options { get; }
         private IMemoryCache MemoryCache { get; }
+        private ISystemClock SystemClock { get; }
 
 
         // endpoint properties
@@ -28,13 +30,17 @@ namespace Timer.Shared.Services.Implementations
         private string V3EndpointUrlBase { get => $"{this.Options.Value.TeamworkEndPointUrlBase}/projects/api/v3"; }
 
 
+        private MemoryCacheEntryOptions MeMemoryCacheEntryOptions { get; } = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(8));
+
+
         // constructor
-        public TeamworkTimeLogService(ILogger logger, IHttpClientFactory httpClientFactory, IOptions<TeamworkOptions> options, IMemoryCache memoryCache)
+        public TeamworkTimeLogService(ILogger logger, IHttpClientFactory httpClientFactory, IOptions<TeamworkOptions> options, IMemoryCache memoryCache, ISystemClock systemClock)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
             this.Options = options ?? throw new ArgumentNullException(nameof(options));
             this.MemoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            this.SystemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
         }
 
         public async Task<string> AccessToken()
@@ -55,6 +61,7 @@ namespace Timer.Shared.Services.Implementations
         {
             return true; // TODO: fix this
         }
+
 
 
         // ---------------------------------
@@ -108,7 +115,7 @@ namespace Timer.Shared.Services.Implementations
             List<string> queryParameters = new List<string>
             {
                 $"assignedToUserIds={myUserId}",
-                "pageSize=1",
+                "pageSize=500",
                 "orderBy=date",
                 "orderMode=desc"
             };
@@ -119,6 +126,33 @@ namespace Timer.Shared.Services.Implementations
             return request;
 
         }
+
+        private async Task<HttpRequestMessage> RequestMyRecentActivityAsync(int myUserId)
+        {
+
+            var daysToConsiderRecent = this.Options.Value.DaysToConsiderRecent ?? 14;
+            var startDate = this.SystemClock.UtcNow.AddDays(-daysToConsiderRecent);
+            var endDate = this.SystemClock.UtcNow;
+
+            // build the query parameter string
+            List<string> queryParameters = new List<string>
+            {
+                $"assignedToUserIds={myUserId}",
+                "pageSize=500",
+                "orderBy=date",
+                "orderMode=desc",
+                $"startDate={startDate:yyyy-MM-dd}",
+                $"endDate={endDate:yyyy-MM-dd}",
+                "include=projects,tasks,tags"
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/time.json?{string.Join("&", queryParameters)}");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+
+            return request;
+
+        }
+
 
         private async Task<HttpRequestMessage> RequestTasksAsync(ApiQueryParameters apiQueryParameters, bool includeTasksWithNoDueDate)
         {
@@ -206,10 +240,8 @@ namespace Timer.Shared.Services.Implementations
             if (response.IsSuccessStatusCode)
             {
 
-#if DEBUG
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 this.Logger.Verbose(responseContent);
-#endif
 
                 return Newtonsoft.Json.JsonConvert.DeserializeObject<TasksResponse>(responseContent);
 
@@ -223,32 +255,35 @@ namespace Timer.Shared.Services.Implementations
         private async Task<Person?> Me(CancellationToken cancellationToken)
         {
 
-            var cacheKey = "itimelogservice:teamwork:me"; // TODO: eliminate magic string
-
-            if (!this.MemoryCache.TryGetValue(cacheKey, out Person? cacheValue))
+            if (!this.MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_ME_KEY, out Person? cacheValue))
             {
 
                 var client = this.HttpClientFactory.CreateClient();
                 var response = await client.SendAsync(await RequestMeAsync(), cancellationToken);
 
-                if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode && await response.Content.ReadAsStringAsync(cancellationToken) is string responseContent)
                 {
 
-#if DEBUG
-                    var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                    // log
                     this.Logger.Verbose(responseContent);
-#endif
 
-                    cacheValue = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDetailResponse>(responseContent).Person;
 
-                    var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(8));
+                    // deserialise the response
+                    var userDetailResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDetailResponse>(responseContent);
+                    if (userDetailResponse != null)
+                    {
+                        cacheValue = userDetailResponse.Person;
+                        this.MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_ME_KEY, cacheValue, this.MeMemoryCacheEntryOptions);
+                    }
 
-                    this.MemoryCache.Set(cacheKey, cacheValue, cacheEntryOptions);
-
+                }
+                else if (!response.IsSuccessStatusCode)
+                {
+                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "Me");
                 }
                 else
                 {
-                    cacheValue = null;
+                    this.Logger.Error(LogMessages.ResponseReadFailure, "Me");
                 }
 
             }
@@ -369,7 +404,7 @@ namespace Timer.Shared.Services.Implementations
                 this.Logger.Verbose(responseContent);
 #endif
 
-                return await response.Content.ReadAsAsync<Models.ProjectManagementSystem.TeamworkV3.ProjectResponse>();
+                return await response.Content.ReadAsAsync<ProjectResponse>();
 
             }
             else
@@ -451,7 +486,111 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
+        private async Task<List<KeyedEntity>?> MyRecentProjects(int myUserId, CancellationToken cancellationToken)
+        {
 
+            var client = this.HttpClientFactory.CreateClient();
+            var endPoint = await RequestMyRecentActivityAsync(myUserId);
+            var response = await client.SendAsync(endPoint, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var teResponse = await response.Content.ReadAsAsync<TimeLogResponse>();
+                var timeLogs = teResponse.TimeLogs;
+
+                // return a new list of KeyedEntity, by grouping the time log responses on the project id,
+                // sorting by total time (sum) descending, and projecting to a new List<KeyedEntity>
+                return timeLogs
+                        .GroupBy(gb => gb.ProjectId)
+                        .OrderByDescending(ob=> ob.Sum(s=> s.Minutes))
+                        .Select(s => new KeyedEntity(s.Key!.Value, teResponse.Included.Projects.FirstOrDefault(f => f.Key == s.Key).Value.Name))
+                        .ToList(); 
+
+
+            }
+            else
+            {
+
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                this.Logger.Error(responseContent);
+
+                return null;
+
+            }
+
+        }
+
+        private async Task<List<KeyedEntity>?> MyRecentTasks(int myUserId, CancellationToken cancellationToken)
+        {
+
+            var client = this.HttpClientFactory.CreateClient();
+            var endPoint = await RequestMyRecentActivityAsync(myUserId);
+            var response = await client.SendAsync(endPoint, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var teResponse = await response.Content.ReadAsAsync<TimeLogResponse>();
+                var timeLogs = teResponse.TimeLogs;
+
+                // return a new list of KeyedEntity, by grouping the time log responses on the task id,
+                // sorting by total time (sum) descending, and projecting to a new List<KeyedEntity>
+                return timeLogs
+                        .Where(s=> s.TaskId.HasValue)
+                        .ToList()
+                        .GroupBy(gb => gb.TaskId)
+                        .OrderByDescending(ob => ob.Sum(s => s.Minutes))
+                        .Select(s => new KeyedEntity(s.Key!.Value, teResponse.Included.Tasks.FirstOrDefault(f => f.Key == s.Key).Value.Name))
+                        .ToList();
+            }
+            else
+            {
+
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                this.Logger.Error(responseContent);
+
+                return null;
+
+            }
+
+        }
+
+
+        private async Task<List<KeyedEntity>?> MyRecentTags(int myUserId, CancellationToken cancellationToken)
+        {
+
+            var client = this.HttpClientFactory.CreateClient();
+            var endPoint = await RequestMyRecentActivityAsync(myUserId);
+            var response = await client.SendAsync(endPoint, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var teResponse = await response.Content.ReadAsAsync<TimeLogResponse>();
+                var timeLogs = teResponse.TimeLogs;
+
+                // get a distinct list of tags
+                var tags = timeLogs
+                            .Where(s => s.TagIds is not null && s.TagIds.Any())
+                            .SelectMany(sm => sm.TagIds)
+                            .Distinct()
+                            .ToList();
+
+
+                // project to new List<KeyedEntity> and return to user
+                return tags
+                        .Select(s => new KeyedEntity(s, teResponse.Included.Tags.FirstOrDefault(f => f.Key == s).Value.Name))
+                        .ToList();
+            }
+            else
+            {
+
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                this.Logger.Error(responseContent);
+
+                return null;
+
+            }
+
+        }
 
         //        public async Task CreateTimeEntryForProject(string token, int minutes, DateTime start, int projectId, CancellationToken cancellationToken)
         //        {

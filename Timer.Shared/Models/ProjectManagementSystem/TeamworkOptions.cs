@@ -12,6 +12,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem
         public string RedirectUri { get; set; }
         public string ApiKey { get; set; }
         public string AuthType { get; set; }
+        public int? DaysToConsiderRecent { get; set; }
     }
 
 }
