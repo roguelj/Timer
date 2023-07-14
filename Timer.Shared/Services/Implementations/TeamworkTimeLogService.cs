@@ -1,15 +1,17 @@
-﻿using System.Threading;
-using Timer.Shared.Models;
+﻿using Timer.Shared.Models;
 using Timer.Shared.Services.Interfaces;
 
 namespace Timer.Shared.Services.Implementations
 {
     internal partial class TeamworkTimeLogService : ITimeLogService
     {
-        async Task<DateTimeOffset> ITimeLogService.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken cancellationToken)
+        async Task<DateTimeOffset?> ITimeLogService.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken cancellationToken)
         {
             var me = await this.Me(cancellationToken); 
-            return (await this.MyLastTimeEntry(me.Id, cancellationToken)).TimeLogged;
+            var lastTimeEntry = (await this.MyLastTimeEntry(me.Id, cancellationToken));
+
+            return (lastTimeEntry?.TimeLogged ?? this.SystemClock.UtcNow).AddMinutes(lastTimeEntry?.Minutes ?? 0);
+
         }
 
         async Task<List<KeyedEntity>?> ITimeLogService.GetRecentProjectsAsync(CancellationToken cancellationToken)
@@ -28,6 +30,11 @@ namespace Timer.Shared.Services.Implementations
         {
             var me = await this.Me(cancellationToken);
             return (await this.MyRecentTasks(me.Id, cancellationToken));
+        }
+
+        async Task<bool> ITimeLogService.LogTime(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int> tagIds, CancellationToken cancellationToken)
+        {
+            return await this.CreateTimeEntry(startDateTime, endDateTime, projectId, taskId, tagIds, cancellationToken);
         }
 
     }

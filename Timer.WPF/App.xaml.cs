@@ -4,6 +4,7 @@ using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using System.Windows;
+using Timer.Shared.Application;
 using Timer.Shared.ViewModels;
 using Timer.WPF.Dialogs;
 using Timer.WPF.Shells;
@@ -19,9 +20,9 @@ namespace Timer.WPF
         private IConfiguration Configuration { get; }
 
         public App()
-        {
-            PrismContainerExtension.Init(); // REQUIRED. see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
-            this.Configuration = Shared.Application.ConfigurationServices.GetConfiguration();
+        { 
+            PrismContainerExtension.Init();     // REQUIRED. see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
+            this.Configuration = ConfigurationServices.GetConfiguration();
         }
 
 
@@ -29,8 +30,11 @@ namespace Timer.WPF
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {      
+
+            // register types in the shared namespace
             Shared.Application.ServiceContainer.RegisterTypes(containerRegistry, this.Configuration);
 
+            // register dialogs
             containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(Base.TimeLogDialogName);
   
         }

@@ -7,15 +7,8 @@ namespace Timer.Wpf.Modules
 {
     internal class TimeLogModule : IModule
     {
-        void IModule.OnInitialized(IContainerProvider containerProvider)
-        {
-            var regionManager = containerProvider.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion<TimeLogView>("MainRegion");
-        }
+        void IModule.OnInitialized(IContainerProvider containerProvider) => containerProvider.Resolve<IRegionManager>().RegisterViewWithRegion<TimeLogView>("MainRegion");
 
-        void IModule.RegisterTypes(IContainerRegistry containerRegistry)
-        {
-   
-        }
+        void IModule.RegisterTypes(IContainerRegistry containerRegistry) { }
     }
 }

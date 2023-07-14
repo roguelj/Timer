@@ -1,12 +1,19 @@
-﻿using Prism.Services.Dialogs;
+﻿using DryIoc;
+using Prism.Services.Dialogs;
 using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
+using Timer.Shared.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 
 namespace Timer.WPF.ViewModels
 {
+    
     public class TimeLogViewModel:Base
     {
 
@@ -19,20 +26,25 @@ namespace Timer.WPF.ViewModels
         public Prism.Commands.DelegateCommand LogTimeCommand { get; private set; }
         public Prism.Commands.DelegateCommand OpenSettingsCommand { get; private set; }
 
+
         // constructor
-        public TimeLogViewModel(ILogger logger, ITimeLogService timeLogService, IDialogService dialogService) :base(logger)
+        public TimeLogViewModel(ILogger logger, ITimeLogService timeLogService, IDialogService dialogService) :base(logger, timeLogService)
         {
 
             // initialise services
-            this.TimeLogService = timeLogService ?? throw new ArgumentNullException(nameof(timeLogService));
             this.DialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));   
 
             // commands
-            this.LogTimeCommand = new Prism.Commands.DelegateCommand(this.LogTimeAsync);
+            this.LogTimeCommand = new Prism.Commands.DelegateCommand(this.LogTimeAsync, this.CanLogTime);
             this.OpenSettingsCommand = new Prism.Commands.DelegateCommand(this.OpenSettings);
 
         }
 
+
+        private bool CanLogTime()
+        {
+            return true; // TODO: implement this. needs to determine successful connection to teamwork
+        }
 
         private async void LogTimeAsync()
         {
@@ -53,7 +65,7 @@ namespace Timer.WPF.ViewModels
             // create the parameters to pass along to the dialog
             var parameters = new DialogParameters
             {
-                { StartTimeDialogParameterName, startDate.DateTime }, 
+                { StartTimeDialogParameterName, startDate.Value.DateTime }, 
                 { EndTimeDialogParameterName, endDate},
                 { RecentTagsDialogParameterName, tags },
                 { RecentTasksDialogParameterName, tasks },
@@ -66,17 +78,47 @@ namespace Timer.WPF.ViewModels
 
         }
 
-        private void LogTimeAsync(IDialogResult dialogResult) 
+        private async void LogTimeAsync(IDialogResult dialogResult) 
         {
 
             if (dialogResult.Result == ButtonResult.OK)
             {
-                
+
+                // get the data from the dialog
+                var startDateTime = dialogResult.Parameters.GetValue<DateTime>(StartTimeDialogParameterName);
+                var endDateTime = dialogResult.Parameters.GetValue<DateTime>(EndTimeDialogParameterName);
+                var tags = dialogResult.Parameters.GetValue<List<KeyedEntity>>(SelectedTagsDialogParameterName);
+                var task = dialogResult.Parameters.GetValue<KeyedEntity>(SelectedTaskDialogParameterName);
+                var project = dialogResult.Parameters.GetValue<KeyedEntity>(SelectedProjectDialogParameterName);
+
+                // TODO: check for valid values
+
+
+                await this.TimeLogService!.LogTime(startDateTime, endDateTime, project.Id, task?.Id, tags?.Select(s => s.Id).ToList(), CancellationToken.None);
+
             }
 
         }
 
-        private void OpenSettings() { }
+        private void OpenSettings()
+        {
+
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = Shared.Application.ConfigurationServices.UserDataPath,
+                    WorkingDirectory = Shared.Application.ConfigurationServices.UserDataPath
+                };
+
+                Process.Start(psi);
+
+            }
+
+        }
+
     }
 
 }

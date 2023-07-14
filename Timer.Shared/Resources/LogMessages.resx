@@ -120,10 +120,16 @@
   <data name="IsSuccessStatusCodeFailure" xml:space="preserve">
     <value>HttpRequest Failure {code} during {method}</value>
   </data>
+  <data name="OnDialogOpened" xml:space="preserve">
+    <value>Dialog opened {start} to {end} {projects} projects, {tasks} tasks, {tags} tags</value>
+  </data>
   <data name="ResponseReadFailure" xml:space="preserve">
     <value>Failed to read response string during {method}</value>
   </data>
   <data name="TraceMethodHit" xml:space="preserve">
     <value>{method} for {view-model}</value>
+  </data>
+  <data name="Unreachable" xml:space="preserve">
+    <value>Unreachable code detected in {method}</value>
   </data>
 </root>

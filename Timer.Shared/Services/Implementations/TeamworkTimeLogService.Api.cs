@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Serilog;
+using System.Text;
 using Timer.Shared.Application;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models;
 using Timer.Shared.Models.ProjectManagementSystem;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
+using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 using LogMessages = Timer.Shared.Resources.LogMessages;
 
@@ -59,7 +60,7 @@ namespace Timer.Shared.Services.Implementations
 
         private bool IsBasicAuth()
         {
-            return true; // TODO: fix this
+            return this.Options.Value is TeamworkOptions twOptions && twOptions.AuthType.Equals("basic", StringComparison.InvariantCultureIgnoreCase);
         }
 
 
@@ -130,7 +131,7 @@ namespace Timer.Shared.Services.Implementations
         private async Task<HttpRequestMessage> RequestMyRecentActivityAsync(int myUserId)
         {
 
-            var daysToConsiderRecent = this.Options.Value.DaysToConsiderRecent ?? 14;
+            var daysToConsiderRecent = Math.Max(0,this.Options.Value.DaysToConsiderRecent ?? 14);
             var startDate = this.SystemClock.UtcNow.AddDays(-daysToConsiderRecent);
             var endDate = this.SystemClock.UtcNow;
 
@@ -152,7 +153,6 @@ namespace Timer.Shared.Services.Implementations
             return request;
 
         }
-
 
         private async Task<HttpRequestMessage> RequestTasksAsync(ApiQueryParameters apiQueryParameters, bool includeTasksWithNoDueDate)
         {
@@ -210,20 +210,6 @@ namespace Timer.Shared.Services.Implementations
         private async Task<HttpRequestMessage> RequestTagsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/tags.json?pageSize=250");
-            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
-            return request;
-        }
-
-        private async Task<HttpRequestMessage> RequestInsertTimeEntryForProjectAsync(int projectId)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{V3EndpointUrlBase}/projects/{projectId}/time.json");
-            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
-            return request;
-        }
-
-        private async Task<HttpRequestMessage> RequestInsertTimeEntryForTaskAsync(int taskId)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{V3EndpointUrlBase}/tasks/{taskId}/time.json");
             request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
             return request;
         }
@@ -472,7 +458,7 @@ namespace Timer.Shared.Services.Implementations
             if (response.IsSuccessStatusCode)
             {
                 var teResponse = await response.Content.ReadAsAsync<TimeLogResponse>();
-                return teResponse.TimeLogs.OrderByDescending(o => o.TimeLogged).FirstOrDefault();  
+                return teResponse.TimeLogs.OrderByDescending(o => o.TimeLogged.Value.AddMinutes(o.Minutes ?? 0)).FirstOrDefault();  
             }
             else
             {
@@ -537,9 +523,9 @@ namespace Timer.Shared.Services.Implementations
                 return timeLogs
                         .Where(s=> s.TaskId.HasValue)
                         .ToList()
-                        .GroupBy(gb => gb.TaskId)
+                        .GroupBy(gb => (gb.TaskId, gb.ProjectId))
                         .OrderByDescending(ob => ob.Sum(s => s.Minutes))
-                        .Select(s => new KeyedEntity(s.Key!.Value, teResponse.Included.Tasks.FirstOrDefault(f => f.Key == s.Key).Value.Name))
+                        .Select(s => new KeyedEntity(s.Key!.TaskId.Value, teResponse.Included.Tasks.FirstOrDefault(f => f.Key == s.Key.TaskId.Value).Value.Name, s.Key.ProjectId.Value))
                         .ToList();
             }
             else
@@ -553,7 +539,6 @@ namespace Timer.Shared.Services.Implementations
             }
 
         }
-
 
         private async Task<List<KeyedEntity>?> MyRecentTags(int myUserId, CancellationToken cancellationToken)
         {
@@ -577,7 +562,11 @@ namespace Timer.Shared.Services.Implementations
 
                 // project to new List<KeyedEntity> and return to user
                 return tags
-                        .Select(s => new KeyedEntity(s, teResponse.Included.Tags.FirstOrDefault(f => f.Key == s).Value.Name))
+                        .Select(s =>
+                        {
+                            var tag = teResponse.Included.Tags.FirstOrDefault(f => f.Key == s).Value;
+                            return new KeyedEntity(s, tag.Name, tag.Color);
+                        })
                         .ToList();
             }
             else
@@ -592,32 +581,42 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        //        public async Task CreateTimeEntryForProject(string token, int minutes, DateTime start, int projectId, CancellationToken cancellationToken)
-        //        {
+        public async Task<bool> CreateTimeEntry(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int>? tags, CancellationToken cancellationToken)
+        {
 
-        //            var client = this.HttpClientFactory.CreateClient();
-        //            var response = await client.PostAsJsonAsync(RequestInsertTimeEntryForProject(token, projectId), cancellationToken);
+            // create the client and add the auth
+            var client = this.HttpClientFactory.CreateClient();
+            var auth = this.IsBasicAuth() ? "Basic" : "Bearer";
+            var atoken = await this.AccessToken();
+            var token = this.IsBasicAuth() ? Convert.ToBase64String(Encoding.ASCII.GetBytes($"{atoken}:")) : atoken;
+            client.DefaultRequestHeaders.Add("Authorization", $"{auth} {token}");
 
-        //            if (response.IsSuccessStatusCode)
-        //            {
+            // create the request object
+            var timeLogEntryRequest = new TimeLogEntryRequest(startDateTime, endDateTime, projectId, taskId, tags);
 
+            // determine the endpoint to hit
+            var endpoint = taskId.HasValue ? $"{V3EndpointUrlBase}/tasks/{taskId}/time.json" : $"{V3EndpointUrlBase}/projects/{projectId}/time.json";
 
-
-        //#if DEBUG
-        //                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-        //                this.Logger.Verbose(responseContent);
-        //#endif
-
-        //                return await response.Content.ReadAsAsync<Models.ProjectManagementSystem.TeamworkV3.TagResponse>();
-
-        //            }
-        //            else
-        //            {
-        //                return null;
-        //            }
+            // post the request
+            var response = await client.PostAsJsonAsync(endpoint, timeLogEntryRequest, cancellationToken);
 
 
-        //        }
+#if DEBUG
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            this.Logger.Verbose(responseContent);
+#endif
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
 
     }
 

@@ -61,11 +61,20 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log.
+        ///   Looks up a localized string similar to Settings.
         /// </summary>
-        public static string Log {
+        public static string LogButtonContextMenuUserDataPath {
             get {
-                return ResourceManager.GetString("Log", resourceCulture);
+                return ResourceManager.GetString("LogButtonContextMenuUserDataPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LOG TIME.
+        /// </summary>
+        public static string LogButtonText {
+            get {
+                return ResourceManager.GetString("LogButtonText", resourceCulture);
             }
         }
         

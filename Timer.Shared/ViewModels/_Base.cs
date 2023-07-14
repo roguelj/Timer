@@ -1,11 +1,12 @@
-﻿using Prism.Mvvm;
+﻿using Prism.Events;
+using Prism.Mvvm;
 using Serilog;
 using Timer.Shared.Services.Interfaces;
 using LogMessage = Timer.Shared.Resources.LogMessages;
 
 namespace Timer.Shared.ViewModels
 {
-    public class Base:BindableBase
+    public abstract class Base : BindableBase
     {
 
         // member variables
@@ -13,8 +14,9 @@ namespace Timer.Shared.ViewModels
 
 
         // injected services
-        public ILogger Logger { get; }
-        public ITimeLogService? TimeLogService { get; set; }
+        protected ILogger Logger { get; }
+        protected ITimeLogService? TimeLogService { get; set; }
+        protected IEventAggregator? EventAggregator { get; set; }
 
 
         // get the cached type. set it if not already done so
@@ -36,6 +38,9 @@ namespace Timer.Shared.ViewModels
         protected const string SelectedTagsDialogParameterName = "selected-tags";
 
 
+        protected List<Prism.Commands.DelegateCommand> Commands { get; } = new List<Prism.Commands.DelegateCommand>();
+
+
         public Base(ILogger logger)
         {
 
@@ -47,6 +52,27 @@ namespace Timer.Shared.ViewModels
 
         }
 
+        public Base(ILogger logger, ITimeLogService timeLogService)
+        {
+
+            // services
+            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.TimeLogService = timeLogService ?? throw new ArgumentNullException(nameof(timeLogService));
+
+            // log
+            this.Logger.Verbose(LogMessage.TraceMethodHit, "Constructor", this.CachedType.Name);
+
+        }
+
+
+        protected void RaiseCanExecuteChangedForCommandList()
+        {
+            foreach(var command in Commands)
+            {
+                command.RaiseCanExecuteChanged();
+            }
+
+        }
     }
 
 }

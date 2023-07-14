@@ -70,6 +70,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dialog opened {start} to {end} {projects} projects, {tasks} tasks, {tags} tags.
+        /// </summary>
+        public static string OnDialogOpened {
+            get {
+                return ResourceManager.GetString("OnDialogOpened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to read response string during {method}.
         /// </summary>
         public static string ResponseReadFailure {
@@ -84,6 +93,15 @@ namespace Timer.Shared.Resources {
         public static string TraceMethodHit {
             get {
                 return ResourceManager.GetString("TraceMethodHit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unreachable code detected in {method}.
+        /// </summary>
+        public static string Unreachable {
+            get {
+                return ResourceManager.GetString("Unreachable", resourceCulture);
             }
         }
     }
