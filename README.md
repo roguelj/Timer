@@ -1,7 +1,7 @@
 ﻿
 # Timer
 
-This is a small application used to quickly log time against Teamwork tasks and projects.
+This is a small application used to quickly log time against Teamwork (https://www.teamwork.com) tasks and projects.
 
 ## Configuration
 
