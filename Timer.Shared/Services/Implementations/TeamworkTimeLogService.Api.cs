@@ -193,13 +193,6 @@ namespace Timer.Shared.Services.Implementations
             return request;
         }
 
-        private async Task<HttpRequestMessage> RequestProjectsAsync()
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/projects.json?pageSize=250");
-            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
-            return request;
-        }
-
         private async Task<HttpRequestMessage> RequestStarredProjectsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/projects/starred.json?include=projectUpdates,tags,projectBudgets");
@@ -376,11 +369,16 @@ namespace Timer.Shared.Services.Implementations
             }
         }
 
-        private async Task<ProjectResponse?> Projects(string token, CancellationToken cancellationToken)
+        async Task<List<KeyedEntity>?> ITimeLogService.AllProjectsAsync(CancellationToken cancellationToken)
         {
 
+            // TODO: paginate
+
             var client = this.HttpClientFactory.CreateClient();
-            var response = await client.SendAsync(await RequestProjectsAsync(), cancellationToken);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/projects.json?pageSize=250");
+            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+
+            var response = await client.SendAsync(request, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -390,7 +388,9 @@ namespace Timer.Shared.Services.Implementations
                 this.Logger.Verbose(responseContent);
 #endif
 
-                return await response.Content.ReadAsAsync<ProjectResponse>();
+                var projectsResponse = await response.Content.ReadAsAsync<ProjectResponse>();
+
+                return projectsResponse.Projects.Select(s => s.ToKeyedEntity()).ToList();
 
             }
             else

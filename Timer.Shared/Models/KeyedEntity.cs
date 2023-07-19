@@ -7,7 +7,7 @@
         public int ParentId { get; set; }
         public string Name { get; set; }
         public string? Colour { get; set; }
-
+        
         public KeyedEntity(int id, string name)
         {
             this.Id = id;

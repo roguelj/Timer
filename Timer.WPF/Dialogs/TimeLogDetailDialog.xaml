@@ -32,110 +32,245 @@
             <Setter Property="MinWidth" Value="100"/>
         </Style>
 
+        <Style x:Key="OkCancelButtonControlStyle" TargetType="Button" BasedOn="{StaticResource ControlStyle}">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="MinWidth" Value="100"/>
+        </Style>
+
+        <Style x:Key="SmallButtonControlStyle" TargetType="Button">
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+
+
         <CollectionViewSource Source="{Binding Tasks}" x:Key="TasksCollectionViewSource" Filter="CollectionViewSource_Filter"/>
-
-        <converters:HtmlColourConverter x:Key="HtmlColourConverter" />
-       
-    </UserControl.Resources>
-    
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
-        <!-- Start & End times -->
-        <Label Grid.Row="0" Grid.Column="0" Content="Start" Style="{StaticResource HeaderStyle}" />
-        <xctk:DateTimePicker Grid.Row="0" Grid.Column="1" Value="{Binding StartDateTime}" Style="{StaticResource ControlStyle}" />
-        <Label Grid.Row="1" Grid.Column="0" Content="End" Style="{StaticResource HeaderStyle}" />
-        <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding EndDateTime}" Style="{StaticResource ControlStyle}"/>
-        <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Content="{Binding Duration,StringFormat=hh\\:mm}" />
-                
+        <CollectionViewSource Source="{Binding ProjectSearchResults}" x:Key="ProjectSearchResultsCollectionViewSource" Filter="ProjectSearchResultsFilter" />
+        <CollectionViewSource Source="{Binding TaskSearchResults}" x:Key="TaskSearchResultsCollectionViewSource" Filter="TaskSearchResultsFilter" />
+        <CollectionViewSource Source="{Binding TagSearchResults}" x:Key="TagSearchResultsCollectionViewSource" Filter="TagSearchResultsFilter" />
         
-        <!-- projects -->
-        <Label Grid.Row="2" Grid.Column="0" Content="Project" Style="{StaticResource HeaderStyle}" />
-        <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+        <converters:HtmlColourConverter x:Key="HtmlColourConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        
+    </UserControl.Resources>
+
+    <DockPanel>
+
+        <Grid DockPanel.Dock="Right" Visibility="{Binding IsExtraDetailVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <!-- project search -->
+            <Border Grid.Column="0" BorderBrush="LightGray" BorderThickness="2" Margin="5">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Project Search" Style="{StaticResource HeaderStyle}"/>
+                    <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding ProjectSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding AllProjects}"/>
+
+                </Grid>
+                
+            </Border>
+
+            <!-- task search -->
+            <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="2" Margin="5">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Task Search" Style="{StaticResource HeaderStyle}"/>
+                    <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding TaskSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding TaskSearchResults}"/>
+
+                </Grid>
+
+            </Border>
+
+            <!-- tag search -->
+            <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="2" Margin="5">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Tag Search" Style="{StaticResource HeaderStyle}"/>
+                    <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding TagSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding TagSearchResults}"/>
+
+                </Grid>
+
+            </Border>
+            
+        </Grid>
+              
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <!-- Start & End times -->
+            <Label Grid.Row="0" Grid.Column="0" Content="Start" Style="{StaticResource HeaderStyle}" />
+            <xctk:DateTimePicker Grid.Row="0" Grid.Column="1" Value="{Binding StartDateTime}" Style="{StaticResource ControlStyle}" />
+            <Label Grid.Row="1" Grid.Column="0" Content="End" Style="{StaticResource HeaderStyle}" />
+            <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding EndDateTime}" Style="{StaticResource ControlStyle}"/>
+            <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Content="{Binding Duration,StringFormat=hh\\:mm}" />
+
+
+            <!-- projects -->
+            <Label Grid.Row="2" Grid.Column="0" Content="Project" Style="{StaticResource HeaderStyle}" />
+            <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
                   ItemsSource="{Binding Projects}" 
                   IsSynchronizedWithCurrentItem="True" 
                   SelectedItem="{Binding SelectedProject}" 
                   Style="{StaticResource ControlStyle}"
                   >
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Name}" />
-                    </Grid>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
-        <!-- tasks -->
-        <Label Grid.Row="3" Grid.Column="0" Content="Task" Style="{StaticResource HeaderStyle}" />
-        <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" 
+            <!-- tasks -->
+            <Label Grid.Row="3" Grid.Column="0" Content="Task" Style="{StaticResource HeaderStyle}" />
+            <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" 
                   ItemsSource="{Binding Source={StaticResource TasksCollectionViewSource}}" 
                   IsSynchronizedWithCurrentItem="True" 
                   SelectedItem="{Binding SelectedTask}" 
                   Style="{StaticResource ControlStyle}"
                   x:Name="TaskComboBox">
-            
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Name}" />
-                    </Grid>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
 
-        <!-- tags -->
-        <Label Grid.Row="4" Grid.Column="0" Content="Tags" Style="{StaticResource HeaderStyle}" />
-        <ListBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" 
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <!-- tags -->
+            <Label Grid.Row="4" Grid.Column="0" Content="Tags" Style="{StaticResource HeaderStyle}" />
+            <ListBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" 
                  ItemsSource="{Binding Tags}" 
                  SelectionMode="Multiple" 
                  x:Name="SelectedTagsListBox" 
                  SelectionChanged="SelectedTagsListBox_SelectionChanged" 
                  Style="{StaticResource ControlStyle}">
-            
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="1" Margin="1" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel MaxWidth="200"
-                Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>
-        
-        <!-- Ok / Cancel etc-->
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3">
-            <Button Content="Ok" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource ControlStyle}"/>
-            <Button Content="Cancel" Command="{Binding CloseDialogCancelCommand}" Style="{StaticResource ControlStyle}"/>
-        </StackPanel>
 
-    </Grid>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="1" Margin="1" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MaxWidth="200"
+                Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+
+            <!-- Ok / Cancel etc-->
+            <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3">
+                <Button Content="Ok" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
+                <Button Content="Cancel" Command="{Binding CloseDialogCancelCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
+
+                <Button Command="{Binding ToggleMoreDetailCommand}" Style="{StaticResource SmallButtonControlStyle}">
+
+                    <Button.Content>
+                        <Grid>
+                            <TextBlock HorizontalAlignment="Center" Text="→">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsExtraDetailVisible}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <TextBlock HorizontalAlignment="Center" Text="←">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsExtraDetailVisible}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            
+                        </Grid>
+                    </Button.Content>
+                </Button>
+
+
+            </StackPanel>
+
+        </Grid>
+
     
+    </DockPanel>
+
 </UserControl>

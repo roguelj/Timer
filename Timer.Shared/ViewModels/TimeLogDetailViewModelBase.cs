@@ -1,4 +1,5 @@
-﻿using Prism.Events;
+﻿using Prism.Commands;
+using Prism.Events;
 using Serilog;
 using System.Collections.ObjectModel;
 using Timer.Shared.Extensions;
@@ -15,6 +16,10 @@ namespace Timer.WPF.ViewModels
         private DateTime _endDateTime;
         private KeyedEntity? _selectedProject;
         private KeyedEntity? _selectedTask;
+        private bool _isExtraDetailVisible;
+        private string _projectSearchCriteria = string.Empty;
+        private string _taskSearchCriteria = string.Empty;
+        private string _tagSearchCriteria = string.Empty;
 
 
         // bound properties
@@ -52,12 +57,41 @@ namespace Timer.WPF.ViewModels
             set => this.SetProperty(ref this._selectedTask, value);
         }
 
+        public bool IsExtraDetailVisible
+        {
+            get => this._isExtraDetailVisible;
+            set => this.SetProperty(ref this._isExtraDetailVisible, value);
+        }
+
+        public string ProjectSearchCriteria 
+        { 
+            get => this._projectSearchCriteria;
+            set => this.SetProperty(ref this._projectSearchCriteria, value); 
+        }
+
+        public string TaskSearchCriteria
+        {
+            get => this._taskSearchCriteria;
+            set => this.SetProperty(ref this._taskSearchCriteria, value);
+        }
+
+        public string TagSearchCriteria
+        {
+            get => this._tagSearchCriteria;
+            set => this.SetProperty(ref this._tagSearchCriteria, value);
+        }
+
+
+        // commands
+        public DelegateCommand ToggleMoreDetailCommand { get; }
+
 
         // bound collection properties
         public ObservableCollection<KeyedEntity> Tags { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> Tasks { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> Projects { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> SelectedTags { get; } = new ObservableCollection<KeyedEntity>();
+        public ObservableCollection<KeyedEntity> AllProjects { get; } = new ObservableCollection<KeyedEntity>();
 
 
         // constructor
@@ -67,23 +101,45 @@ namespace Timer.WPF.ViewModels
             // register services
             this.EventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
 
+            // commands
+            this.ToggleMoreDetailCommand = new DelegateCommand(() => this.IsExtraDetailVisible = !this.IsExtraDetailVisible);
+
+            // add command to the base list
+            base.Commands.Add(this.ToggleMoreDetailCommand);
+
         }
 
-        protected void Initialise(DateTime startDateTime, DateTime endDateTime, List<KeyedEntity> tags, List<KeyedEntity> tasks, List<KeyedEntity> projects)
+        protected void Initialise(DateTime startDateTime, DateTime endDateTime, List<KeyedEntity> tags, List<KeyedEntity> tasks, List<KeyedEntity> projects, List<KeyedEntity> allProjects)
         {
             this.StartDateTime = startDateTime;
             this.EndDateTime = endDateTime;
             this.Tags.AddRange(tags);
             this.Tasks.AddRange(tasks);
             this.Projects.AddRange(projects);
+            this.AllProjects.AddRange(allProjects);
         }
 
-        public bool IsTaskOwnedBySelectedProject(KeyedEntity? keyedEntityTask)
+        public bool IsTaskOwnedBySelectedProject(KeyedEntity? keyedEntity)
         {
-            if(this.SelectedProject is null || keyedEntityTask is null) return false;
-            return this.SelectedProject.Id == keyedEntityTask.ParentId;
+            if(this.SelectedProject is null || keyedEntity is null) return false;
+            return this.SelectedProject.Id == keyedEntity.ParentId;
         }
 
+        public bool DoesProjectMatchCriteria(KeyedEntity? keyedEntity)
+        {
+            return keyedEntity?.Name.Contains(this.ProjectSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
+        }
+
+        public bool DoesTaskMatchCriteria(KeyedEntity? keyedEntity)
+        {
+            return keyedEntity?.Name.Contains(this.TaskSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
+        }
+
+        public bool DoesTagMatchCriteria(KeyedEntity? keyedEntity)
+        {
+            return keyedEntity?.Name.Contains(this.TagSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
+        }
+   
     }
 
 }

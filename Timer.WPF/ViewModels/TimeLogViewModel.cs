@@ -60,7 +60,7 @@ namespace Timer.WPF.ViewModels
             var tags = await this.TimeLogService.GetRecentTagsAsync(CancellationToken.None);
             var tasks = await this.TimeLogService.GetRecentTasksAsync(CancellationToken.None);
             var projects = await this.TimeLogService.GetRecentProjectsAsync(CancellationToken.None);
-
+            var allProjects = await this.TimeLogService.AllProjectsAsync(CancellationToken.None);
 
             // create the parameters to pass along to the dialog
             var parameters = new DialogParameters
@@ -69,7 +69,8 @@ namespace Timer.WPF.ViewModels
                 { EndTimeDialogParameterName, endDate},
                 { RecentTagsDialogParameterName, tags },
                 { RecentTasksDialogParameterName, tasks },
-                { RecentProjectsDialogParameterName, projects }
+                { RecentProjectsDialogParameterName, projects },
+                { AllProjectsDialogParameterName, allProjects }
             };
 
 

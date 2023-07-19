@@ -47,6 +47,20 @@ namespace Timer.WPF.Dialogs
 
         private void ProjectChanged() => (this.TaskComboBox.ItemsSource as ListCollectionView)?.Refresh();
 
+        private void ProjectSearchResultsFilter(object sender, FilterEventArgs e)
+        {
+            e.Accepted = this.ViewModel?.DoesProjectMatchCriteria(e.Item as KeyedEntity) ?? false;
+        }
+
+        private void TaskSearchResultsFilter(object sender, FilterEventArgs e)
+        {
+            e.Accepted = this.ViewModel?.DoesTaskMatchCriteria(e.Item as KeyedEntity) ?? false;
+        }
+
+        private void TagSearchResultsFilter(object sender, FilterEventArgs e)
+        {
+            e.Accepted = this.ViewModel?.DoesTagMatchCriteria(e.Item as KeyedEntity) ?? false;
+        }
     }
 
 }

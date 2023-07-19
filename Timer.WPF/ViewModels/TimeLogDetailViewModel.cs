@@ -84,14 +84,15 @@ namespace Timer.WPF.ViewModels
             var tags = parameters.GetValue<List<KeyedEntity>>(RecentTagsDialogParameterName);
             var tasks = parameters.GetValue<List<KeyedEntity>>(RecentTasksDialogParameterName);
             var projects = parameters.GetValue<List<KeyedEntity>>(RecentProjectsDialogParameterName);
-
+            var allProjects = parameters.GetValue<List<KeyedEntity>>(AllProjectsDialogParameterName);
+            
 
             // log
             this.Logger.Verbose(LogResMan.OnDialogOpened, startDateTime, endDateTime, projects?.Count, tasks?.Count, tags?.Count);
 
 
             // initialise properties on the base class
-            base.Initialise(startDateTime, endDateTime, tags, tasks, projects);
+            base.Initialise(startDateTime, endDateTime, tags, tasks, projects, allProjects);
 
         }
 
