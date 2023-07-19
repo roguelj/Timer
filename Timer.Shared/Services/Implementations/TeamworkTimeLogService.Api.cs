@@ -330,7 +330,7 @@ namespace Timer.Shared.Services.Implementations
                     {
                         finished = true;
                     }
-                    page += 1;
+                    page += 1; 
 
                 }
                 else
