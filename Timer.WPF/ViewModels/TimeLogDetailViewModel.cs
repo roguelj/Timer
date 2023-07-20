@@ -40,7 +40,7 @@ namespace Timer.WPF.ViewModels
             {
                 return false;
             }
-            else if (this.Duration < TimeSpan.FromSeconds(1))
+            else if (this.Duration < TimeSpan.FromMinutes(1))
             {
                 return false;
             }
@@ -55,13 +55,15 @@ namespace Timer.WPF.ViewModels
         {
 
             var parameters = new DialogParameters
-                {
-                    { StartTimeDialogParameterName, this.StartDateTime },
-                    { EndTimeDialogParameterName, this.EndDateTime},
-                    { SelectedProjectDialogParameterName, this.SelectedProject },
-                    { SelectedTaskDialogParameterName, this.SelectedTask },
-                    { SelectedTagsDialogParameterName, this.SelectedTags.ToList() }
-                };
+            {
+                { StartTimeDialogParameterName, this.StartDateTime },
+                { EndTimeDialogParameterName, this.EndDateTime},
+                { SelectedProjectDialogParameterName, this.SelectedProject },
+                { SelectedTaskDialogParameterName, this.SelectedTask },
+                { SelectedTagsDialogParameterName, this.SelectedTags.ToList() },
+                { IsBillableDialogParameterName, this.IsBillable },
+                { DescriptionDialogParameterName, this.Description },
+            };
 
             RequestClose?.Invoke(new DialogResult(ButtonResult.OK, parameters));
 

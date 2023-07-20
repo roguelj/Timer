@@ -91,11 +91,11 @@ namespace Timer.WPF.ViewModels
                 var tags = dialogResult.Parameters.GetValue<List<KeyedEntity>>(SelectedTagsDialogParameterName);
                 var task = dialogResult.Parameters.GetValue<KeyedEntity>(SelectedTaskDialogParameterName);
                 var project = dialogResult.Parameters.GetValue<KeyedEntity>(SelectedProjectDialogParameterName);
+                var isBillable = dialogResult.Parameters.GetValue<bool>(IsBillableDialogParameterName);
+                var description = dialogResult.Parameters.GetValue<string>(DescriptionDialogParameterName);
 
-                // TODO: check for valid values
 
-
-                await this.TimeLogService!.LogTime(startDateTime, endDateTime, project.Id, task?.Id, tags?.Select(s => s.Id).ToList(), CancellationToken.None);
+                await this.TimeLogService!.LogTime(startDateTime, endDateTime, project.Id, task?.Id, tags?.Select(s => s.Id).ToList(),isBillable, description, CancellationToken.None);
 
             }
 

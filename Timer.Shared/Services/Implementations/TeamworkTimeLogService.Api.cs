@@ -581,7 +581,7 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        public async Task<bool> CreateTimeEntry(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int>? tags, CancellationToken cancellationToken)
+        public async Task<bool> CreateTimeEntry(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int>? tags, bool isBillable, string description, CancellationToken cancellationToken)
         {
 
             // create the client and add the auth
@@ -592,7 +592,7 @@ namespace Timer.Shared.Services.Implementations
             client.DefaultRequestHeaders.Add("Authorization", $"{auth} {token}");
 
             // create the request object
-            var timeLogEntryRequest = new TimeLogEntryRequest(startDateTime, endDateTime, projectId, taskId, tags);
+            var timeLogEntryRequest = new TimeLogEntryRequest(startDateTime, endDateTime, projectId, taskId, tags, isBillable, description);
 
             // determine the endpoint to hit
             var endpoint = taskId.HasValue ? $"{V3EndpointUrlBase}/tasks/{taskId}/time.json" : $"{V3EndpointUrlBase}/projects/{projectId}/time.json";
@@ -612,6 +612,8 @@ namespace Timer.Shared.Services.Implementations
             }
             else
             {
+                this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "");
+                this.Logger.Error(LogMessages.LogTimeFailure);
                 return false;
             }
 

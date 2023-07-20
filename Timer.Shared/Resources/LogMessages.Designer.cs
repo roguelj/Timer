@@ -70,6 +70,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to log time.
+        /// </summary>
+        public static string LogTimeFailure {
+            get {
+                return ResourceManager.GetString("LogTimeFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dialog opened {start} to {end} {projects} projects, {tasks} tasks, {tags} tags.
         /// </summary>
         public static string OnDialogOpened {
@@ -93,6 +102,15 @@ namespace Timer.Shared.Resources {
         public static string TraceMethodHit {
             get {
                 return ResourceManager.GetString("TraceMethodHit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t find current user.
+        /// </summary>
+        public static string UnknownUser {
+            get {
+                return ResourceManager.GetString("UnknownUser", resourceCulture);
             }
         }
         

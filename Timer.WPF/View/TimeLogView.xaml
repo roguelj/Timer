@@ -31,7 +31,7 @@
     </UserControl.Resources>
 
     <ItemsControl Background="White">
-        <Button Content="{x:Static res:Resources.LogButtonText}" Command="{Binding LogTimeCommand}" Style="{StaticResource LogButtonStyle}">
+        <Button Content="{x:Static res:Resources.LogButtonText}" Command="{Binding LogTimeCommand}" Style="{StaticResource LogButtonStyle}" MaxWidth="75" MinHeight="55" HorizontalContentAlignment="Center" >
             <Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{x:Static res:Resources.LogButtonContextMenuUserDataPath}" Command="{Binding OpenSettingsCommand}" />

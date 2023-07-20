@@ -20,19 +20,29 @@ namespace Timer.WPF.ViewModels
         private string _projectSearchCriteria = string.Empty;
         private string _taskSearchCriteria = string.Empty;
         private string _tagSearchCriteria = string.Empty;
+        private bool _isBillable;
+        private string _description;
 
 
         // bound properties
         public DateTime StartDateTime
         {
             get => this._startDateTime;
-            set => this.SetProperty(ref this._startDateTime, value);
+            set
+            {
+                this.SetProperty(ref this._startDateTime, value);
+                this.RaisePropertyChanged(nameof(this.Duration));
+            }
         }
 
         public DateTime EndDateTime
         {
             get => this._endDateTime;
-            set => this.SetProperty(ref this._endDateTime, value);
+            set
+            {
+                this.SetProperty(ref this._endDateTime, value);
+                this.RaisePropertyChanged(nameof(this.Duration));
+            }
         }
 
         public TimeSpan Duration => this.EndDateTime - this.StartDateTime;
@@ -79,6 +89,18 @@ namespace Timer.WPF.ViewModels
         {
             get => this._tagSearchCriteria;
             set => this.SetProperty(ref this._tagSearchCriteria, value);
+        }
+
+        public bool IsBillable
+        {
+            get => this._isBillable;
+            set => this.SetProperty(ref this._isBillable, value);
+        }
+
+        public string Description
+        {
+            get => this._description;
+            set => this.SetProperty(ref this._description, value);
         }
 
 

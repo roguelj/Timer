@@ -37,6 +37,9 @@ namespace Timer.Shared.ViewModels
         protected const string SelectedProjectDialogParameterName = "selected-project";
         protected const string SelectedTagsDialogParameterName = "selected-tags";
         protected const string AllProjectsDialogParameterName = "all-projects";
+        protected const string IsBillableDialogParameterName = "is-billable";
+        protected const string DescriptionDialogParameterName = "description";
+
 
         protected List<Prism.Commands.DelegateCommand> Commands { get; } = new List<Prism.Commands.DelegateCommand>();
 

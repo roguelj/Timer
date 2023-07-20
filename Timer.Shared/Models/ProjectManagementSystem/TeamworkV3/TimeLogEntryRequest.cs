@@ -15,7 +15,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
         [JsonProperty("timelogOptions")]
         public TimeLogOptions? TimeLogOptions { get; set; }
 
-        public TimeLogEntryRequest(DateTime startDateTime, DateTime endDateTime, int projectID, int? taskId, List<int>? tagIds) 
+        public TimeLogEntryRequest(DateTime startDateTime, DateTime endDateTime, int projectID, int? taskId, List<int>? tagIds, bool isBillable, string description) 
         {
 
             this.Timelog = new TimeLog
@@ -28,7 +28,8 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
                 Date = startDateTime.ToString("yyyy-MM-dd"),
                 Time = startDateTime.ToString("HH:mm:ss"),
                 HasStartTime = true, 
-                IsBillable = false
+                IsBillable = isBillable,
+                Description = description
             };
 
 
