@@ -158,7 +158,10 @@
             <xctk:DateTimePicker Grid.Row="0" Grid.Column="1" Value="{Binding StartDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ControlStyle}" />
             <Label Grid.Row="1" Grid.Column="0" Content="End" Style="{StaticResource HeaderStyle}" />
             <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding EndDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ControlStyle}"/>
-            <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Content="{Binding Duration}" />
+
+            <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" >
+                <TextBlock Text="{Binding Duration, StringFormat=d\\d\\ hh\\h\\ mm\\m}"/>
+            </Label>
 
 
             <!-- projects -->
@@ -215,18 +218,17 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,2">
+                        <Grid Margin="0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="1" Margin="1" />
+                            <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="5,2" Margin="0" Foreground="White" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel MaxWidth="200"
-                Orientation="Horizontal" />
+                        <WrapPanel MaxWidth="200" Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
             </ListBox>
@@ -234,12 +236,12 @@
 
             <!-- billable -->
             <Label Grid.Row="5" Grid.Column="0" Content="Is Billable" Style="{StaticResource HeaderStyle}"/>
-            <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+            <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Style="{StaticResource ControlStyle}"/>
 
 
             <!-- description -->
-            <Label Grid.Row="6" Grid.Column="0"  Content="Description" Style="{StaticResource HeaderStyle}"/>
-            <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="50"/>
+            <Label Grid.Row="6" Grid.Column="0"  Content="Description" Style="{StaticResource HeaderStyle}" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="50" Style="{StaticResource ControlStyle}"/>
 
             
             <!-- Ok / Cancel etc-->
@@ -247,7 +249,7 @@
                 <Button Content="Ok" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
                 <Button Content="Cancel" Command="{Binding CloseDialogCancelCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
 
-                <Button Command="{Binding ToggleMoreDetailCommand}" Style="{StaticResource SmallButtonControlStyle}">
+                <Button Command="{Binding ToggleMoreDetailCommand}" Style="{StaticResource SmallButtonControlStyle}" Visibility="Hidden">
 
                     <Button.Content>
                         <Grid>
