@@ -1,6 +1,7 @@
 ﻿using Prism.Events;
 using Prism.Mvvm;
 using Serilog;
+using System.Runtime.CompilerServices;
 using Timer.Shared.Services.Interfaces;
 using LogMessage = Timer.Shared.Resources.LogMessages;
 
@@ -74,8 +75,15 @@ namespace Timer.Shared.ViewModels
             {
                 command.RaiseCanExecuteChanged();
             }
-
         }
+
+
+        // provide logging for the SetProperty method
+        protected override bool SetProperty<T>(ref T storage, T value, Action onChanged, [CallerMemberName] string propertyName = null)
+        {
+            return base.SetProperty(ref storage, value, () => this.Logger.Verbose(LogMessage.PropertySet, value, propertyName), propertyName);
+        }
+    
     }
 
 }

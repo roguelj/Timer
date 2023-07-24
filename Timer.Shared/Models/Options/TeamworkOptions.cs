@@ -1,6 +1,8 @@
 ﻿#nullable disable
 
-namespace Timer.Shared.Models.ProjectManagementSystem
+using Timer;
+
+namespace Timer.Shared.Models.Options
 {
     public class TeamworkOptions
     {

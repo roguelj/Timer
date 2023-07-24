@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Ioc;
 using Serilog;
-using Timer.Shared.Models.ProjectManagementSystem;
+using Timer.Shared.Models.Options;
 using Timer.Shared.Services.Implementations;
 using Timer.Shared.Services.Interfaces;
 
@@ -34,6 +34,7 @@ namespace Timer.Shared.Application
                 services.AddMemoryCache();
 
                 services.Configure<TeamworkOptions>(configuration.GetSection("Teamwork"));
+                services.Configure<UserInterfaceOptions>(configuration.GetSection("UserInterfaceOptions"));
 
             });
 

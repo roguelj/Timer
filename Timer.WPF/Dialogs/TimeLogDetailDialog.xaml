@@ -187,7 +187,7 @@
             
             <!-- tasks -->
             <Label Grid.Row="3" Grid.Column="0" Content="Task" Style="{StaticResource HeaderStyle}" />
-            <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" 
+            <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1" 
                   ItemsSource="{Binding Source={StaticResource TasksCollectionViewSource}}" 
                   IsSynchronizedWithCurrentItem="True" 
                   SelectedItem="{Binding SelectedTask}" 
@@ -205,8 +205,8 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+            <Button Grid.Row="3" Grid.Column="2" Content="x" Style="{StaticResource SmallButtonControlStyle}" Command="{Binding ClearTaskCommand}" MaxWidth="25"/>
 
-            
             <!-- tags -->
             <Label Grid.Row="4" Grid.Column="0" Content="Tags" Style="{StaticResource HeaderStyle}" />
             <ListBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" 

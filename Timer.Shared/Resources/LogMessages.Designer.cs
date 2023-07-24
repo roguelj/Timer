@@ -88,6 +88,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Property value {value} changed for {property}.
+        /// </summary>
+        public static string PropertySet {
+            get {
+                return ResourceManager.GetString("PropertySet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to read response string during {method}.
         /// </summary>
         public static string ResponseReadFailure {
@@ -97,7 +106,7 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {method} for {view-model}.
+        ///   Looks up a localized string similar to {method} for {viewmodel}.
         /// </summary>
         public static string TraceMethodHit {
             get {

@@ -21,7 +21,7 @@ namespace Timer.WPF.ViewModels
         private string _taskSearchCriteria = string.Empty;
         private string _tagSearchCriteria = string.Empty;
         private bool _isBillable;
-        private string _description;
+        private string _description = string.Empty;
 
 
         // bound properties
@@ -64,7 +64,13 @@ namespace Timer.WPF.ViewModels
         public KeyedEntity? SelectedTask
         {
             get => this._selectedTask;
-            set => this.SetProperty(ref this._selectedTask, value);
+            set
+            {
+                if(this.SetProperty(ref this._selectedTask, value))
+                {
+                    this.RaiseCanExecuteChangedForCommandList();
+                }
+            }
         }
 
         public bool IsExtraDetailVisible
@@ -106,6 +112,7 @@ namespace Timer.WPF.ViewModels
 
         // commands
         public DelegateCommand ToggleMoreDetailCommand { get; }
+        public DelegateCommand ClearTaskCommand { get; }
 
 
         // bound collection properties
@@ -125,9 +132,12 @@ namespace Timer.WPF.ViewModels
 
             // commands
             this.ToggleMoreDetailCommand = new DelegateCommand(() => this.IsExtraDetailVisible = !this.IsExtraDetailVisible);
+            this.ClearTaskCommand = new DelegateCommand(() => this.SelectedTask = null, () => this.SelectedTask is not null);
+
 
             // add command to the base list
             base.Commands.Add(this.ToggleMoreDetailCommand);
+            base.Commands.Add(this.ClearTaskCommand);
 
         }
 
