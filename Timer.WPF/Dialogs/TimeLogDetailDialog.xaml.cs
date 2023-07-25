@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Timer.Shared.Models;
@@ -24,8 +25,12 @@ namespace Timer.WPF.Dialogs
             this.InitializeComponent();
             this.EventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
 
-            this.EventAggregator.GetEvent<Shared.EventAggregatorEvents.SelectedProjectChangeEvent>().Subscribe(this.ProjectChanged);
 
+            // subscribe to events. these are raised in the shared viewmodels
+            this.EventAggregator.GetEvent<Shared.EventAggregatorEvents.SelectedProjectChangeEvent>().Subscribe(this.ProjectChanged);
+            this.EventAggregator.GetEvent<Shared.EventAggregatorEvents.ProjectSearchCriteriaChangedEvent>().Subscribe(this.ProjectSearchCriteriaChanged);
+            this.EventAggregator.GetEvent<Shared.EventAggregatorEvents.TaskSearchCriteriaChangedEvent>().Subscribe(this.TaskSearchCriteriaChanged);
+            this.EventAggregator.GetEvent<Shared.EventAggregatorEvents.TagSearchCriteriaChangedEvent>().Subscribe(this.TagSearchCriteriaChanged);
         }
 
 
@@ -45,7 +50,13 @@ namespace Timer.WPF.Dialogs
 
         private void CollectionViewSource_Filter(object sender, FilterEventArgs e) => e.Accepted = this.ViewModel?.IsTaskOwnedBySelectedProject(e.Item as KeyedEntity) ?? false;
 
+
+        // subscribed IEventAggregator event handlers
         private void ProjectChanged() => (this.TaskComboBox.ItemsSource as ListCollectionView)?.Refresh();
+        private void ProjectSearchCriteriaChanged() => (this.ProjectListBox.ItemsSource as ListCollectionView)?.Refresh();
+        private void TaskSearchCriteriaChanged() => (this.TaskListBox.ItemsSource as ListCollectionView)?.Refresh();
+        private void TagSearchCriteriaChanged() => (this.TagListBox.ItemsSource as ListCollectionView)?.Refresh();
+
 
         private void ProjectSearchResultsFilter(object sender, FilterEventArgs e)
         {

@@ -20,9 +20,9 @@
             <Setter Property="SizeToContent" Value="WidthAndHeight"/>
         </Style>
     </prism:Dialog.WindowStyle>
-    
+
     <UserControl.Resources>
-        
+
         <Style x:Key="HeaderStyle" TargetType="Label">
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
@@ -46,16 +46,40 @@
         <CollectionViewSource Source="{Binding ProjectSearchResults}" x:Key="ProjectSearchResultsCollectionViewSource" Filter="ProjectSearchResultsFilter" />
         <CollectionViewSource Source="{Binding TaskSearchResults}" x:Key="TaskSearchResultsCollectionViewSource" Filter="TaskSearchResultsFilter" />
         <CollectionViewSource Source="{Binding TagSearchResults}" x:Key="TagSearchResultsCollectionViewSource" Filter="TagSearchResultsFilter" />
-        
+
         <converters:HtmlColourConverter x:Key="HtmlColourConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        
+
+        <DataTemplate x:Key="NameDataTemplate">
+            <Grid Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Name}" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ColouredNameDataTemplate">
+            <Grid Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="5,2" Margin="0" Foreground="White" />
+            </Grid>
+        </DataTemplate>
+
+
+
+
     </UserControl.Resources>
 
     <DockPanel>
 
         <Grid DockPanel.Dock="Right" Visibility="{Binding IsExtraDetailVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-
+            <Grid.RowDefinitions>
+                <RowDefinition Height="37*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -64,7 +88,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- project search -->
-            <Border Grid.Column="0" BorderBrush="LightGray" BorderThickness="2" Margin="5">
+            <Border Grid.Column="0" BorderBrush="LightGray" BorderThickness="2" Margin="5,5,5,5" Grid.RowSpan="2">
 
                 <Grid>
 
@@ -80,14 +104,14 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Project Search" Style="{StaticResource HeaderStyle}"/>
                     <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding ProjectSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding AllProjects}"/>
+                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding AllProjects}" ItemTemplate="{StaticResource NameDataTemplate}" x:Name="ProjectListBox"/>
 
                 </Grid>
-                
+
             </Border>
 
             <!-- task search -->
-            <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="2" Margin="5">
+            <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="2" Margin="5,5,5,5" Grid.RowSpan="2">
 
                 <Grid>
 
@@ -103,14 +127,14 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Task Search" Style="{StaticResource HeaderStyle}"/>
                     <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding TaskSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding TaskSearchResults}"/>
+                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding TaskSearchResults}" ItemTemplate="{StaticResource NameDataTemplate}" x:Name="TaskListBox"/>
 
                 </Grid>
 
             </Border>
 
             <!-- tag search -->
-            <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="2" Margin="5">
+            <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="2" Margin="5,5,5,5" Grid.RowSpan="2">
 
                 <Grid>
 
@@ -126,14 +150,14 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Tag Search" Style="{StaticResource HeaderStyle}"/>
                     <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding TagSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding TagSearchResults}"/>
+                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding TagSearchResults}" ItemTemplate="{StaticResource NameDataTemplate}" x:Name="TagListBox"/>
 
                 </Grid>
 
             </Border>
-            
+
         </Grid>
-              
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -171,20 +195,9 @@
                   IsSynchronizedWithCurrentItem="True" 
                   SelectedItem="{Binding SelectedProject}" 
                   Style="{StaticResource ControlStyle}"
-                  >
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Name}" />
-                        </Grid>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+                  ItemTemplate="{StaticResource NameDataTemplate}"/>
 
-            
+
             <!-- tasks -->
             <Label Grid.Row="3" Grid.Column="0" Content="Task" Style="{StaticResource HeaderStyle}" />
             <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1" 
@@ -192,19 +205,9 @@
                   IsSynchronizedWithCurrentItem="True" 
                   SelectedItem="{Binding SelectedTask}" 
                   Style="{StaticResource ControlStyle}"
-                  x:Name="TaskComboBox">
+                  x:Name="TaskComboBox"
+                  ItemTemplate="{StaticResource NameDataTemplate}"/>
 
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Name}" />
-                        </Grid>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
             <Button Grid.Row="3" Grid.Column="2" Content="x" Style="{StaticResource SmallButtonControlStyle}" Command="{Binding ClearTaskCommand}" MaxWidth="25"/>
 
             <!-- tags -->
@@ -214,18 +217,9 @@
                  SelectionMode="Multiple" 
                  x:Name="SelectedTagsListBox" 
                  SelectionChanged="SelectedTagsListBox_SelectionChanged" 
-                 Style="{StaticResource ControlStyle}">
+                 Style="{StaticResource ControlStyle}"
+                 ItemTemplate="{StaticResource ColouredNameDataTemplate}">
 
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="5,2" Margin="0" Foreground="White" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel MaxWidth="200" Orientation="Horizontal" />
@@ -243,7 +237,7 @@
             <Label Grid.Row="6" Grid.Column="0"  Content="Description" Style="{StaticResource HeaderStyle}" VerticalAlignment="Center"/>
             <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="50" Style="{StaticResource ControlStyle}"/>
 
-            
+
             <!-- Ok / Cancel etc-->
             <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3">
                 <Button Content="Ok" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
@@ -278,17 +272,16 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                            
+
                         </Grid>
                     </Button.Content>
                 </Button>
-
 
             </StackPanel>
 
         </Grid>
 
-    
+
     </DockPanel>
 
 </UserControl>

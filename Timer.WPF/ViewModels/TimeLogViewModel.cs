@@ -1,19 +1,21 @@
-﻿using DryIoc;
-using Prism.Services.Dialogs;
+﻿using Prism.Services.Dialogs;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Timer.Shared.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
+using Res = Timer.Shared.Resources.Resources;
 
 namespace Timer.WPF.ViewModels
 {
-    
+
     public class TimeLogViewModel:Base
     {
 
@@ -25,6 +27,7 @@ namespace Timer.WPF.ViewModels
         // commands
         public Prism.Commands.DelegateCommand LogTimeCommand { get; private set; }
         public Prism.Commands.DelegateCommand OpenSettingsCommand { get; private set; }
+        public Prism.Commands.DelegateCommand OpenAboutCommand { get; private set; }
 
 
         // constructor
@@ -34,9 +37,17 @@ namespace Timer.WPF.ViewModels
             // initialise services
             this.DialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));   
 
-            // commands
+
+            // setup commands
             this.LogTimeCommand = new Prism.Commands.DelegateCommand(this.LogTimeAsync, this.CanLogTime);
             this.OpenSettingsCommand = new Prism.Commands.DelegateCommand(this.OpenSettings);
+            this.OpenAboutCommand = new Prism.Commands.DelegateCommand(this.OpenAbout);
+
+
+            // add commands to the base collection
+            this.Commands.Add(this.LogTimeCommand);
+            this.Commands.Add(this.OpenSettingsCommand);
+            this.Commands.Add(this.OpenAboutCommand);
 
         }
 
@@ -118,6 +129,26 @@ namespace Timer.WPF.ViewModels
 
             }
 
+        }
+
+        private void OpenAbout()
+        {
+
+            var viewAssembly = Assembly.GetExecutingAssembly();
+            var sharedAssembly = typeof(Base).Assembly;
+                       
+            var viewFileVersionInfo = FileVersionInfo.GetVersionInfo(viewAssembly.Location);
+            var sharedFileVersionInfo = FileVersionInfo.GetVersionInfo(sharedAssembly.Location);
+
+            var parameters = new DialogParameters
+            {
+                { AboutBoxTitleParameterName, Res.AboutDialogTitle },
+                { AboutBoxTextParameterName, Res.AboutDialogText },
+                { AboutBoxSharedVersionParameterName, sharedFileVersionInfo.ProductVersion },
+                { AboutBoxViewVersionParameterName, viewFileVersionInfo.ProductVersion }
+            };
+
+            this.DialogService.ShowDialog(AboutBoxDialogName, parameters, LogTimeAsync);
         }
 
     }

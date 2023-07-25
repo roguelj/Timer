@@ -61,6 +61,42 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;Span xmlns=&apos;http://schemas.microsoft.com/winfx/2006/xaml/presentation&apos; xml:space=&apos;preserve&apos;&gt;
+        ///    
+        ///Timer is a small application used to quickly log time against Teamwork (https://www.teamwork.com) tasks and projects.
+        ///&lt;LineBreak/&gt;
+        ///The full source code is available on GitHub at https://github.com/roguelj/Timer.
+        ///&lt;LineBreak/&gt;
+        ///Check out the GitHub page for configuration details and documentation.
+        ///&lt;LineBreak/&gt;
+        ///
+        ///&lt;/Span&gt;.
+        /// </summary>
+        public static string AboutDialogText {
+            get {
+                return ResourceManager.GetString("AboutDialogText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timer.
+        /// </summary>
+        public static string AboutDialogTitle {
+            get {
+                return ResourceManager.GetString("AboutDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string LogButtonAboutDialog {
+            get {
+                return ResourceManager.GetString("LogButtonAboutDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string LogButtonContextMenuUserDataPath {

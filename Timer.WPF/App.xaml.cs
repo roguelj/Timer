@@ -10,6 +10,7 @@ using Timer.WPF.Dialogs;
 using Timer.WPF.Shells;
 using Timer.WPF.View;
 using Timer.WPF.ViewModels;
+using AboutViewModel = Timer.WPF.ViewModels.AboutViewModel;
 
 namespace Timer.WPF
 {
@@ -32,11 +33,11 @@ namespace Timer.WPF
         {      
 
             // register types in the shared namespace
-            Shared.Application.ServiceContainer.RegisterTypes(containerRegistry, this.Configuration);
+            ServiceContainer.RegisterTypes(containerRegistry, this.Configuration);
 
             // register dialogs
             containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(Base.TimeLogDialogName);
-  
+            containerRegistry.RegisterDialog<AboutDialog, AboutViewModel> (Base.AboutBoxDialogName);
         }
 
         protected override void ConfigureViewModelLocator()

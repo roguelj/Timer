@@ -82,19 +82,40 @@ namespace Timer.WPF.ViewModels
         public string ProjectSearchCriteria 
         { 
             get => this._projectSearchCriteria;
-            set => this.SetProperty(ref this._projectSearchCriteria, value); 
+            set
+            {
+                if(this.SetProperty(ref this._projectSearchCriteria, value))
+                {
+                    this.EventAggregator!.GetEvent<Shared.EventAggregatorEvents.ProjectSearchCriteriaChangedEvent>().Publish();
+                    this.RaiseCanExecuteChangedForCommandList();
+                }
+            }
         }
 
         public string TaskSearchCriteria
         {
             get => this._taskSearchCriteria;
-            set => this.SetProperty(ref this._taskSearchCriteria, value);
+            set
+            {
+                if (this.SetProperty(ref this._taskSearchCriteria, value))
+                {
+                    this.EventAggregator!.GetEvent<Shared.EventAggregatorEvents.TaskSearchCriteriaChangedEvent>().Publish();
+                    this.RaiseCanExecuteChangedForCommandList();
+                }
+            }
         }
 
         public string TagSearchCriteria
         {
             get => this._tagSearchCriteria;
-            set => this.SetProperty(ref this._tagSearchCriteria, value);
+            set
+            {
+                if (this.SetProperty(ref this._tagSearchCriteria, value))
+                {
+                    this.EventAggregator!.GetEvent<Shared.EventAggregatorEvents.TagSearchCriteriaChangedEvent>().Publish();
+                    this.RaiseCanExecuteChangedForCommandList();
+                }
+            }
         }
 
         public bool IsBillable

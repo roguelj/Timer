@@ -26,6 +26,7 @@ namespace Timer.Shared.ViewModels
 
         // dialog names
         public const string TimeLogDialogName = "time-log-dialog";
+        public const string AboutBoxDialogName = "about-box-dialog";
 
 
         // dialog parameter names
@@ -40,6 +41,11 @@ namespace Timer.Shared.ViewModels
         protected const string AllProjectsDialogParameterName = "all-projects";
         protected const string IsBillableDialogParameterName = "is-billable";
         protected const string DescriptionDialogParameterName = "description";
+        protected const string AboutBoxTitleParameterName = "about-title";                      // the title of the about box
+        protected const string AboutBoxTextParameterName = "about-text";                        // the text of the about box
+        protected const string AboutBoxSharedVersionParameterName = "about-shared-version";     // the version of the about box for the shared assembly
+        protected const string AboutBoxViewVersionParameterName = "about-view-version";         // the version of the about box for the view assembly
+
 
 
         protected List<Prism.Commands.DelegateCommand> Commands { get; } = new List<Prism.Commands.DelegateCommand>();

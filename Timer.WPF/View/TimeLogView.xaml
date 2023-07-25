@@ -35,6 +35,7 @@
             <Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{x:Static res:Resources.LogButtonContextMenuUserDataPath}" Command="{Binding OpenSettingsCommand}" />
+                    <MenuItem Header="{x:Static res:Resources.LogButtonAboutDialog}" Command="{Binding OpenAboutCommand}" />
                 </ContextMenu>
             </Button.ContextMenu>
         </Button>
