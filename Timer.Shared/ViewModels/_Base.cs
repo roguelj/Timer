@@ -38,7 +38,9 @@ namespace Timer.Shared.ViewModels
         protected const string SelectedTaskDialogParameterName = "selected-task";
         protected const string SelectedProjectDialogParameterName = "selected-project";
         protected const string SelectedTagsDialogParameterName = "selected-tags";
-        protected const string AllProjectsDialogParameterName = "all-projects";
+        protected const string ProjectsDialogParameterName = "all-projects";
+        protected const string TasksDialogParameterName = "all-tasks";
+        protected const string TagsDialogParameterName = "all-tags";
         protected const string IsBillableDialogParameterName = "is-billable";
         protected const string DescriptionDialogParameterName = "description";
         protected const string AboutBoxTitleParameterName = "about-title";                      // the title of the about box

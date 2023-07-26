@@ -22,7 +22,7 @@ namespace Timer.Shared.Application
 
 
             // register services
-            containerRegistry.Register<ITimeLogService, TeamworkTimeLogService>();
+            containerRegistry.Register<ITimeLogService, Services.Implementations.Teamwork.TimeLogService>();
             containerRegistry.RegisterInstance<ILogger>(seriLog);
             containerRegistry.Register<ISystemClock, SystemClock>();
 

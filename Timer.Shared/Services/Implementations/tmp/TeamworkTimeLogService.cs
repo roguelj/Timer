@@ -9,37 +9,6 @@ namespace Timer.Shared.Services.Implementations
     internal partial class TeamworkTimeLogService : ITimeLogService
     {
 
-        async Task<DateTimeOffset?> ITimeLogService.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken cancellationToken)
-        {
-
-            if (await this.Me(cancellationToken) is Person currentUser)
-            {
-
-                // get the last entry
-                var entry = (await this.MyLastTimeEntry(currentUser.Id, cancellationToken));
-
-                // get the datetime of the last entry, or the current datetime if there is none
-                var lastTimeEntry = (entry?.TimeLogged ?? this.SystemClock.UtcNow);
-
-                // get the duration of the last entry
-                var durationMinutes = entry?.Minutes ?? 0;
-
-                // adjust entry datetime to local
-                lastTimeEntry = TimeZoneInfo.ConvertTimeFromUtc(lastTimeEntry.DateTime, TimeZoneInfo.Local);
-
-                // return the end of the last time entry to the caller
-                return lastTimeEntry.AddMinutes(durationMinutes);
-
-            }
-            else
-            {
-                this.Logger.Error(LogRes.UnknownUser);
-                return null;
-
-            }
-
-        }
-
         async Task<List<KeyedEntity>?> ITimeLogService.GetRecentProjectsAsync(CancellationToken cancellationToken)
         {
 
@@ -91,10 +60,6 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        async Task<bool> ITimeLogService.LogTime(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int> tagIds, bool isBillable, string description, CancellationToken cancellationToken)
-        {
-            return await this.CreateTimeEntry(startDateTime, endDateTime, projectId, taskId, tagIds,isBillable, description,cancellationToken);
-        }
 
     }
 
