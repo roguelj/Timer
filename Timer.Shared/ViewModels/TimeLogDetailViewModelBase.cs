@@ -142,6 +142,8 @@ namespace Timer.WPF.ViewModels
         public ObservableCollection<KeyedEntity> Projects { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> SelectedTags { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> AllProjects { get; } = new ObservableCollection<KeyedEntity>();
+        public ObservableCollection<KeyedEntity> AllTasks { get; } = new ObservableCollection<KeyedEntity>();
+        public ObservableCollection<KeyedEntity> AllTags { get; } = new ObservableCollection<KeyedEntity>();
 
 
         // constructor
@@ -162,14 +164,21 @@ namespace Timer.WPF.ViewModels
 
         }
 
-        protected void Initialise(DateTime startDateTime, DateTime endDateTime, List<KeyedEntity> tags, List<KeyedEntity> tasks, List<KeyedEntity> projects, List<KeyedEntity> allProjects)
+        protected void Initialise(DateTime startDateTime, DateTime endDateTime, KeyedEntities recent, KeyedEntities all)
         {
             this.StartDateTime = startDateTime;
             this.EndDateTime = endDateTime;
-            this.Tags.AddRange(tags);
-            this.Tasks.AddRange(tasks);
-            this.Projects.AddRange(projects);
-            this.AllProjects.AddRange(allProjects);
+
+            // set recent
+            this.Tags.AddRange(recent.Tags);
+            this.Tasks.AddRange(recent.Tasks);
+            this.Projects.AddRange(recent.Projects);
+
+            // set all
+            this.AllProjects.AddRange(all.Projects);
+            this.AllTasks.AddRange(all.Tasks);
+            this.AllTags.AddRange(all.Tags);
+
         }
 
         public bool IsTaskOwnedBySelectedProject(KeyedEntity? keyedEntity)

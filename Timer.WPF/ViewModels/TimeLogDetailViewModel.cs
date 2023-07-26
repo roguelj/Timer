@@ -83,18 +83,27 @@ namespace Timer.WPF.ViewModels
             // get the parameter values from the dialog parameters
             var startDateTime = parameters.GetValue<DateTime>(StartTimeDialogParameterName);
             var endDateTime = parameters.GetValue<DateTime>(EndTimeDialogParameterName);
-            var tags = parameters.GetValue<List<KeyedEntity>>(RecentTagsDialogParameterName);
-            var tasks = parameters.GetValue<List<KeyedEntity>>(RecentTasksDialogParameterName);
-            var projects = parameters.GetValue<List<KeyedEntity>>(RecentProjectsDialogParameterName);
+
+            // get recent
+            var recentTags = parameters.GetValue<List<KeyedEntity>>(RecentTagsDialogParameterName);
+            var recentTasks = parameters.GetValue<List<KeyedEntity>>(RecentTasksDialogParameterName);
+            var recentProjects = parameters.GetValue<List<KeyedEntity>>(RecentProjectsDialogParameterName);
+
+            // get all
+            var allTags = recentTags;           // TODO: actually get all tags
+            var allTasks = recentTasks;         // TODO: actually get all tasks
             var allProjects = parameters.GetValue<List<KeyedEntity>>(AllProjectsDialogParameterName);
             
 
             // log
-            this.Logger.Verbose(LogResMan.OnDialogOpened, startDateTime, endDateTime, projects?.Count, tasks?.Count, tags?.Count);
+            this.Logger.Verbose(LogResMan.OnDialogOpened, startDateTime, endDateTime, recentProjects?.Count, recentTasks?.Count, recentTags?.Count);
 
 
             // initialise properties on the base class
-            base.Initialise(startDateTime, endDateTime, tags, tasks, projects, allProjects);
+            var recent = new KeyedEntities(recentProjects, recentTasks, recentTags);
+            var all = new KeyedEntities(allProjects, allTasks, allTags);
+
+            base.Initialise(startDateTime, endDateTime, recent, all);
 
         }
 

@@ -43,9 +43,9 @@
 
 
         <CollectionViewSource Source="{Binding Tasks}" x:Key="TasksCollectionViewSource" Filter="CollectionViewSource_Filter"/>
-        <CollectionViewSource Source="{Binding ProjectSearchResults}" x:Key="ProjectSearchResultsCollectionViewSource" Filter="ProjectSearchResultsFilter" />
-        <CollectionViewSource Source="{Binding TaskSearchResults}" x:Key="TaskSearchResultsCollectionViewSource" Filter="TaskSearchResultsFilter" />
-        <CollectionViewSource Source="{Binding TagSearchResults}" x:Key="TagSearchResultsCollectionViewSource" Filter="TagSearchResultsFilter" />
+        <CollectionViewSource Source="{Binding AllProjects}" x:Key="ProjectSearchResultsCollectionViewSource" Filter="ProjectSearchResultsFilter" />
+        <CollectionViewSource Source="{Binding AllTasks}" x:Key="TaskSearchResultsCollectionViewSource" Filter="TaskSearchResultsFilter" />
+        <CollectionViewSource Source="{Binding AllTags}" x:Key="TagSearchResultsCollectionViewSource" Filter="TagSearchResultsFilter" />
 
         <converters:HtmlColourConverter x:Key="HtmlColourConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -68,14 +68,11 @@
             </Grid>
         </DataTemplate>
 
-
-
-
     </UserControl.Resources>
 
     <DockPanel>
 
-        <Grid DockPanel.Dock="Right" Visibility="{Binding IsExtraDetailVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid DockPanel.Dock="Right" Visibility="{Binding IsExtraDetailVisible, Converter={StaticResource BooleanToVisibilityConverter}}" MaxHeight="600">
             <Grid.RowDefinitions>
                 <RowDefinition Height="37*"/>
                 <RowDefinition Height="2*"/>
@@ -104,7 +101,11 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Project Search" Style="{StaticResource HeaderStyle}"/>
                     <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding ProjectSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding AllProjects}" ItemTemplate="{StaticResource NameDataTemplate}" x:Name="ProjectListBox"/>
+                    <ListBox Grid.Row="2" Grid.Column="0" 
+                             Style="{StaticResource ControlStyle}" 
+                             ItemsSource="{Binding Source={StaticResource ProjectSearchResultsCollectionViewSource}}" 
+                             ItemTemplate="{StaticResource NameDataTemplate}" 
+                             x:Name="ProjectListBox"/>
 
                 </Grid>
 
@@ -127,7 +128,11 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Task Search" Style="{StaticResource HeaderStyle}"/>
                     <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding TaskSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding TaskSearchResults}" ItemTemplate="{StaticResource NameDataTemplate}" x:Name="TaskListBox"/>
+                    <ListBox Grid.Row="2" Grid.Column="0" 
+                             Style="{StaticResource ControlStyle}" 
+                             ItemsSource="{Binding Source={StaticResource TaskSearchResultsCollectionViewSource}}" 
+                             ItemTemplate="{StaticResource NameDataTemplate}" 
+                             x:Name="TaskListBox"/>
 
                 </Grid>
 
@@ -150,7 +155,11 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Tag Search" Style="{StaticResource HeaderStyle}"/>
                     <TextBox Grid.Row="1" Grid.Column="0" Style="{StaticResource ControlStyle}" Text="{Binding TagSearchCriteria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <ListBox Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlStyle}" ItemsSource="{Binding TagSearchResults}" ItemTemplate="{StaticResource NameDataTemplate}" x:Name="TagListBox"/>
+                    <ListBox Grid.Row="2" Grid.Column="0" 
+                             Style="{StaticResource ControlStyle}" 
+                             ItemsSource="{Binding Source={StaticResource TagSearchResultsCollectionViewSource}}" 
+                             ItemTemplate="{StaticResource ColouredNameDataTemplate}" 
+                             x:Name="TagListBox"/>
 
                 </Grid>
 
@@ -165,16 +174,16 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Start & End times -->
@@ -243,7 +252,7 @@
                 <Button Content="Ok" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
                 <Button Content="Cancel" Command="{Binding CloseDialogCancelCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
 
-                <Button Command="{Binding ToggleMoreDetailCommand}" Style="{StaticResource SmallButtonControlStyle}" Visibility="Hidden">
+                <Button Command="{Binding ToggleMoreDetailCommand}" Style="{StaticResource SmallButtonControlStyle}" Visibility="Visible">
 
                     <Button.Content>
                         <Grid>
