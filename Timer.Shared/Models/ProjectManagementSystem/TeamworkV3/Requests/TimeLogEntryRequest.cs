@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests
 {
 
     public class TimeLogEntryRequest
@@ -15,10 +16,10 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
         [JsonProperty("timelogOptions")]
         public TimeLogOptions? TimeLogOptions { get; set; }
 
-        public TimeLogEntryRequest(DateTime startDateTime, DateTime endDateTime, int projectID, int? taskId, List<int>? tagIds, bool isBillable, string description) 
+        public TimeLogEntryRequest(DateTime startDateTime, DateTime endDateTime, int projectID, int? taskId, List<int>? tagIds, bool isBillable, string description)
         {
 
-            this.Timelog = new TimeLog
+            Timelog = new TimeLog
             {
                 Minutes = (endDateTime - startDateTime).Minutes,
                 Hours = (endDateTime - startDateTime).Hours,
@@ -27,7 +28,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
                 TagIds = tagIds,
                 Date = startDateTime.ToString("yyyy-MM-dd"),
                 Time = startDateTime.ToString("HH:mm:ss"),
-                HasStartTime = true, 
+                HasStartTime = true,
                 IsBillable = isBillable,
                 Description = description
             };

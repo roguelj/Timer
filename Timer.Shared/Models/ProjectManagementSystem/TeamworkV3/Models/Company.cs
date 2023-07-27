@@ -2,9 +2,9 @@
 
 using Newtonsoft.Json;
 
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
 {
-    public class Company
+    public class Company:IKeyedEntity
     {
         [JsonProperty("id")]
         public int Id { get; set; }

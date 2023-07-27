@@ -24,6 +24,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
         // generators
         private MemoryCacheEntryOptions MeMemoryCacheEntryOptions { get => new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(8)); }
+        private MemoryCacheEntryOptions RecentActivityMemoryCacheEntryOptions { get => new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(30)); }
 
 
         // constructor
@@ -34,6 +35,16 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             Options = options ?? throw new ArgumentNullException(nameof(options));
             MemoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             SystemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        }
+
+        // logging
+        private async System.Threading.Tasks.Task LogResponseContent(HttpResponseMessage response, CancellationToken cancellationToken)
+        {
+
+#if DEBUG
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            Logger.Verbose(responseContent);
+#endif
         }
 
     }

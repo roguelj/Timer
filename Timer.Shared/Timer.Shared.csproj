@@ -9,14 +9,10 @@
 
   <ItemGroup>
     <Compile Remove="Services\Implementations\tmp\TeamworkTimeLogService.Api.cs" />
-    <Compile Remove="Services\Implementations\tmp\TeamworkTimeLogService.cs" />
-    <Compile Remove="Services\Implementations\tmp\TeamworkTimeLogService.RequestGenerator.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Services\Implementations\tmp\TeamworkTimeLogService.Api.cs" />
-    <None Include="Services\Implementations\tmp\TeamworkTimeLogService.cs" />
-    <None Include="Services\Implementations\tmp\TeamworkTimeLogService.RequestGenerator.cs" />
   </ItemGroup>
 
   <ItemGroup>

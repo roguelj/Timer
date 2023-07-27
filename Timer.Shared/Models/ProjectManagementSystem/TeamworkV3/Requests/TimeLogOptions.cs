@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests
 {
     public class TimeLogOptions
     {

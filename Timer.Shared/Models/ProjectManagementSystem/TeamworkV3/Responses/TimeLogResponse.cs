@@ -3,11 +3,12 @@
 using Newtonsoft.Json;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta;
 
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses
 {
-    public class ProjectResponse<T> : IKeyedEntityResponse<T> where T : IKeyedEntity 
+    public class TimeLogResponse<T> : IKeyedEntityResponse<T> where T : IKeyedEntity
     {
-        [JsonProperty("projects")]
+
+        [JsonProperty("timelogs")]
         public IEnumerable<T> Items { get; set; }
 
         [JsonProperty("included")]

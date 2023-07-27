@@ -11,6 +11,11 @@ using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
 using Timer.Shared.Resources;
 using Timer.Shared.Services.Interfaces;
 using LogRes = Timer.Shared.Resources.LogMessages;
+using Timer.Shared.Models.ProjectManagementSystem;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+using Timer.Shared.Application;
+using Microsoft.Extensions.Caching.Memory;
+using System.Net;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
@@ -57,28 +62,24 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             client.DefaultRequestHeaders.Add("Authorization", $"{auth} {token}");
 
             // create the request object
-            var timeLogEntryRequest = new TimeLogEntryRequest(startDateTime, endDateTime, projectId, taskId, tagIds, isBillable, description);
+            var timeLogEntryRequest = new Models.ProjectManagementSystem.TeamworkV3.Requests.TimeLogEntryRequest(startDateTime, endDateTime, projectId, taskId, tagIds, isBillable, description);
 
             // determine the endpoint to hit
             var endpoint = taskId.HasValue ? $"{V3EndpointUrlBase}/tasks/{taskId}/time.json" : $"{V3EndpointUrlBase}/projects/{projectId}/time.json";
 
             // post the request
             var response = await client.PostAsJsonAsync(endpoint, timeLogEntryRequest, cancellationToken);
+            await this.LogResponseContent(response, cancellationToken);
 
-
-#if DEBUG
-            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            Logger.Verbose(responseContent);
-#endif
-
+            // process response
             if (response.IsSuccessStatusCode)
             {
                 return true;
             }
             else
             {
-                Logger.Error(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "");
-                Logger.Error(LogMessages.LogTimeFailure);
+                this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "");
+                this.Logger.Error(LogMessages.LogTimeFailure);
                 return false;
             }
 
@@ -86,47 +87,58 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
         public async Task<List<KeyedEntity>?> Projects(CancellationToken cancellationToken)
         {
-            return await this.GetAndPage<Project, ProjectResponse<Project>>("projects.json", cancellationToken);
+            return await this.GetAndPageV3Endpoint<Project, ProjectResponse<Project>>("projects.json", null, cancellationToken);
         }
 
-        public Task<List<KeyedEntity>?> Projects(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<KeyedEntity>?> Projects(string searchCriteria, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await this.GetAndPageV3Endpoint<Project, ProjectResponse<Project>>("projects.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
-        public Task<List<KeyedEntity>?> RecentProjects(CancellationToken cancellationToken)
+        public async Task<List<KeyedEntity>?> RecentProjects(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+
+            var recent = await this.GetOrSetRecentActivity();
+
+            return recent
+                .GroupBy(gb => gb.ProjectId)
+                .OrderByDescending(ob => ob.Sum(s => s.Minutes))
+                .Select(s => new KeyedEntity(s.Key!.Value, teResponse.Included.Projects.FirstOrDefault(f => f.Key == s.Key).Value.Name))
+                .ToList();
+
+
         }
 
-        public Task<List<KeyedEntity>?> RecentTags(CancellationToken cancellationToken)
+        public async Task<List<KeyedEntity>?> RecentTags(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var recent = await this.GetOrSetRecentActivity();
         }
 
-        public Task<List<KeyedEntity>?> RecentTasks(CancellationToken cancellationToken)
+        public async Task<List<KeyedEntity>?> RecentTasks(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var recent = await this.GetOrSetRecentActivity();
         }
 
-        public Task<List<KeyedEntity>?> Tags(CancellationToken cancellationToken)
+        public async Task<List<KeyedEntity>?> Tags(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await this.GetAndPageV3Endpoint<Tag, TaskResponse<Tag>>("tags.json", null, cancellationToken);
         }
 
-        public Task<List<KeyedEntity>?> Tags(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<KeyedEntity>?> Tags(string searchCriteria, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await this.GetAndPageV3Endpoint<Tag, TaskResponse<Tag>>("tag.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
-        public Task<List<KeyedEntity>?> Tasks(CancellationToken cancellationToken)
+        public async Task<List<KeyedEntity>?> Tasks(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await this.GetAndPageV3Endpoint<Models.ProjectManagementSystem.TeamworkV3.Models.Task, TaskResponse<Models.ProjectManagementSystem.TeamworkV3.Models.Task>>("tasks.json", null, cancellationToken);
         }
 
-        public Task<List<KeyedEntity>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<KeyedEntity>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await this.GetAndPageV3Endpoint<Models.ProjectManagementSystem.TeamworkV3.Models.Task, TaskResponse<Models.ProjectManagementSystem.TeamworkV3.Models.Task>>("tasks.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
+
     }
+
 }

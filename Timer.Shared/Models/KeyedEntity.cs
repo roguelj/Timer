@@ -1,6 +1,8 @@
-﻿namespace Timer.Shared.Models
+﻿using Timer.Shared.Models.ProjectManagementSystem;
+
+namespace Timer.Shared.Models
 {
-    public class KeyedEntity
+    public class KeyedEntity:IKeyedEntity
     {
 
         public int Id { get; set; }

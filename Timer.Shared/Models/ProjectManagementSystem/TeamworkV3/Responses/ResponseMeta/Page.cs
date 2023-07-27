@@ -1,15 +1,7 @@
-﻿#nullable disable
+﻿using Newtonsoft.Json;
 
-using Newtonsoft.Json;
-
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta
 {
-    public class Meta
-    {
-        [JsonProperty("page")]
-        public Page Page { get; set; }
-    }
-
     public class Page
     {
         [JsonProperty("pageOffset")]
@@ -25,5 +17,4 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
         public bool HasMore { get; set; }
 
     }
-
 }

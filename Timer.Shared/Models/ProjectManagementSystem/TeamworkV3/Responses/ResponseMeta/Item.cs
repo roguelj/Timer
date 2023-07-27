@@ -2,12 +2,12 @@
 
 using Newtonsoft.Json;
 
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta
 {
-    public class Item
+    public class Item:IKeyedEntity
     {
         [JsonProperty("id")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }

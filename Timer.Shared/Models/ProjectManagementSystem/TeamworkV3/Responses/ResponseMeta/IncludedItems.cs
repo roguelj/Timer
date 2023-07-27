@@ -1,8 +1,9 @@
 ﻿#nullable disable
 
 using Newtonsoft.Json;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta
 {
     public class IncludedItems
     {
@@ -21,10 +22,6 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
         [JsonProperty("users")]
         public Dictionary<int, User> Users { get; set; }
 
-        [JsonProperty("projectUpdates")]
-        public Dictionary<int, Update> ProjectUpdates { get; set; }
 
-        [JsonProperty("projectBudgets")]
-        public Dictionary<int, Budget> ProjectBudgets { get; set; }
     }
 }

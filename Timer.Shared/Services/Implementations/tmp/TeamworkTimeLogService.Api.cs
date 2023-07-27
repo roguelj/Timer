@@ -24,62 +24,10 @@ namespace Timer.Shared.Services.Implementations.tmp
 
         // ---------------------------------
         // V3 method implementations
-        private async Task<Token?> ObtainToken(string temporaryToken, CancellationToken cancellationToken)
-        {
-
-            var options = Options.Value;
-            var client = HttpClientFactory.CreateClient();
-
-
-            // build the request
-            var tokenRequest = new TokenRequest
-            {
-                Code = temporaryToken,
-                ClientId = options.ClientId,
-                ClientSecret = options.ClientSecret,
-                RedirectUri = options.RedirectUri
-            };
-
-
-            // make the call and interpret the response
-            var response = await client.PostAsJsonAsync(options.TokenRequestUrl, tokenRequest, cancellationToken);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsAsync<Token>();
-            }
-            else
-            {
-                return null;
-            }
-
-        }
 
 
 
 
-        private async Task<TagResponse?> Tags(string token, CancellationToken cancellationToken)
-        {
-
-            var client = HttpClientFactory.CreateClient();
-            var response = await client.SendAsync(await this.RequestTagsAsync(), cancellationToken);
-
-            if (response.IsSuccessStatusCode)
-            {
-
-#if DEBUG
-                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                Logger.Verbose(responseContent);
-#endif
-
-                return await response.Content.ReadAsAsync<TagResponse>();
-
-            }
-            else
-            {
-                return null;
-            }
-
-        }
 
 
         private async Task<List<KeyedEntity>?> MyRecentProjects(int myUserId, CancellationToken cancellationToken)

@@ -2,12 +2,14 @@
 
 using Newtonsoft.Json;
 
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
 {
-    public class TimeLog
+    public class TimeLog :IKeyedEntity
     {
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
-        public int? Id { get; set; }
+        public int Id { get; set; }
+
+        public string Name { get => this.Description; }
 
         [JsonProperty("dateCreated", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? DateCreated { get; set; }
@@ -37,7 +39,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
         public int? DeskTicketId { get; set; }
 
         [JsonProperty("invoiceNumber", NullValueHandling = NullValueHandling.Ignore)]
-        public string? InvoiceNumber { get; set; }
+        public string InvoiceNumber { get; set; }
 
         [JsonProperty("userId", NullValueHandling = NullValueHandling.Ignore)]
         public int? UserId { get; set; }
@@ -64,14 +66,14 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
         public int? ProjectBillingInvoiceId { get; set; }
 
         [JsonProperty("tagIds", NullValueHandling = NullValueHandling.Ignore)]
-        public List<int>? TagIds { get; set; }
+        public List<int> TagIds { get; set; }
 
 
         [JsonProperty("date", NullValueHandling = NullValueHandling.Ignore)]
-        public string? Date { get; set; }
+        public string Date { get; set; }
 
         [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
-        public string? Time { get; set; }
+        public string Time { get; set; }
 
         [JsonProperty("minutes", NullValueHandling = NullValueHandling.Ignore)]
         public int? Minutes { get; set; }

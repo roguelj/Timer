@@ -2,9 +2,9 @@
 
 using Newtonsoft.Json;
 
-namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
+namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
 {
-    public class User
+    public class User:IKeyedEntity
     {
 
         [JsonProperty("id")]
@@ -59,9 +59,9 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
         public bool CanAddProjects { get; set; }
 
         [JsonIgnore]
-        public string CompoundName
+        public string Name
         {
-            get => $"{this.FirstName} {this.LastName}";
+            get => $"{FirstName} {LastName}";
         }
     }
 }

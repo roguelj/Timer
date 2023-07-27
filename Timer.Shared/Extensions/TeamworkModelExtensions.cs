@@ -1,6 +1,6 @@
 ﻿using Timer.Shared.Models;
 using Timer.Shared.Models.ProjectManagementSystem;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 
 namespace Timer.Shared.Extensions
 {

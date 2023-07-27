@@ -1,5 +1,5 @@
 ﻿using Prism.Mvvm;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 
 namespace Timer.Shared.ViewModels
 {

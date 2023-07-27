@@ -9,6 +9,6 @@ namespace Timer.Shared.Models.ProjectManagementSystem
     public interface IKeyedEntity
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get;  }
     }
 }
