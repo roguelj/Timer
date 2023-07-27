@@ -1,15 +1,10 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Timer.Shared.Application;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.Options;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests;
 using Timer.Shared.Resources;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
@@ -17,7 +12,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
     internal partial class TimeLogService
     {
 
-        private async Task<Person?> Me(CancellationToken cancellationToken)
+        private async Task<Person> Me(CancellationToken cancellationToken)
         {
 
             if (!MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_ME_KEY, out Person? cacheValue))

@@ -80,7 +80,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
                 // perform the request, get the response
                 var httpResponse = await client.SendAsync(request, cancellationToken);
-                await this.LogResponseContent(httpResponse, cancellationToken);
+                var content = await this.LogResponseContent(httpResponse, cancellationToken);
 
 
                 // process the response
@@ -112,44 +112,97 @@ namespace Timer.Shared.Services.Implementations.Teamwork
            
         }
 
-
-        private async Task<HttpRequestMessage> RequestMyRecentActivityAsync(int myUserId)
+        private async Task<List<TimeLogResponse<TimeLog>>> GetAndPageV3TimeLogResponse(string path, string? parameters, CancellationToken cancellationToken) 
         {
 
-            var daysToConsiderRecent = Math.Max(0, this.Options.Value.DaysToConsiderRecent ?? 14);
-            var startDate = this.SystemClock.UtcNow.AddDays(-daysToConsiderRecent);
-            var endDate = this.SystemClock.UtcNow;
+            var client = HttpClientFactory.CreateClient();
+            var result = new List<TimeLogResponse<TimeLog>>();
+            var shouldExit = false;
+            var page = 1;
 
-            // build the query parameter string
-            List<string> queryParameters = new List<string>
+            const int pageSize = 100;
+
+            do
             {
-                $"assignedToUserIds={myUserId}",
-                "pageSize=500",
-                "orderBy=date",
-                "orderMode=desc",
-                $"startDate={startDate:yyyy-MM-dd}",
-                $"endDate={endDate:yyyy-MM-dd}",
-                "include=projects,tasks,tags"
-            };
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/time.json?{string.Join("&", queryParameters)}");
-            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+                // create the additional parameters string, if any
+                var additionalParameters = parameters is null ? string.Empty : $"&{parameters}";
 
-            return request;
+
+                // create the HttpRequestMessage
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+
+
+                // perform the request, get the response
+                var httpResponse = await client.SendAsync(request, cancellationToken);
+                await this.LogResponseContent(httpResponse, cancellationToken);
+
+
+                // process the response
+                if (httpResponse.IsSuccessStatusCode)
+                {
+
+                    var response = await httpResponse.Content.ReadAsAsync<TimeLogResponse<TimeLog>>();
+                    result.Add(response);
+
+                    if (response.Meta.Page.HasMore)
+                    {
+                        page++;
+                    }
+                    else
+                    {
+                        shouldExit = true;
+                    }
+
+                }
+                else
+                {
+                    shouldExit = true;
+                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                }
+
+            } while (!shouldExit);
+
+            return result;
 
         }
 
-        private async Task<List<KeyedEntity>> GetOrSetRecentActivity()
+
+        private async Task<List<TimeLogResponse<TimeLog>>> GetOrSetRecentActivity(int myUserId, CancellationToken cancellationToken)
         {
 
             // cache this response for a short amount of time
             // given that it hits the API 3 times for each 'Log Time' request, it's probably sensible
 
-            if (!MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, out List<KeyedEntity> cacheValue))
+            if (!this.MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, out List<TimeLogResponse<TimeLog>>? cacheValue))
             {
 
+                var daysToConsiderRecent = Math.Max(0, this.Options.Value.DaysToConsiderRecent ?? 14);
+                var startDate = this.SystemClock.UtcNow.AddDays(-daysToConsiderRecent);
+                var endDate = this.SystemClock.UtcNow;
+
+                // build the query parameter string
+                List<string> queryParameters = new List<string>
+                {
+                    $"assignedToUserIds={myUserId}",
+                    "pageSize=500",
+                    "orderBy=date",
+                    "orderMode=desc",
+                    $"startDate={startDate:yyyy-MM-dd}",
+                    $"endDate={endDate:yyyy-MM-dd}",
+                    "include=projects,tasks,tags"
+                };
+
+                var responses = await this.GetAndPageV3TimeLogResponse("time.json", string.Join("&", queryParameters), cancellationToken);
+                cacheValue = responses;
+                this.MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, cacheValue);
             }
+
+            return cacheValue;
+
         }
+
     }
 
 }

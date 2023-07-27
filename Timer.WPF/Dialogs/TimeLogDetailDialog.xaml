@@ -64,7 +64,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="5,2" Margin="0" Foreground="White" />
+                <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="5,2" Margin="0" Foreground="Black" />
             </Grid>
         </DataTemplate>
 

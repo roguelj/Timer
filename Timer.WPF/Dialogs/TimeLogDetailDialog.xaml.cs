@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Timer.Shared.Models;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.WPF.ViewModels;
 
 namespace Timer.WPF.Dialogs
@@ -69,7 +70,7 @@ namespace Timer.WPF.Dialogs
 
         private void TagSearchResultsFilter(object sender, FilterEventArgs e)
         {
-            e.Accepted = this.ViewModel?.DoesTagMatchCriteria(e.Item as KeyedEntity) ?? false;
+            e.Accepted = this.ViewModel?.DoesTagMatchCriteria(e.Item as Tag) ?? false;
         }
     }
 

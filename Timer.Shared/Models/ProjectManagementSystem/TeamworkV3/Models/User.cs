@@ -63,5 +63,8 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
         {
             get => $"{FirstName} {LastName}";
         }
+
+        [JsonIgnore]
+        public string Colour { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Serilog;
 using System.Collections.ObjectModel;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.ViewModels;
 
 namespace Timer.WPF.ViewModels
@@ -137,13 +138,13 @@ namespace Timer.WPF.ViewModels
 
 
         // bound collection properties
-        public ObservableCollection<KeyedEntity> Tags { get; } = new ObservableCollection<KeyedEntity>();
+        public ObservableCollection<Tag> Tags { get; } = new ObservableCollection<Tag>();
         public ObservableCollection<KeyedEntity> Tasks { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> Projects { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> SelectedTags { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> AllProjects { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> AllTasks { get; } = new ObservableCollection<KeyedEntity>();
-        public ObservableCollection<KeyedEntity> AllTags { get; } = new ObservableCollection<KeyedEntity>();
+        public ObservableCollection<Tag> AllTags { get; } = new ObservableCollection<Tag>();
 
 
         // constructor
@@ -197,7 +198,7 @@ namespace Timer.WPF.ViewModels
             return keyedEntity?.Name.Contains(this.TaskSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }
 
-        public bool DoesTagMatchCriteria(KeyedEntity? keyedEntity)
+        public bool DoesTagMatchCriteria(Tag? keyedEntity)
         {
             return keyedEntity?.Name.Contains(this.TagSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }

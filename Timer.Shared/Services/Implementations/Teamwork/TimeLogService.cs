@@ -30,21 +30,20 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         // constructor
         public TimeLogService(ILogger logger, IHttpClientFactory httpClientFactory, IOptions<TeamworkOptions> options, IMemoryCache memoryCache, ISystemClock systemClock)
         {
-            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-            Options = options ?? throw new ArgumentNullException(nameof(options));
-            MemoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-            SystemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            this.Options = options ?? throw new ArgumentNullException(nameof(options));
+            this.MemoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            this.SystemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
         }
 
         // logging
-        private async System.Threading.Tasks.Task LogResponseContent(HttpResponseMessage response, CancellationToken cancellationToken)
+        private async Task<string> LogResponseContent(HttpResponseMessage response, CancellationToken cancellationToken)
         {
 
-#if DEBUG
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            Logger.Verbose(responseContent);
-#endif
+            this.Logger.Verbose(responseContent);
+            return responseContent;
         }
 
     }

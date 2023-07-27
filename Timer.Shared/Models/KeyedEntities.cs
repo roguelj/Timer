@@ -1,8 +1,10 @@
-﻿namespace Timer.Shared.Models
+﻿using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+
+namespace Timer.Shared.Models
 {
     public class KeyedEntities
     {
-        public KeyedEntities(List<KeyedEntity> projects, List<KeyedEntity> tasks, List<KeyedEntity> tags)
+        public KeyedEntities(List<KeyedEntity> projects, List<KeyedEntity> tasks, List<Tag> tags)
         {
             Projects = projects;
             Tasks = tasks;
@@ -11,6 +13,6 @@
 
         public List<KeyedEntity> Projects { get; }
         public List<KeyedEntity> Tasks { get; }
-        public List<KeyedEntity> Tags { get; }
+        public List<Tag> Tags { get; }
     }
 }

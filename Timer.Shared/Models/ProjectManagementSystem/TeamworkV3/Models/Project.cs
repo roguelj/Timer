@@ -39,5 +39,8 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
 
         [JsonProperty("timeBudgetId")]
         public int? TimeBudgetId { get; set; }
+
+        [JsonIgnore]
+        public string Colour { get; set; }
     }
 }

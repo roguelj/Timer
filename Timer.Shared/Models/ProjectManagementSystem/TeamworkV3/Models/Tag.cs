@@ -20,7 +20,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
         public string Name { get; set; }
 
         [JsonProperty("color")]
-        public string Color { get; set; }
+        public string Colour { get; set; }
     }
 
 }

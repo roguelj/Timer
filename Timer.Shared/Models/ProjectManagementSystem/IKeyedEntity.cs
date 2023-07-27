@@ -10,5 +10,6 @@ namespace Timer.Shared.Models.ProjectManagementSystem
     {
         public int Id { get; set; }
         public string Name { get;  }
+        public string Colour { get; set; }
     }
 }

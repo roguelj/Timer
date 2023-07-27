@@ -84,5 +84,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
         [JsonProperty("isBillable", NullValueHandling = NullValueHandling.Ignore)]
         public bool? IsBillable { get; set; }
 
+        [JsonIgnore]
+        public string Colour { get; set; }
     }
 }

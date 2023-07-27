@@ -14,5 +14,8 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
 
         [JsonProperty("logo")]
         public string Logo { get; set; }
+
+        [JsonIgnore]
+        public string Colour { get; set; }
     }
 }

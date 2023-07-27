@@ -8,6 +8,7 @@ using System.Linq;
 using Timer.Shared.Models;
 using ResMan = Timer.Shared.Resources.Resources;
 using LogResMan = Timer.Shared.Resources.LogMessages;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 
 namespace Timer.WPF.ViewModels
 {
@@ -87,13 +88,13 @@ namespace Timer.WPF.ViewModels
 
             var recentProjects = parameters.GetValue<List<KeyedEntity>>(RecentProjectsDialogParameterName);
             var recentTasks = parameters.GetValue<List<KeyedEntity>>(RecentTasksDialogParameterName);
-            var recentTags = parameters.GetValue<List<KeyedEntity>>(RecentTagsDialogParameterName);
+            var recentTags = parameters.GetValue<List<Tag>>(RecentTagsDialogParameterName);
             var recent = new KeyedEntities(recentProjects, recentTasks, recentTags);
 
 
             var projects = parameters.GetValue<List<KeyedEntity>>(ProjectsDialogParameterName);
             var tasks = parameters.GetValue<List<KeyedEntity>>(TasksDialogParameterName);
-            var tags = parameters.GetValue<List<KeyedEntity>>(TagsDialogParameterName);
+            var tags = parameters.GetValue<List<Tag>>(TagsDialogParameterName);
             var all = new KeyedEntities(projects, tasks, tags);
 
 

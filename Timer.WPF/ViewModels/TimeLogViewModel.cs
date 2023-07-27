@@ -8,7 +8,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Timer.Shared.Extensions;
 using Timer.Shared.Models;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 using Res = Timer.Shared.Resources.Resources;
@@ -84,12 +86,12 @@ namespace Timer.WPF.ViewModels
             {
                 { StartTimeDialogParameterName, startDate.Value.DateTime }, 
                 { EndTimeDialogParameterName, endDate},
-                { RecentTagsDialogParameterName, recentTags },
+                { RecentTagsDialogParameterName, recentTags.Select(s => s.ToTag()).ToList() },
                 { RecentTasksDialogParameterName, recentTasks },
                 { RecentProjectsDialogParameterName, recentProjects },
                 { ProjectsDialogParameterName, projects },
                 { TasksDialogParameterName, tasks },
-                { TagsDialogParameterName, tags }
+                { TagsDialogParameterName, tags.Select(s => s.ToTag()).ToList() }
             };
 
 
