@@ -2,19 +2,15 @@
 
 using Newtonsoft.Json;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta;
 
 namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
 {
-    public class TagResponse<T> : IKeyedEntityResponse<T> where T : Tag, IKeyedEntity
+    public class TagResponse : ResponseBase
     {
         [JsonProperty("tags")]
-        public IEnumerable<T> Items { get; set; }
+        public IEnumerable<Tag> Items { get; set; }
 
-        [JsonProperty("included")]
-        public IncludedItems Included { get; set; }
-
-        [JsonProperty("meta")]
-        public Meta Meta { get; set; }
     }
 }

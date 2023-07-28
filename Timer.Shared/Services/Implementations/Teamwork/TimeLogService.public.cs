@@ -78,19 +78,19 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        public async Task<List<KeyedEntity>?> Projects(CancellationToken cancellationToken)
+        public async Task<List<Project>?> Projects(CancellationToken cancellationToken)
         {
-            return await this.GetAndPageV3Endpoint<Project, ProjectResponse<Project>>("projects.json", null, cancellationToken);
+            return await this.GetAndPageProjects("projects.json", null, cancellationToken);
         }
 
 
-        public async Task<List<KeyedEntity>?> Projects(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<Project>?> Projects(string searchCriteria, CancellationToken cancellationToken)
         {
-            return await this.GetAndPageV3Endpoint<Project, ProjectResponse<Project>>("projects.json", $"searchTerm={searchCriteria}", cancellationToken);
+            return await this.GetAndPageProjects("projects.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
 
-        public async Task<List<KeyedEntity>?> RecentProjects(CancellationToken cancellationToken)
+        public async Task<List<Project>?> RecentProjects(CancellationToken cancellationToken)
         {
 
             var myUserId = (await this.Me(cancellationToken)).Id;
@@ -102,13 +102,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             return recentItems
                 .GroupBy(gb => gb.ProjectId)
                 .OrderByDescending(ob => ob.Sum(s => s.Minutes))
-                .Select(s => new KeyedEntity(s.Key!.Value, itemLookup.FirstOrDefault(f => f.Key == s.Key).Value.Name))
+                .Select(s => new Project(s.Key!.Value, itemLookup.FirstOrDefault(f => f.Key == s.Key).Value.Name))
                 .ToList();
 
         }
 
 
-        public async Task<List<KeyedEntity>?> RecentTags(CancellationToken cancellationToken)
+        public async Task<List<Tag>?> RecentTags(CancellationToken cancellationToken)
         {
 
             var myUserId = (await this.Me(cancellationToken)).Id;
@@ -131,13 +131,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     .Select(s =>
                     {
                         var tag = itemLookup.FirstOrDefault(f => f.Key == s).Value;
-                        return new KeyedEntity(s, tag.Name, tag.Colour);
+                        return new Tag(s, tag.Name, tag.Colour);
                     })
                     .ToList();
         }
 
 
-        public async Task<List<KeyedEntity>?> RecentTasks(CancellationToken cancellationToken)
+        public async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> RecentTasks(CancellationToken cancellationToken)
         {
 
             var myUserId = (await this.Me(cancellationToken)).Id;
@@ -150,33 +150,32 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 .Where(w=> w.TaskId.HasValue).ToList()
                 .GroupBy(gb => gb.TaskId)
                 .OrderByDescending(ob => ob.Sum(s => s.Minutes))
-                .Select(s => new KeyedEntity(s.Key!.Value, itemLookup.FirstOrDefault(f => f.Key == s.Key).Value.Name))
+                .Select(s => new Models.ProjectManagementSystem.TeamworkV3.Models.Task(s.Key!.Value, itemLookup.FirstOrDefault(f => f.Key == s.Key).Value.Name))
                 .ToList();
 
         }
 
 
-        public async Task<List<KeyedEntity>?> Tags(CancellationToken cancellationToken)
+        public async Task<List<Tag>?> Tags(CancellationToken cancellationToken)
         {
-            return await this.GetAndPageV3Endpoint<Tag, TagResponse<Tag>>("tags.json", null, cancellationToken);
+            return await this.GetAndPageTags("tags.json", null, cancellationToken);
         }
 
 
-        public async Task<List<KeyedEntity>?> Tags(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<Tag>?> Tags(string searchCriteria, CancellationToken cancellationToken)
         {
-            return await this.GetAndPageV3Endpoint<Tag, TagResponse<Tag>>("tag.json", $"searchTerm={searchCriteria}", cancellationToken);
+            return await this.GetAndPageTags("tag.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
 
-        public async Task<List<KeyedEntity>?> Tasks(CancellationToken cancellationToken)
+        public async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> Tasks(CancellationToken cancellationToken)
         {
-            return await this.GetAndPageV3Endpoint<Models.ProjectManagementSystem.TeamworkV3.Models.Task, TaskResponse<Models.ProjectManagementSystem.TeamworkV3.Models.Task>>("tasks.json", null, cancellationToken);
+            return await this.GetAndPageTasks("tasks.json", null, cancellationToken);
         }
 
-
-        public async Task<List<KeyedEntity>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
         {
-            return await this.GetAndPageV3Endpoint<Models.ProjectManagementSystem.TeamworkV3.Models.Task, TaskResponse<Models.ProjectManagementSystem.TeamworkV3.Models.Task>>("tasks.json", $"searchTerm={searchCriteria}", cancellationToken);
+            return await this.GetAndPageTasks("tasks.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
     }

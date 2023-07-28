@@ -48,7 +48,7 @@ namespace Timer.WPF.Dialogs
 
         }
 
-        private void CollectionViewSource_Filter(object sender, FilterEventArgs e) => e.Accepted = this.ViewModel?.IsTaskOwnedBySelectedProject(e.Item as KeyedEntity) ?? false;
+        private void CollectionViewSource_Filter(object sender, FilterEventArgs e) => e.Accepted = this.ViewModel?.IsTaskOwnedBySelectedProject(e.Item as Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task) ?? false;
 
 
         // subscribed IEventAggregator event handlers
@@ -60,12 +60,12 @@ namespace Timer.WPF.Dialogs
 
         private void ProjectSearchResultsFilter(object sender, FilterEventArgs e)
         {
-            e.Accepted = this.ViewModel?.DoesProjectMatchCriteria(e.Item as KeyedEntity) ?? false;
+            e.Accepted = this.ViewModel?.DoesProjectMatchCriteria(e.Item as Project) ?? false;
         }
 
         private void TaskSearchResultsFilter(object sender, FilterEventArgs e)
         {
-            e.Accepted = this.ViewModel?.DoesTaskMatchCriteria(e.Item as KeyedEntity) ?? false;
+            e.Accepted = this.ViewModel?.DoesTaskMatchCriteria(e.Item as Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task) ?? false;
         }
 
         private void TagSearchResultsFilter(object sender, FilterEventArgs e)

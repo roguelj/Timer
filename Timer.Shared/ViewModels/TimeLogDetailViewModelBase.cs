@@ -2,6 +2,7 @@
 using Prism.Events;
 using Serilog;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
@@ -15,8 +16,8 @@ namespace Timer.WPF.ViewModels
         // member variables
         private DateTime _startDateTime;
         private DateTime _endDateTime;
-        private KeyedEntity? _selectedProject;
-        private KeyedEntity? _selectedTask;
+        private Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Project? _selectedProject;
+        private Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task? _selectedTask;
         private bool _isExtraDetailVisible;
         private string _projectSearchCriteria = string.Empty;
         private string _taskSearchCriteria = string.Empty;
@@ -49,7 +50,7 @@ namespace Timer.WPF.ViewModels
 
         public TimeSpan Duration => this.EndDateTime - this.StartDateTime;
 
-        public KeyedEntity? SelectedProject
+        public Project? SelectedProject
         {
             get => this._selectedProject;
             set
@@ -63,7 +64,7 @@ namespace Timer.WPF.ViewModels
             }
         }
 
-        public KeyedEntity? SelectedTask
+        public Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task? SelectedTask
         {
             get => this._selectedTask;
             set
@@ -145,11 +146,11 @@ namespace Timer.WPF.ViewModels
 
         // bound collection properties
         public ObservableCollection<Tag> Tags { get; } = new ObservableCollection<Tag>();
-        public ObservableCollection<KeyedEntity> Tasks { get; } = new ObservableCollection<KeyedEntity>();
-        public ObservableCollection<KeyedEntity> Projects { get; } = new ObservableCollection<KeyedEntity>();
+        public ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task> Tasks { get; } = new ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task>();
+        public ObservableCollection<Project> Projects { get; } = new ObservableCollection<Project>();
         public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
-        public ObservableCollection<KeyedEntity> AllProjects { get; } = new ObservableCollection<KeyedEntity>();
-        public ObservableCollection<KeyedEntity> AllTasks { get; } = new ObservableCollection<KeyedEntity>();
+        public ObservableCollection<Project> AllProjects { get; } = new ObservableCollection<Project>();
+        public ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task> AllTasks { get; } = new ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task>();
         public ObservableCollection<Tag> AllTags { get; } = new ObservableCollection<Tag>();
 
 
@@ -204,7 +205,7 @@ namespace Timer.WPF.ViewModels
 
 
             // set recent
-            this.Tags.AddRange(recentTags.Select(s => s.ToTag()).ToList());
+            this.Tags.AddRange(recentTags);
             this.Tasks.AddRange(recentTasks);
             this.Projects.AddRange(recentProjects);
 
@@ -221,18 +222,18 @@ namespace Timer.WPF.ViewModels
 
         }
 
-        public bool IsTaskOwnedBySelectedProject(KeyedEntity? keyedEntity)
+        public bool IsTaskOwnedBySelectedProject(Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task? keyedEntity)
         {
             if(this.SelectedProject is null || keyedEntity is null) return false;
             return this.SelectedProject.Id == keyedEntity.ParentId;
         }
 
-        public bool DoesProjectMatchCriteria(KeyedEntity? keyedEntity)
+        public bool DoesProjectMatchCriteria(Project? keyedEntity)
         {
             return keyedEntity?.Name.Contains(this.ProjectSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }
 
-        public bool DoesTaskMatchCriteria(KeyedEntity? keyedEntity)
+        public bool DoesTaskMatchCriteria(Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task? keyedEntity)
         {
             return keyedEntity?.Name.Contains(this.TaskSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }

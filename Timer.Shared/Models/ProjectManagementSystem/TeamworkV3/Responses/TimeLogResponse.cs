@@ -1,20 +1,15 @@
 ﻿#nullable disable
 
 using Newtonsoft.Json;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 
 namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses
 {
-    public class TimeLogResponse<T> : IKeyedEntityResponse<T> where T : IKeyedEntity
+    public class TimeLogResponse : ResponseBase
     {
 
         [JsonProperty("timelogs")]
-        public IEnumerable<T> Items { get; set; }
+        public IEnumerable<TimeLog> Items { get; set; }
 
-        [JsonProperty("included")]
-        public IncludedItems Included { get; set; }
-
-        [JsonProperty("meta")]
-        public Meta Meta { get; set; }
     }
 }
