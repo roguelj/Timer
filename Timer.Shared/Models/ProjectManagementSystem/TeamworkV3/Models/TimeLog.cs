@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
 {
-    public class TimeLog :IKeyedEntity
+    public class TimeLog : IKeyedEntity
     {
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public int Id { get; set; }

@@ -23,6 +23,7 @@ namespace Timer.WPF.ViewModels
         private string _tagSearchCriteria = string.Empty;
         private bool _isBillable;
         private string _description = string.Empty;
+        private bool _isReady;
 
 
         // bound properties
@@ -131,6 +132,11 @@ namespace Timer.WPF.ViewModels
             set => this.SetProperty(ref this._description, value);
         }
 
+        public bool IsReady
+        {
+            get => this._isReady;
+            set => this.SetProperty<bool>(ref this._isReady, value);
+        }
 
         // commands
         public DelegateCommand ToggleMoreDetailCommand { get; }
@@ -141,7 +147,7 @@ namespace Timer.WPF.ViewModels
         public ObservableCollection<Tag> Tags { get; } = new ObservableCollection<Tag>();
         public ObservableCollection<KeyedEntity> Tasks { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> Projects { get; } = new ObservableCollection<KeyedEntity>();
-        public ObservableCollection<KeyedEntity> SelectedTags { get; } = new ObservableCollection<KeyedEntity>();
+        public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
         public ObservableCollection<KeyedEntity> AllProjects { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<KeyedEntity> AllTasks { get; } = new ObservableCollection<KeyedEntity>();
         public ObservableCollection<Tag> AllTags { get; } = new ObservableCollection<Tag>();
@@ -150,6 +156,8 @@ namespace Timer.WPF.ViewModels
         // constructor
         public TimeLogDetailViewModelBase(ILogger logger, IEventAggregator eventAggregator) : base(logger)
         {
+
+            this.IsReady = false;
 
             // register services
             this.EventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
@@ -165,20 +173,51 @@ namespace Timer.WPF.ViewModels
 
         }
 
-        protected void Initialise(DateTime startDateTime, DateTime endDateTime, KeyedEntities recent, KeyedEntities all)
+        protected async System.Threading.Tasks.Task Initialise()
         {
-            this.StartDateTime = startDateTime;
-            this.EndDateTime = endDateTime;
+
+            this.IsReady = false;
+
+
+            // determine the most sensible start & end dates.
+            // get the start date as the time stamp of the last entry end point.
+            // the assumption is that the Time Log Entry button is pressed on task finish, so the end date is now
+            this.StartDateTime = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
+            this.EndDateTime = DateTime.Now;
+            
+
+            // determine the most recent tags, tasks and projects
+            var recentProjects = await this.TimeLogService.RecentProjects(CancellationToken.None);
+            var recentTasks = await this.TimeLogService.RecentTasks(CancellationToken.None);
+            var recentTags = await this.TimeLogService.RecentTags(CancellationToken.None);
+   
+
+            //// get all tags, tasks and projects
+            //var projects = await this.TimeLogService.Projects(CancellationToken.None);
+            //var tasks = await this.TimeLogService.Tasks(CancellationToken.None);
+            //var tags = await this.TimeLogService.Tags(CancellationToken.None);
+            //var all = new KeyedEntities(projects, tasks, tags.Select(s => s.ToTag()).ToList());
+
+            // log
+            //  this.Logger.Verbose(LogResMan.OnDialogOpened, startDateTime, endDateTime, projects?.Count, tasks?.Count, tags?.Count);
+
+
 
             // set recent
-            this.Tags.AddRange(recent.Tags);
-            this.Tasks.AddRange(recent.Tasks);
-            this.Projects.AddRange(recent.Projects);
+            this.Tags.AddRange(recentTags.Select(s => s.ToTag()).ToList());
+            this.Tasks.AddRange(recentTasks);
+            this.Projects.AddRange(recentProjects);
 
-            // set all
-            this.AllProjects.AddRange(all.Projects);
-            this.AllTasks.AddRange(all.Tasks);
-            this.AllTags.AddRange(all.Tags);
+
+            //// set all
+            //if(all is not null)
+            //{
+            //    this.AllProjects.AddRange(all.Projects);
+            //    this.AllTasks.AddRange(all.Tasks);
+            //    this.AllTags.AddRange(all.Tags);
+            //}
+
+            this.IsReady = true;
 
         }
 

@@ -44,7 +44,7 @@ namespace Timer.WPF.Dialogs
 
             // we need to do this as we cannot bind to the SelectedItems property on the ListBox
             (this.DataContext as TimeLogDetailViewModel)!.SelectedTags.Clear();
-            (this.DataContext as TimeLogDetailViewModel)!.SelectedTags.AddRange((sender as ListBox)!.SelectedItems.OfType<KeyedEntity>());
+            (this.DataContext as TimeLogDetailViewModel)!.SelectedTags.AddRange((sender as ListBox)!.SelectedItems.OfType<Tag>());
 
         }
 

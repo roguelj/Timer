@@ -11,7 +11,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests
         public List<Tag>? Tags { get; set; }
 
         [JsonProperty("timelog")]
-        public TimeLog Timelog { get; set; }
+        public TimeLogInput Timelog { get; set; }
 
         [JsonProperty("timelogOptions")]
         public TimeLogOptions? TimeLogOptions { get; set; }
@@ -19,7 +19,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests
         public TimeLogEntryRequest(DateTime startDateTime, DateTime endDateTime, int projectID, int? taskId, List<int>? tagIds, bool isBillable, string description)
         {
 
-            Timelog = new TimeLog
+            Timelog = new TimeLogInput
             {
                 Minutes = (endDateTime - startDateTime).Minutes,
                 Hours = (endDateTime - startDateTime).Hours,

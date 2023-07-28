@@ -3,12 +3,9 @@ using Prism.Events;
 using Prism.Services.Dialogs;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Timer.Shared.Models;
+using Timer.Shared.Services.Interfaces;
 using ResMan = Timer.Shared.Resources.Resources;
-using LogResMan = Timer.Shared.Resources.LogMessages;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 
 namespace Timer.WPF.ViewModels
 {
@@ -20,15 +17,17 @@ namespace Timer.WPF.ViewModels
         public DelegateCommand CloseDialogCancelCommand { get; }
 
         // constructor
-        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator) : base(logger, eventAggregator)
+        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService) : base(logger, eventAggregator)
         {
 
             // set up commands
             this.CloseDialogOkCommand = new DelegateCommand(this.CloseDialogOk, this.CanCloseDialogOk);
             this.CloseDialogCancelCommand = new DelegateCommand(() => RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel))); // always allow cancel
-
+            
             this.Commands.Add(this.CloseDialogOkCommand);
             this.Commands.Add(this.CloseDialogCancelCommand);
+
+            this.TimeLogService = timeLogService ?? throw new ArgumentNullException(nameof(timeLogService));
 
         }
 
@@ -78,34 +77,7 @@ namespace Timer.WPF.ViewModels
 
         void IDialogAware.OnDialogClosed() { }
 
-        void IDialogAware.OnDialogOpened(IDialogParameters parameters)
-        {
-
-            // get the parameter values from the dialog parameters
-            var startDateTime = parameters.GetValue<DateTime>(StartTimeDialogParameterName);
-            var endDateTime = parameters.GetValue<DateTime>(EndTimeDialogParameterName);
-          
-
-            var recentProjects = parameters.GetValue<List<KeyedEntity>>(RecentProjectsDialogParameterName);
-            var recentTasks = parameters.GetValue<List<KeyedEntity>>(RecentTasksDialogParameterName);
-            var recentTags = parameters.GetValue<List<Tag>>(RecentTagsDialogParameterName);
-            var recent = new KeyedEntities(recentProjects, recentTasks, recentTags);
-
-
-            var projects = parameters.GetValue<List<KeyedEntity>>(ProjectsDialogParameterName);
-            var tasks = parameters.GetValue<List<KeyedEntity>>(TasksDialogParameterName);
-            var tags = parameters.GetValue<List<Tag>>(TagsDialogParameterName);
-            var all = new KeyedEntities(projects, tasks, tags);
-
-
-            // log
-            this.Logger.Verbose(LogResMan.OnDialogOpened, startDateTime, endDateTime, projects?.Count, tasks?.Count, tags?.Count);
-
-
-            // initialise properties on the base class
-            base.Initialise(startDateTime, endDateTime, recent, all);
-
-        }
+        async void IDialogAware.OnDialogOpened(IDialogParameters parameters) => await base.Initialise();
 
         public string Title => ResMan.TimeLogDetailDialogTitle;
 
