@@ -17,5 +17,8 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.Respo
 
         [JsonIgnore]
         public string Colour { get; set; }
+
+        [JsonProperty("parentId")]
+        public int? ParentId { get; set; }
     }
 }

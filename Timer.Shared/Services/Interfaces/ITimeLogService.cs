@@ -19,7 +19,7 @@ namespace Timer.Shared.Services.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> Tasks(CancellationToken cancellationToken);
+        Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> Tasks(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tags
@@ -43,7 +43,7 @@ namespace Timer.Shared.Services.Interfaces
         /// <param name="searchCriteria">The text to search for</param>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> Tasks(string searchCriteria, CancellationToken cancellationToken);
+        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tags that match the search criteria.
@@ -65,7 +65,7 @@ namespace Timer.Shared.Services.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> RecentTasks(CancellationToken cancellationToken);
+        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> RecentTasks(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Tags that have time logged against them recently.

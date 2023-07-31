@@ -8,7 +8,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3
     public class TaskResponse : ResponseBase
     {
         [JsonProperty("tasks")]
-        public IEnumerable<Models.Task> Items { get; set; }
+        public IEnumerable<Models.ProjectTask> Items { get; set; }
 
 
     }

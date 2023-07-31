@@ -69,8 +69,8 @@ namespace Timer.WPF.ViewModels
                 var startDateTime = dialogResult.Parameters.GetValue<DateTime>(StartTimeDialogParameterName);
                 var endDateTime = dialogResult.Parameters.GetValue<DateTime>(EndTimeDialogParameterName);
                 var tags = dialogResult.Parameters.GetValue<List<Tag>>(SelectedTagsDialogParameterName);
-                var task = dialogResult.Parameters.GetValue<KeyedEntity>(SelectedTaskDialogParameterName);
-                var project = dialogResult.Parameters.GetValue<KeyedEntity>(SelectedProjectDialogParameterName);
+                var task = dialogResult.Parameters.GetValue<ProjectTask>(SelectedTaskDialogParameterName);
+                var project = dialogResult.Parameters.GetValue<Project>(SelectedProjectDialogParameterName);
                 var isBillable = dialogResult.Parameters.GetValue<bool>(IsBillableDialogParameterName);
                 var description = dialogResult.Parameters.GetValue<string>(DescriptionDialogParameterName);
 

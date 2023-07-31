@@ -107,11 +107,11 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        private async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>> GetAndPageTasks(string path, string? parameters, CancellationToken cancellationToken)
+        private async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>> GetAndPageTasks(string path, string? parameters, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var result = new List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>();
+            var result = new List<Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>();
             var shouldExit = false;
             var page = 1;
 
@@ -302,8 +302,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     "include=projects,tasks,tags"
                 };
 
-                var responses = await this.GetAndPageV3TimeLogResponse("time.json", string.Join("&", queryParameters), cancellationToken);
-                cacheValue = responses;
+                cacheValue = await this.GetAndPageV3TimeLogResponse("time.json", string.Join("&", queryParameters), cancellationToken);
                 this.MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, cacheValue);
             }
 

@@ -17,7 +17,7 @@ namespace Timer.WPF.ViewModels
         private DateTime _startDateTime;
         private DateTime _endDateTime;
         private Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Project? _selectedProject;
-        private Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task? _selectedTask;
+        private Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask? _selectedTask;
         private bool _isExtraDetailVisible;
         private string _projectSearchCriteria = string.Empty;
         private string _taskSearchCriteria = string.Empty;
@@ -64,7 +64,7 @@ namespace Timer.WPF.ViewModels
             }
         }
 
-        public Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task? SelectedTask
+        public Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask? SelectedTask
         {
             get => this._selectedTask;
             set
@@ -146,11 +146,11 @@ namespace Timer.WPF.ViewModels
 
         // bound collection properties
         public ObservableCollection<Tag> Tags { get; } = new ObservableCollection<Tag>();
-        public ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task> Tasks { get; } = new ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task>();
+        public ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask> Tasks { get; } = new ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>();
         public ObservableCollection<Project> Projects { get; } = new ObservableCollection<Project>();
         public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
         public ObservableCollection<Project> AllProjects { get; } = new ObservableCollection<Project>();
-        public ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task> AllTasks { get; } = new ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task>();
+        public ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask> AllTasks { get; } = new ObservableCollection<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>();
         public ObservableCollection<Tag> AllTags { get; } = new ObservableCollection<Tag>();
 
 
@@ -222,25 +222,25 @@ namespace Timer.WPF.ViewModels
 
         }
 
-        public bool IsTaskOwnedBySelectedProject(Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task? keyedEntity)
+        public bool IsTaskOwnedBySelectedProject(ProjectTask? projectTask)
         {
-            if(this.SelectedProject is null || keyedEntity is null) return false;
-            return this.SelectedProject.Id == keyedEntity.ParentId;
+            if(this.SelectedProject is null || projectTask is null) return false;
+            return this.SelectedProject.Id == projectTask.ProjectId;
         }
 
-        public bool DoesProjectMatchCriteria(Project? keyedEntity)
+        public bool DoesProjectMatchCriteria(Project? project)
         {
-            return keyedEntity?.Name.Contains(this.ProjectSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
+            return project?.Name.Contains(this.ProjectSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }
 
-        public bool DoesTaskMatchCriteria(Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Task? keyedEntity)
+        public bool DoesTaskMatchCriteria(ProjectTask? projectTask)
         {
-            return keyedEntity?.Name.Contains(this.TaskSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
+            return projectTask?.Name.Contains(this.TaskSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }
 
-        public bool DoesTagMatchCriteria(Tag? keyedEntity)
+        public bool DoesTagMatchCriteria(Tag? tag)
         {
-            return keyedEntity?.Name.Contains(this.TagSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
+            return tag?.Name.Contains(this.TagSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }
    
     }

@@ -1,7 +1,5 @@
 ﻿using System.Text;
-using Timer.Shared.Models;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Resources;
 using Timer.Shared.Services.Interfaces;
@@ -126,7 +124,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                         .ToList();
 
 
-            // project to new List<KeyedEntity> and return to user
+            // project to new List<int> and return to user
             return tags
                     .Select(s =>
                     {
@@ -137,7 +135,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        public async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> RecentTasks(CancellationToken cancellationToken)
+        public async Task<List<ProjectTask>?> RecentTasks(CancellationToken cancellationToken)
         {
 
             var myUserId = (await this.Me(cancellationToken)).Id;
@@ -146,12 +144,19 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             var recentItems = recent.SelectMany(sm => sm.Items);
             var itemLookup = recent.SelectMany(sm => sm.Included.Tasks);
 
+            var projector = (IGrouping<int?, TimeLog> input) =>
+            {
+                var taskId = input.Key.Value;
+                var item = itemLookup.FirstOrDefault(f => f.Key == input.Key).Value;
+                return new ProjectTask(taskId, item.Name, item.ProjectId);
+            };
+
             return recentItems
-                .Where(w=> w.TaskId.HasValue).ToList()
-                .GroupBy(gb => gb.TaskId)
-                .OrderByDescending(ob => ob.Sum(s => s.Minutes))
-                .Select(s => new Models.ProjectManagementSystem.TeamworkV3.Models.Task(s.Key!.Value, itemLookup.FirstOrDefault(f => f.Key == s.Key).Value.Name))
-                .ToList();
+                    .Where(w=> w.TaskId.HasValue).ToList()
+                    .GroupBy(gb => gb.TaskId)
+                    .OrderByDescending(ob => ob.Sum(s => s.Minutes))
+                    .Select(projector)
+                    .ToList();
 
         }
 
@@ -168,12 +173,12 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        public async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> Tasks(CancellationToken cancellationToken)
+        public async Task<List<ProjectTask>?> Tasks(CancellationToken cancellationToken)
         {
             return await this.GetAndPageTasks("tasks.json", null, cancellationToken);
         }
 
-        public async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Task>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
         {
             return await this.GetAndPageTasks("tasks.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
