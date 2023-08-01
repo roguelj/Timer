@@ -144,17 +144,18 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             var recentItems = recent.SelectMany(sm => sm.Items);
             var itemLookup = recent.SelectMany(sm => sm.Included.Tasks);
 
+            // create the projector to create a new ProjectTask from the IGrouping
             var projector = (IGrouping<int?, TimeLog> input) =>
             {
                 var taskId = input.Key.Value;
                 var item = itemLookup.FirstOrDefault(f => f.Key == input.Key).Value;
-                return new ProjectTask(taskId, item.Name, item.ProjectId);
+                return new ProjectTask(taskId, item.Name, input.First().ProjectId.Value);
             };
 
             return recentItems
-                    .Where(w=> w.TaskId.HasValue).ToList()
+                    .Where(w=> w.TaskId.HasValue).ToList()              // materialise the IEnumerable so that we don't get any NullReferenceException
                     .GroupBy(gb => gb.TaskId)
-                    .OrderByDescending(ob => ob.Sum(s => s.Minutes))
+                    .OrderByDescending(ob => ob.Sum(s => s.Minutes))    // most recent first
                     .Select(projector)
                     .ToList();
 

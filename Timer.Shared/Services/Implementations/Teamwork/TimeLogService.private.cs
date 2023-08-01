@@ -107,7 +107,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        private async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>> GetAndPageTasks(string path, string? parameters, CancellationToken cancellationToken)
+        private async Task<List<ProjectTask>> GetAndPageTasks(string path, string? parameters, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
@@ -164,7 +164,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        private async Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.Tag>> GetAndPageTags(string path, string? parameters, CancellationToken cancellationToken)
+        private async Task<List<Tag>> GetAndPageTags(string path, string? parameters, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
