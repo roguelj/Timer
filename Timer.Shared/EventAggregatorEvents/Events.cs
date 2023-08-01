@@ -9,4 +9,6 @@
     public class TaskSearchCriteriaChangedEvent : Prism.Events.PubSubEvent { }
     public class TagSearchCriteriaChangedEvent : Prism.Events.PubSubEvent { }
 
+    public class LoadAllDataRequested : Prism.Events.PubSubEvent { }
+
 }

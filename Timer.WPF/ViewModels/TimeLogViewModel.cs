@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Timer.Shared.Models;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
@@ -25,9 +24,9 @@ namespace Timer.WPF.ViewModels
 
 
         // commands
-        public Prism.Commands.DelegateCommand LogTimeCommand { get; private set; }
-        public Prism.Commands.DelegateCommand OpenSettingsCommand { get; private set; }
-        public Prism.Commands.DelegateCommand OpenAboutCommand { get; private set; }
+        public Prism.Commands.DelegateCommand LogTimeCommand { get; }
+        public Prism.Commands.DelegateCommand OpenSettingsCommand { get; }
+        public Prism.Commands.DelegateCommand OpenAboutCommand { get; }
 
 
         // constructor
