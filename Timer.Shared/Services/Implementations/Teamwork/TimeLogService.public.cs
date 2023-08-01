@@ -45,17 +45,17 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         public async Task<bool> LogTime(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int> tagIds, bool isBillable, string description, CancellationToken cancellationToken)
         {
             // create the client and add the auth
-            var client = HttpClientFactory.CreateClient();
-            var auth = IsBasicAuth() ? "Basic" : "Bearer";
-            var atoken = await AccessToken();
-            var token = IsBasicAuth() ? Convert.ToBase64String(Encoding.ASCII.GetBytes($"{atoken}:")) : atoken;
+            var client = this.HttpClientFactory.CreateClient();
+            var auth = this.IsBasicAuth() ? "Basic" : "Bearer";
+            var atoken = await this.AccessToken();
+            var token = this.IsBasicAuth() ? Convert.ToBase64String(Encoding.ASCII.GetBytes($"{atoken}:")) : atoken;
             client.DefaultRequestHeaders.Add("Authorization", $"{auth} {token}");
 
             // create the request object
             var timeLogEntryRequest = new Models.ProjectManagementSystem.TeamworkV3.Requests.TimeLogEntryRequest(startDateTime, endDateTime, projectId, taskId, tagIds, isBillable, description);
 
             // determine the endpoint to hit
-            var endpoint = taskId.HasValue ? $"{V3EndpointUrlBase}/tasks/{taskId}/time.json" : $"{V3EndpointUrlBase}/projects/{projectId}/time.json";
+            var endpoint = taskId.HasValue ? $"{this.V3EndpointUrlBase}/tasks/{taskId}/time.json" : $"{this.V3EndpointUrlBase}/projects/{projectId}/time.json";
 
             // post the request
             var response = await client.PostAsJsonAsync(endpoint, timeLogEntryRequest, cancellationToken);

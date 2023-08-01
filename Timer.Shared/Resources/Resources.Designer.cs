@@ -88,6 +88,51 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string CancelButtonText {
+            get {
+                return ResourceManager.GetString("CancelButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string DescriptionLabelText {
+            get {
+                return ResourceManager.GetString("DescriptionLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End.
+        /// </summary>
+        public static string EndLabelText {
+            get {
+                return ResourceManager.GetString("EndLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is Billable.
+        /// </summary>
+        public static string IsBillableLabelText {
+            get {
+                return ResourceManager.GetString("IsBillableLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load All.
+        /// </summary>
+        public static string LoadAllButtonText {
+            get {
+                return ResourceManager.GetString("LoadAllButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
         public static string LogButtonAboutDialog {
@@ -111,6 +156,51 @@ namespace Timer.Shared.Resources {
         public static string LogButtonText {
             get {
                 return ResourceManager.GetString("LogButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ok.
+        /// </summary>
+        public static string OkButtonText {
+            get {
+                return ResourceManager.GetString("OkButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project.
+        /// </summary>
+        public static string ProjectLabelText {
+            get {
+                return ResourceManager.GetString("ProjectLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string StartLabelText {
+            get {
+                return ResourceManager.GetString("StartLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tags.
+        /// </summary>
+        public static string TagLabelText {
+            get {
+                return ResourceManager.GetString("TagLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task.
+        /// </summary>
+        public static string TaskLabelText {
+            get {
+                return ResourceManager.GetString("TaskLabelText", resourceCulture);
             }
         }
         

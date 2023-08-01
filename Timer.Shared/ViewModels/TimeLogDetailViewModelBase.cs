@@ -19,10 +19,6 @@ namespace Timer.WPF.ViewModels
         private DateTime _endDateTime;
         private Project? _selectedProject;
         private ProjectTask? _selectedTask;
-        private bool _isExtraDetailVisible;
-        private string _projectSearchCriteria = string.Empty;
-        private string _taskSearchCriteria = string.Empty;
-        private string _tagSearchCriteria = string.Empty;
         private bool _isBillable;
         private string _description = string.Empty;
         private bool _isInitialising;
@@ -77,57 +73,6 @@ namespace Timer.WPF.ViewModels
             }
         }
 
-        public bool IsExtraDetailVisible
-        {
-            get => this._isExtraDetailVisible;
-            set
-            {
-                if(this.SetProperty(ref this._isExtraDetailVisible, value) && value)
-                {
-                    this.EventAggregator!.GetEvent<LoadAllDataRequested>().Publish();
-                }
-            }
-        }
-
-        public string ProjectSearchCriteria 
-        { 
-            get => this._projectSearchCriteria;
-            set
-            {
-                if(this.SetProperty(ref this._projectSearchCriteria, value))
-                {
-                    this.EventAggregator!.GetEvent<Shared.EventAggregatorEvents.ProjectSearchCriteriaChangedEvent>().Publish();
-                    this.RaiseCanExecuteChangedForCommandList();
-                }
-            }
-        }
-
-        public string TaskSearchCriteria
-        {
-            get => this._taskSearchCriteria;
-            set
-            {
-                if (this.SetProperty(ref this._taskSearchCriteria, value))
-                {
-                    this.EventAggregator!.GetEvent<Shared.EventAggregatorEvents.TaskSearchCriteriaChangedEvent>().Publish();
-                    this.RaiseCanExecuteChangedForCommandList();
-                }
-            }
-        }
-
-        public string TagSearchCriteria
-        {
-            get => this._tagSearchCriteria;
-            set
-            {
-                if (this.SetProperty(ref this._tagSearchCriteria, value))
-                {
-                    this.EventAggregator!.GetEvent<Shared.EventAggregatorEvents.TagSearchCriteriaChangedEvent>().Publish();
-                    this.RaiseCanExecuteChangedForCommandList();
-                }
-            }
-        }
-
         public bool IsBillable
         {
             get => this._isBillable;
@@ -146,9 +91,11 @@ namespace Timer.WPF.ViewModels
             set => this.SetProperty<bool>(ref this._isInitialising, value);
         }
 
+
+
         // commands
-        public DelegateCommand ToggleMoreDetailCommand { get; }
         public DelegateCommand ClearTaskCommand { get; }
+        public DelegateCommand LoadAllCommand { get; }
 
 
         // bound collection properties
@@ -156,9 +103,6 @@ namespace Timer.WPF.ViewModels
         public ObservableCollection<ProjectTask> Tasks { get; } = new ObservableCollection<ProjectTask>();
         public ObservableCollection<Project> Projects { get; } = new ObservableCollection<Project>();
         public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
-        public ObservableCollection<Project> AllProjects { get; } = new ObservableCollection<Project>();
-        public ObservableCollection<ProjectTask> AllTasks { get; } = new ObservableCollection<ProjectTask>();
-        public ObservableCollection<Tag> AllTags { get; } = new ObservableCollection<Tag>();
 
 
         // constructor
@@ -173,15 +117,12 @@ namespace Timer.WPF.ViewModels
 
 
             // commands
-            this.ToggleMoreDetailCommand = new DelegateCommand(() => this.IsExtraDetailVisible = !this.IsExtraDetailVisible);
             this.ClearTaskCommand = new DelegateCommand(() => this.SelectedTask = null, () => this.SelectedTask is not null);
+            this.LoadAllCommand = new DelegateCommand(this.LoadAllDataEventHandler);
 
 
             // add command to the base list
-            base.Commands.Add(this.ToggleMoreDetailCommand);
             base.Commands.Add(this.ClearTaskCommand);
-
-            this.EventAggregator.GetEvent<LoadAllDataRequested>().Subscribe(async() => await this.LoadAllDataEventHandler());
 
         }
 
@@ -228,11 +169,7 @@ namespace Timer.WPF.ViewModels
         }
 
 
-        /// <summary>
-        /// Event handler fired when the 'IsExtraDetailVisible' property gets set to true
-        /// </summary>
-        /// <returns></returns>
-        private async Task LoadAllDataEventHandler()
+        private async void LoadAllDataEventHandler()
         {
 
             // ensure any views that are bound are able to act accordingly
@@ -242,21 +179,24 @@ namespace Timer.WPF.ViewModels
             // set all tags
             if (await this.TimeLogService!.Tags(CancellationToken.None) is IEnumerable<Tag> tags)
             {
-                this.AllTags.AddRange(tags, true);
+                this.SelectedTags.Clear();
+                this.Tags.AddRange(tags, true);
                 this.Logger.Verbose(LogResMan.FoundEntities, tags.Count(), "Tag");
             }
 
             // recent tasks
             if (await this.TimeLogService!.Tasks(CancellationToken.None) is IEnumerable<ProjectTask> tasks)
             {
-                this.AllTasks.AddRange(tasks, true);
+                this.SelectedTask = null;
+                this.Tasks.AddRange(tasks, true);
                 this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
             }
 
             // recent projects
             if (await this.TimeLogService!.Projects(CancellationToken.None) is IEnumerable<Project> projects)
             {
-                this.AllProjects.AddRange(projects, true);
+                this.SelectedProject = null;
+                this.Projects.AddRange(projects, true);
                 this.Logger.Verbose(LogResMan.FoundEntities, projects.Count(), "Project");
             }
 
@@ -265,6 +205,7 @@ namespace Timer.WPF.ViewModels
             this.IsInitialising = false;
 
         }
+
 
         /// <summary>
         /// Check whether the supplied task is owned by the currently selected project. Returns false if not, or if there is no selected project, or the selected task is null.
@@ -277,35 +218,6 @@ namespace Timer.WPF.ViewModels
             return this.SelectedProject.Id == projectTask.ProjectId;
         }
 
-        /// <summary>
-        /// Check whether the name of the project contains the search criteria string.
-        /// </summary>
-        /// <param name="project"></param>
-        /// <returns></returns>
-        public bool DoesProjectMatchCriteria(Project? project)
-        {
-            return project?.Name.Contains(this.ProjectSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
-        }
-
-        /// <summary>
-        /// Check whether the name of the task contains the search criteria string.
-        /// </summary>
-        /// <param name="projectTask"></param>
-        /// <returns></returns>
-        public bool DoesTaskMatchCriteria(ProjectTask? projectTask)
-        {
-            return projectTask?.Name.Contains(this.TaskSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
-        }
-
-        /// <summary>
-        /// Check whether the name of the tag contains the search criteria string.
-        /// </summary>
-        /// <param name="tag"></param>
-        /// <returns></returns>
-        public bool DoesTagMatchCriteria(Tag? tag)
-        {
-            return tag?.Name.Contains(this.TagSearchCriteria, StringComparison.InvariantCultureIgnoreCase) ?? false;
-        }
    
     }
 

@@ -14,7 +14,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         private async Task<TimeLog?> MyLastTimeEntry(int myUserId, CancellationToken cancellationToken)
         {
 
-            var client = HttpClientFactory.CreateClient();
+            var client = this.HttpClientFactory.CreateClient();
 
             // build the query parameter string
             List<string> queryParameters = new List<string>
@@ -25,7 +25,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 "orderMode=desc"
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/time.json?{string.Join("&", queryParameters)}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/time.json?{string.Join("&", queryParameters)}");
             request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
             var response = await client.SendAsync(request, cancellationToken);
@@ -68,13 +68,12 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
 
                 // create the HttpRequestMessage
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
                 request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
 
                 // perform the request, get the response
                 var httpResponse = await client.SendAsync(request, cancellationToken);
-                var content = await this.LogResponseContent(httpResponse, cancellationToken);
 
 
                 // process the response
@@ -111,7 +110,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var result = new List<Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>();
+            var result = new List<ProjectTask>();
             var shouldExit = false;
             var page = 1;
 
@@ -125,13 +124,12 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
 
                 // create the HttpRequestMessage
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
                 request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
 
                 // perform the request, get the response
                 var httpResponse = await client.SendAsync(request, cancellationToken);
-                var content = await this.LogResponseContent(httpResponse, cancellationToken);
 
 
                 // process the response
@@ -168,7 +166,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var result = new List<Models.ProjectManagementSystem.TeamworkV3.Models.Tag>();
+            var result = new List<Tag>();
             var shouldExit = false;
             var page = 1;
 
@@ -182,14 +180,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
 
                 // create the HttpRequestMessage
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
                 request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
 
                 // perform the request, get the response
                 var httpResponse = await client.SendAsync(request, cancellationToken);
-                var content = await this.LogResponseContent(httpResponse, cancellationToken);
-
+ 
 
                 // process the response
                 if (httpResponse.IsSuccessStatusCode)
@@ -220,10 +217,11 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
         }
 
+
         private async Task<List<TimeLogResponse>> GetAndPageV3TimeLogResponse(string path, string? parameters, CancellationToken cancellationToken) 
         {
 
-            var client = HttpClientFactory.CreateClient();
+            var client = this.HttpClientFactory.CreateClient();
             var result = new List<TimeLogResponse>();
             var shouldExit = false;
             var page = 1;
@@ -238,7 +236,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
 
                 // create the HttpRequestMessage
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
                 request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
 
@@ -303,7 +301,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 };
 
                 cacheValue = await this.GetAndPageV3TimeLogResponse("time.json", string.Join("&", queryParameters), cancellationToken);
-                this.MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, cacheValue);
+                this.MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, cacheValue, RecentActivityMemoryCacheEntryOptions);
             }
 
             return cacheValue;

@@ -132,6 +132,21 @@ Check out the GitHub page for configuration details and documentation.
   <data name="AboutDialogTitle" xml:space="preserve">
     <value>Timer</value>
   </data>
+  <data name="CancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DescriptionLabelText" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="EndLabelText" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="IsBillableLabelText" xml:space="preserve">
+    <value>Is Billable</value>
+  </data>
+  <data name="LoadAllButtonText" xml:space="preserve">
+    <value>Load All</value>
+  </data>
   <data name="LogButtonAboutDialog" xml:space="preserve">
     <value>About</value>
   </data>
@@ -140,6 +155,21 @@ Check out the GitHub page for configuration details and documentation.
   </data>
   <data name="LogButtonText" xml:space="preserve">
     <value>LOG TIME</value>
+  </data>
+  <data name="OkButtonText" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="ProjectLabelText" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="StartLabelText" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="TagLabelText" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="TaskLabelText" xml:space="preserve">
+    <value>Task</value>
   </data>
   <data name="TimeLogDetailDialogTitle" xml:space="preserve">
     <value>Time Log Detail</value>

@@ -18,13 +18,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
 
         // endpoint properties
-        private string V1EndpointUrlBase { get => $"{Options.Value.TeamworkEndPointUrlBase}"; }
-        private string V3EndpointUrlBase { get => $"{Options.Value.TeamworkEndPointUrlBase}/projects/api/v3"; }
+        private string V1EndpointUrlBase { get => $"{this.Options.Value.TeamworkEndPointUrlBase}"; }
+        private string V3EndpointUrlBase { get => $"{this.Options.Value.TeamworkEndPointUrlBase}/projects/api/v3"; }
 
 
         // generators
-        private MemoryCacheEntryOptions MeMemoryCacheEntryOptions { get => new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(8)); }
-        private MemoryCacheEntryOptions RecentActivityMemoryCacheEntryOptions { get => new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(30)); }
+        private static MemoryCacheEntryOptions MeMemoryCacheEntryOptions { get => new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(8)); }
+        private static MemoryCacheEntryOptions RecentActivityMemoryCacheEntryOptions { get => new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(30)); }
 
 
         // constructor

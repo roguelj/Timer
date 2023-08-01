@@ -15,12 +15,12 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         private async Task<Person> Me(CancellationToken cancellationToken)
         {
 
-            if (!MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_ME_KEY, out Person? cacheValue))
+            if (!this.MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_ME_KEY, out Person? cacheValue))
             {
 
-                var client = HttpClientFactory.CreateClient();
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{V1EndpointUrlBase}/me.json");
-                request.AddAuthenticationHeader(IsBasicAuth(), await AccessToken());
+                var client = this.HttpClientFactory.CreateClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V1EndpointUrlBase}/me.json");
+                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
                 var response = await client.SendAsync(request, cancellationToken);
 
@@ -34,7 +34,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     if (userDetailResponse != null)
                     {
                         cacheValue = userDetailResponse.Person;
-                        MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_ME_KEY, cacheValue, MeMemoryCacheEntryOptions);
+                        this.MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_ME_KEY, cacheValue, MeMemoryCacheEntryOptions);
                     }
 
                 }
@@ -56,27 +56,27 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         private async Task<string> AccessToken()
         {
 
-            if (Options.Value is null)
+            if (this.Options.Value is null)
             {
                 throw new ArgumentNullException("options value is null");
             }
             else
             {
-                return Options.Value.ApiKey;
+                return this.Options.Value.ApiKey;
             }
 
         }
 
         private bool IsBasicAuth()
         {
-            return Options.Value is TeamworkOptions twOptions && twOptions.AuthType.Equals("basic", StringComparison.InvariantCultureIgnoreCase);
+            return this.Options.Value is TeamworkOptions twOptions && twOptions.AuthType.Equals("basic", StringComparison.InvariantCultureIgnoreCase);
         }
 
         private async Task<Token?> ObtainToken(string temporaryToken, CancellationToken cancellationToken)
         {
 
-            var options = Options.Value;
-            var client = HttpClientFactory.CreateClient();
+            var options = this.Options.Value;
+            var client = this.HttpClientFactory.CreateClient();
 
 
             // build the request
