@@ -117,20 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FoundEntities" xml:space="preserve">
+    <value>Found {count} {entity}(s)</value>
+  </data>
   <data name="IsSuccessStatusCodeFailure" xml:space="preserve">
     <value>HttpRequest Failure {code} during {method}</value>
   </data>
   <data name="LogTimeFailure" xml:space="preserve">
     <value>Failed to log time</value>
   </data>
-  <data name="OnDialogOpened" xml:space="preserve">
-    <value>Dialog opened {start} to {end} {projects} projects, {tasks} tasks, {tags} tags</value>
-  </data>
   <data name="PropertySet" xml:space="preserve">
     <value>Property value {value} changed for {property}</value>
   </data>
   <data name="ResponseReadFailure" xml:space="preserve">
     <value>Failed to read response string during {method}</value>
+  </data>
+  <data name="TimeLogDetailInit" xml:space="preserve">
+    <value>Dialog opened {start} to {end}</value>
   </data>
   <data name="TraceMethodHit" xml:space="preserve">
     <value>{method} for {viewmodel}</value>

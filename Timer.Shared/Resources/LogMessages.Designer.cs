@@ -61,6 +61,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Found {count} {entity}(s).
+        /// </summary>
+        public static string FoundEntities {
+            get {
+                return ResourceManager.GetString("FoundEntities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to HttpRequest Failure {code} during {method}.
         /// </summary>
         public static string IsSuccessStatusCodeFailure {
@@ -79,15 +88,6 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dialog opened {start} to {end} {projects} projects, {tasks} tasks, {tags} tags.
-        /// </summary>
-        public static string OnDialogOpened {
-            get {
-                return ResourceManager.GetString("OnDialogOpened", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Property value {value} changed for {property}.
         /// </summary>
         public static string PropertySet {
@@ -102,6 +102,15 @@ namespace Timer.Shared.Resources {
         public static string ResponseReadFailure {
             get {
                 return ResourceManager.GetString("ResponseReadFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog opened {start} to {end}.
+        /// </summary>
+        public static string TimeLogDetailInit {
+            get {
+                return ResourceManager.GetString("TimeLogDetailInit", resourceCulture);
             }
         }
         

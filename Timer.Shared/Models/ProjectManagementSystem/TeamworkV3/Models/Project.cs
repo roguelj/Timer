@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
 {
-    public class Project : IKeyedEntity
+    public class Project 
     {
 
         [JsonProperty("id")]
@@ -42,5 +42,13 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
 
         [JsonIgnore]
         public string Colour { get; set; }
+
+        public Project() { }
+
+        public Project(int id, string name)
+        {
+            this.Id = id;
+            this.Name = name;
+        }
     }
 }

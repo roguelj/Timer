@@ -1,13 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Timer.Shared.Application;
 using Timer.Shared.Extensions;
-using Timer.Shared.Models;
-using Timer.Shared.Models.Options;
-using Timer.Shared.Models.ProjectManagementSystem;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
 using Timer.Shared.Resources;
 
@@ -15,7 +10,6 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 {
     internal partial class TimeLogService
     {
-
 
         private async Task<TimeLog?> MyLastTimeEntry(int myUserId, CancellationToken cancellationToken)
         {
@@ -40,7 +34,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             // process the response
             if (response.IsSuccessStatusCode)
             {
-                var teResponse = await response.Content.ReadAsAsync<TimeLogResponse<TimeLog>>();
+                var teResponse = await response.Content.ReadAsAsync<TimeLogResponse>();
                 return teResponse.Items.OrderByDescending(o => o.TimeLogged.Value.AddMinutes(o.Minutes ?? 0)).FirstOrDefault();
             }
             else
@@ -56,11 +50,11 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        private async Task<List<KeyedEntity>> GetAndPageV3Endpoint<TEntity, TEntityResponse>(string path, string? parameters, CancellationToken cancellationToken) where TEntityResponse : IKeyedEntityResponse<TEntity> where TEntity : IKeyedEntity
+        private async Task<List<Project>> GetAndPageProjects(string path, string? parameters, CancellationToken cancellationToken) 
         {
 
-            var client = HttpClientFactory.CreateClient();
-            var result = new List<KeyedEntity>();
+            var client = this.HttpClientFactory.CreateClient();
+            var result = new List<Project>();
             var shouldExit = false;
             var page = 1;
 
@@ -87,8 +81,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 if (httpResponse.IsSuccessStatusCode)
                 {
 
-                    var response = await httpResponse.Content.ReadAsAsync<TEntityResponse>();
-                    result.AddRange(response.Items.Select(s => s.ToKeyedEntity()));
+                    var response = await httpResponse.Content.ReadAsAsync<ProjectResponse>();
+                    result.AddRange(response.Items);
 
                     if (response.Meta.Page.HasMore)
                     {
@@ -112,11 +106,125 @@ namespace Timer.Shared.Services.Implementations.Teamwork
            
         }
 
-        private async Task<List<TimeLogResponse<TimeLog>>> GetAndPageV3TimeLogResponse(string path, string? parameters, CancellationToken cancellationToken) 
+
+        private async Task<List<ProjectTask>> GetAndPageTasks(string path, string? parameters, CancellationToken cancellationToken)
+        {
+
+            var client = this.HttpClientFactory.CreateClient();
+            var result = new List<Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>();
+            var shouldExit = false;
+            var page = 1;
+
+            const int pageSize = 100;
+
+            do
+            {
+
+                // create the additional parameters string, if any
+                var additionalParameters = parameters is null ? string.Empty : $"&{parameters}";
+
+
+                // create the HttpRequestMessage
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+
+
+                // perform the request, get the response
+                var httpResponse = await client.SendAsync(request, cancellationToken);
+                var content = await this.LogResponseContent(httpResponse, cancellationToken);
+
+
+                // process the response
+                if (httpResponse.IsSuccessStatusCode)
+                {
+
+                    var response = await httpResponse.Content.ReadAsAsync<TaskResponse>();
+                    result.AddRange(response.Items);
+
+                    if (response.Meta.Page.HasMore)
+                    {
+                        page++;
+                    }
+                    else
+                    {
+                        shouldExit = true;
+                    }
+
+                }
+                else
+                {
+                    shouldExit = true;
+                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                }
+
+            } while (!shouldExit);
+
+            return result;
+
+        }
+
+
+        private async Task<List<Tag>> GetAndPageTags(string path, string? parameters, CancellationToken cancellationToken)
+        {
+
+            var client = this.HttpClientFactory.CreateClient();
+            var result = new List<Models.ProjectManagementSystem.TeamworkV3.Models.Tag>();
+            var shouldExit = false;
+            var page = 1;
+
+            const int pageSize = 100;
+
+            do
+            {
+
+                // create the additional parameters string, if any
+                var additionalParameters = parameters is null ? string.Empty : $"&{parameters}";
+
+
+                // create the HttpRequestMessage
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+
+
+                // perform the request, get the response
+                var httpResponse = await client.SendAsync(request, cancellationToken);
+                var content = await this.LogResponseContent(httpResponse, cancellationToken);
+
+
+                // process the response
+                if (httpResponse.IsSuccessStatusCode)
+                {
+
+                    var response = await httpResponse.Content.ReadAsAsync<TagResponse>();
+                    result.AddRange(response.Items);
+
+                    if (response.Meta.Page.HasMore)
+                    {
+                        page++;
+                    }
+                    else
+                    {
+                        shouldExit = true;
+                    }
+
+                }
+                else
+                {
+                    shouldExit = true;
+                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                }
+
+            } while (!shouldExit);
+
+            return result;
+
+        }
+
+        private async Task<List<TimeLogResponse>> GetAndPageV3TimeLogResponse(string path, string? parameters, CancellationToken cancellationToken) 
         {
 
             var client = HttpClientFactory.CreateClient();
-            var result = new List<TimeLogResponse<TimeLog>>();
+            var result = new List<TimeLogResponse>();
             var shouldExit = false;
             var page = 1;
 
@@ -143,7 +251,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 if (httpResponse.IsSuccessStatusCode)
                 {
 
-                    var response = await httpResponse.Content.ReadAsAsync<TimeLogResponse<TimeLog>>();
+                    var response = await httpResponse.Content.ReadAsAsync<TimeLogResponse>();
                     result.Add(response);
 
                     if (response.Meta.Page.HasMore)
@@ -169,13 +277,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        private async Task<List<TimeLogResponse<TimeLog>>> GetOrSetRecentActivity(int myUserId, CancellationToken cancellationToken)
+        private async Task<List<TimeLogResponse>> GetOrSetRecentActivity(int myUserId, CancellationToken cancellationToken)
         {
 
             // cache this response for a short amount of time
             // given that it hits the API 3 times for each 'Log Time' request, it's probably sensible
 
-            if (!this.MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, out List<TimeLogResponse<TimeLog>>? cacheValue))
+            if (!this.MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, out List<TimeLogResponse>? cacheValue))
             {
 
                 var daysToConsiderRecent = Math.Max(0, this.Options.Value.DaysToConsiderRecent ?? 14);
@@ -194,8 +302,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     "include=projects,tasks,tags"
                 };
 
-                var responses = await this.GetAndPageV3TimeLogResponse("time.json", string.Join("&", queryParameters), cancellationToken);
-                cacheValue = responses;
+                cacheValue = await this.GetAndPageV3TimeLogResponse("time.json", string.Join("&", queryParameters), cancellationToken);
                 this.MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, cacheValue);
             }
 

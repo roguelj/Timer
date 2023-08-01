@@ -17,7 +17,7 @@ namespace Timer.WPF.ViewModels
         public DelegateCommand CloseDialogCancelCommand { get; }
 
         // constructor
-        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService) : base(logger, eventAggregator)
+        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService) : base(logger, eventAggregator, timeLogService)
         {
 
             // set up commands
@@ -26,8 +26,6 @@ namespace Timer.WPF.ViewModels
             
             this.Commands.Add(this.CloseDialogOkCommand);
             this.Commands.Add(this.CloseDialogCancelCommand);
-
-            this.TimeLogService = timeLogService ?? throw new ArgumentNullException(nameof(timeLogService));
 
         }
 

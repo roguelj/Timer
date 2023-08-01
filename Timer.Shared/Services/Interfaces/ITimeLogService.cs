@@ -1,4 +1,5 @@
 ﻿using Timer.Shared.Models;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 
 namespace Timer.Shared.Services.Interfaces
 {
@@ -11,21 +12,21 @@ namespace Timer.Shared.Services.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Projects as keyed entities</returns>
-        Task<List<KeyedEntity>?> Projects(CancellationToken cancellationToken);
+        Task<List<Project>?> Projects(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tasks
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<KeyedEntity>?> Tasks(CancellationToken cancellationToken);
+        Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> Tasks(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tags
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tags as keyed entities</returns>
-        Task<List<KeyedEntity>?> Tags(CancellationToken cancellationToken);
+        Task<List<Tag>?> Tags(CancellationToken cancellationToken);
 
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace Timer.Shared.Services.Interfaces
         /// <param name="searchCriteria">The text to search for</param>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Projects as keyed entities</returns>
-        Task<List<KeyedEntity>?> Projects(string searchCriteria, CancellationToken cancellationToken);
+        Task<List<Project>?> Projects(string searchCriteria, CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tasks that match the search criteria.
@@ -42,7 +43,7 @@ namespace Timer.Shared.Services.Interfaces
         /// <param name="searchCriteria">The text to search for</param>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<KeyedEntity>?> Tasks(string searchCriteria, CancellationToken cancellationToken);
+        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tags that match the search criteria.
@@ -50,28 +51,28 @@ namespace Timer.Shared.Services.Interfaces
         /// <param name="searchCriteria">The text to search for</param>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tags as keyed entities</returns>
-        Task<List<KeyedEntity>?> Tags(string searchCriteria, CancellationToken cancellationToken);
+        Task<List<Tag>?> Tags(string searchCriteria, CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Projects that have time logged against them recently.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Projects as keyed entities</returns>
-        Task<List<KeyedEntity>?> RecentProjects(CancellationToken cancellationToken);
+        Task<List<Project>?> RecentProjects(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Tasks that have time logged against them recently.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<KeyedEntity>?> RecentTasks(CancellationToken cancellationToken);
+        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> RecentTasks(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Tags that have time logged against them recently.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tags as keyed entities</returns>
-        Task<List<KeyedEntity>?> RecentTags(CancellationToken cancellationToken);
+        Task<List<Tag>?> RecentTags(CancellationToken cancellationToken);
 
 
         /// <summary>
