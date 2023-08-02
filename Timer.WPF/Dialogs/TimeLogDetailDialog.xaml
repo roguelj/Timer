@@ -70,7 +70,7 @@
     <DockPanel >
         <DockPanel.Style>
             <Style TargetType="DockPanel">
-                <Setter Property="IsEnabled" Value="True" />
+                <Setter Property="IsEnabled" Value="False" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsInitialising, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
                         <Setter Property="IsEnabled" Value="True" />
@@ -83,7 +83,8 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
             <Button Content="{x:Static res:Resources.OkButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
             <Button Content="{x:Static res:Resources.CancelButtonText}" Command="{Binding CloseDialogCancelCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
-            <Button Content="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
+            <Button Content="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource OkCancelButtonControlStyle}" CommandParameter="All" />
+            <Button Content="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource OkCancelButtonControlStyle}" CommandParameter="Starred"/>
         </StackPanel>
 
         

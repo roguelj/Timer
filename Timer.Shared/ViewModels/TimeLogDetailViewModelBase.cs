@@ -2,7 +2,6 @@
 using Prism.Events;
 using Serilog;
 using System.Collections.ObjectModel;
-using Timer.Shared.EventAggregatorEvents;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Services.Interfaces;
@@ -11,6 +10,7 @@ using LogResMan = Timer.Shared.Resources.LogMessages;
 
 namespace Timer.WPF.ViewModels
 {
+
     public abstract class TimeLogDetailViewModelBase : Base
     {
 
@@ -95,7 +95,7 @@ namespace Timer.WPF.ViewModels
 
         // commands
         public DelegateCommand ClearTaskCommand { get; }
-        public DelegateCommand LoadAllCommand { get; }
+        public DelegateCommand<string> LoadAllCommand { get; }
 
 
         // bound collection properties
@@ -118,7 +118,7 @@ namespace Timer.WPF.ViewModels
 
             // commands
             this.ClearTaskCommand = new DelegateCommand(() => this.SelectedTask = null, () => this.SelectedTask is not null);
-            this.LoadAllCommand = new DelegateCommand(this.LoadAllDataEventHandler);
+            this.LoadAllCommand = new DelegateCommand<string>(this.LoadAllDataEventHandler);
 
 
             // add command to the base list
@@ -169,7 +169,7 @@ namespace Timer.WPF.ViewModels
         }
 
 
-        private async void LoadAllDataEventHandler()
+        private async void LoadAllDataEventHandler(string parameter)
         {
 
             // ensure any views that are bound are able to act accordingly
@@ -184,7 +184,7 @@ namespace Timer.WPF.ViewModels
                 this.Logger.Verbose(LogResMan.FoundEntities, tags.Count(), "Tag");
             }
 
-            // recent tasks
+            // set all tasks
             if (await this.TimeLogService!.Tasks(CancellationToken.None) is IEnumerable<ProjectTask> tasks)
             {
                 this.SelectedTask = null;
@@ -192,8 +192,8 @@ namespace Timer.WPF.ViewModels
                 this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
             }
 
-            // recent projects
-            if (await this.TimeLogService!.Projects(CancellationToken.None) is IEnumerable<Project> projects)
+            // set all (or starred only) projects
+            if (await this.TimeLogService!.Projects(parameter == "Starred", CancellationToken.None) is IEnumerable<Project> projects)
             {
                 this.SelectedProject = null;
                 this.Projects.AddRange(projects, true);

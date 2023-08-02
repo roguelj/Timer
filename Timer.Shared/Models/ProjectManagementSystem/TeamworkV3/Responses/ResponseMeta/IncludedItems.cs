@@ -11,7 +11,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.Respo
         public Dictionary<int, ProjectTask> Tasks { get; set; }
 
         [JsonProperty("tasklists")]
-        public Dictionary<int, Item> TaskLists { get; set; }
+        public Dictionary<int, TaskList> TaskLists { get; set; }
 
         [JsonProperty("projects")]
         public Dictionary<int, Item> Projects { get; set; }

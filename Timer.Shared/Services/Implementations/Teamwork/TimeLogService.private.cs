@@ -1,9 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using Timer.Shared.Application;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta;
 using Timer.Shared.Resources;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
@@ -63,12 +66,19 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             do
             {
 
-                // create the additional parameters string, if any
-                var additionalParameters = parameters is null ? string.Empty : $"&{parameters}";
+                var parameterList = new List<string>
+                {
+                    $"page={page}",
+                    $"pageSize={pageSize}",
+                    "fields[projects]=id,name",
+                    parameters ?? string.Empty
+                };
+
+                var parameterString = string.Join('&', parameterList);
 
 
                 // create the HttpRequestMessage
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?{parameterString}");
                 request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
 
@@ -111,6 +121,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
             var client = this.HttpClientFactory.CreateClient();
             var result = new List<ProjectTask>();
+            var taskLists = new List<TaskList>();
+
             var shouldExit = false;
             var page = 1;
 
@@ -118,13 +130,20 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
             do
             {
+                var parameterList = new List<string>
+                {
+                    $"page={page}",
+                    $"pageSize={pageSize}",
+                    "include=tasklists",
+                    "fields[tasklists]=id,projectId",
+                    "fields[tasks]=id,name,taskListId",
+                    parameters ?? string.Empty
+                };
 
-                // create the additional parameters string, if any
-                var additionalParameters = parameters is null ? string.Empty : $"&{parameters}";
-
+                var parameterString = string.Join('&', parameterList);
 
                 // create the HttpRequestMessage
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?{parameterString}");
                 request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
 
 
@@ -138,6 +157,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
                     var response = await httpResponse.Content.ReadAsAsync<TaskResponse>();
                     result.AddRange(response.Items);
+                    taskLists.AddRange(response.Included.TaskLists.Select(s => s.Value));
 
                     if (response.Meta.Page.HasMore)
                     {
@@ -156,6 +176,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 }
 
             } while (!shouldExit);
+
+
+            // inject the projectId into each task, using the data from the included items
+            foreach(var projectTask in result)
+            {
+                projectTask.ProjectId = taskLists.First(f => f.Id.Equals(projectTask.TaskListId)).ProjectId;
+            }
 
             return result;
 

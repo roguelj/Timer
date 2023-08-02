@@ -87,6 +87,10 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             return await this.GetAndPageProjects("projects.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
+        public async Task<List<Project>?> Projects(bool starredOnly, CancellationToken cancellationToken)
+        {
+            return await this.GetAndPageProjects("projects.json", $"onlyStarredProjects={starredOnly}", cancellationToken);
+        }
 
         public async Task<List<Project>?> RecentProjects(CancellationToken cancellationToken)
         {
@@ -149,7 +153,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             {
                 var taskId = input.Key.Value;
                 var item = itemLookup.FirstOrDefault(f => f.Key == input.Key).Value;
-                return new ProjectTask(taskId, item.Name, input.First().ProjectId.Value);
+                return new ProjectTask(taskId, item.Name, input.First().ProjectId.Value, item.TaskListId);
             };
 
             return recentItems

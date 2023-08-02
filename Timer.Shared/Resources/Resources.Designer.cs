@@ -133,6 +133,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Load Starred.
+        /// </summary>
+        public static string LoadStarredButtonText {
+            get {
+                return ResourceManager.GetString("LoadStarredButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
         public static string LogButtonAboutDialog {

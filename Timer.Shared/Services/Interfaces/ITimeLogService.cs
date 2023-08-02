@@ -19,7 +19,7 @@ namespace Timer.Shared.Services.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> Tasks(CancellationToken cancellationToken);
+        Task<List<ProjectTask>?> Tasks(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tags
@@ -27,7 +27,6 @@ namespace Timer.Shared.Services.Interfaces
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tags as keyed entities</returns>
         Task<List<Tag>?> Tags(CancellationToken cancellationToken);
-
 
         /// <summary>
         /// Get all Projects that match the search criteria.
@@ -38,12 +37,20 @@ namespace Timer.Shared.Services.Interfaces
         Task<List<Project>?> Projects(string searchCriteria, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Get all Projects, allowing to limit to starred projects only.
+        /// </summary>
+        /// <param name="starredOnly">Pass true for starred only, or false for all.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A List of Projects as keyed entities</returns>
+        Task<List<Project>?> Projects(bool starredOnly, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Get all Tasks that match the search criteria.
         /// </summary>
         /// <param name="searchCriteria">The text to search for</param>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken);
+        Task<List<ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tags that match the search criteria.

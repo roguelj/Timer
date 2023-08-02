@@ -147,6 +147,9 @@ Check out the GitHub page for configuration details and documentation.
   <data name="LoadAllButtonText" xml:space="preserve">
     <value>Load All</value>
   </data>
+  <data name="LoadStarredButtonText" xml:space="preserve">
+    <value>Load Starred</value>
+  </data>
   <data name="LogButtonAboutDialog" xml:space="preserve">
     <value>About</value>
   </data>
