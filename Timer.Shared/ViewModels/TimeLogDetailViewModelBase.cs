@@ -180,7 +180,7 @@ namespace Timer.WPF.ViewModels
             if (await this.TimeLogService!.Tags(CancellationToken.None) is IEnumerable<Tag> tags)
             {
                 this.SelectedTags.Clear();
-                this.Tags.AddRange(tags, true);
+                this.Tags.AddRange(tags.OrderBy(ob => ob.Name), true);
                 this.Logger.Verbose(LogResMan.FoundEntities, tags.Count(), "Tag");
             }
 
@@ -188,7 +188,7 @@ namespace Timer.WPF.ViewModels
             if (await this.TimeLogService!.Tasks(CancellationToken.None) is IEnumerable<ProjectTask> tasks)
             {
                 this.SelectedTask = null;
-                this.Tasks.AddRange(tasks, true);
+                this.Tasks.AddRange(tasks.OrderBy(ob => ob.Name), true);
                 this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
             }
 
@@ -196,7 +196,7 @@ namespace Timer.WPF.ViewModels
             if (await this.TimeLogService!.Projects(parameter == "Starred", CancellationToken.None) is IEnumerable<Project> projects)
             {
                 this.SelectedProject = null;
-                this.Projects.AddRange(projects, true);
+                this.Projects.AddRange(projects.OrderBy(ob => ob.Name), true);
                 this.Logger.Verbose(LogResMan.FoundEntities, projects.Count(), "Project");
             }
 
