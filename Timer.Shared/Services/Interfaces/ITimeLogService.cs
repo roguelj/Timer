@@ -22,6 +22,22 @@ namespace Timer.Shared.Services.Interfaces
         Task<List<ProjectTask>?> Tasks(CancellationToken cancellationToken);
 
         /// <summary>
+        /// Get all Tasks for a specified project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A List of Tasks as keyed entities</returns>
+        Task<List<ProjectTask>?> Tasks(int projectId, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Get user Tasks for a specified project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A List of Tasks as keyed entities</returns>
+        Task<List<ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Get all Tags
         /// </summary>
         /// <param name="cancellationToken"></param>

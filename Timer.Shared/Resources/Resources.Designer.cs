@@ -124,7 +124,7 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load All.
+        ///   Looks up a localized string similar to Load all projects, tasks and tags..
         /// </summary>
         public static string LoadAllButtonText {
             get {
@@ -133,11 +133,29 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load Starred.
+        ///   Looks up a localized string similar to Load my tasks for selected project..
+        /// </summary>
+        public static string LoadMyTasksForSelectedProjectButtonText {
+            get {
+                return ResourceManager.GetString("LoadMyTasksForSelectedProjectButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load starred projects only (plus recent tasks and tags)..
         /// </summary>
         public static string LoadStarredButtonText {
             get {
                 return ResourceManager.GetString("LoadStarredButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load all tasks for selected project..
+        /// </summary>
+        public static string LoadTasksForSelectedProjectButtonText {
+            get {
+                return ResourceManager.GetString("LoadTasksForSelectedProjectButtonText", resourceCulture);
             }
         }
         

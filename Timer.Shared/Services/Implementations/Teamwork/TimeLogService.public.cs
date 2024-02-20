@@ -183,11 +183,21 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             return await this.GetAndPageTasks("tasks.json", null, cancellationToken);
         }
 
+        public async Task<List<ProjectTask>?> Tasks(int projectId, CancellationToken cancellationToken)
+        {
+            return await this.GetAndPageTasks("tasks.json", $"projectIds={projectId}", cancellationToken);
+        }
+
         public async Task<List<ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
         {
             return await this.GetAndPageTasks("tasks.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
+        public async Task<List<ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken)
+        {
+            var myUserId = (await this.Me(cancellationToken)).Id;
+            return await this.GetAndPageTasks("tasks.json", $"projectIds={projectId},assignees={myUserId}", cancellationToken);
+        }
     }
 
 }

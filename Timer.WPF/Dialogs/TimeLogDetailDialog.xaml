@@ -7,6 +7,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:Timer.WPF.Converters"
              xmlns:viewmodels="clr-namespace:Timer.WPF.ViewModels"
+             xmlns:fa="http://schemas.fontawesome.com/icons/svg"
              d:DataContext="{d:DesignInstance Type=viewmodels:TimeLogDetailViewModel}"
              xmlns:res="clr-namespace:Timer.Shared.Resources;assembly=Timer.Shared"
              mc:Ignorable="d" 
@@ -34,10 +35,19 @@
         </Style>
 
         <Style x:Key="OkCancelButtonControlStyle" TargetType="Button" BasedOn="{StaticResource ControlStyle}">
-            <Setter Property="Margin" Value="2"/>
-            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="MinWidth" Value="80"/>
         </Style>
 
+        <Style x:Key="IconButtonControlStyle" TargetType="Button" BasedOn="{StaticResource ControlStyle}">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="MaxWidth" Value="30"/>
+            <Setter Property="MaxHeight" Value="30"/>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="60" />
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+        </Style>
+        
         <Style x:Key="SmallButtonControlStyle" TargetType="Button">
             <Setter Property="Margin" Value="2"/>
         </Style>
@@ -83,11 +93,28 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
             <Button Content="{x:Static res:Resources.OkButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
             <Button Content="{x:Static res:Resources.CancelButtonText}" Command="{Binding CloseDialogCancelCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
-            <Button Content="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource OkCancelButtonControlStyle}" CommandParameter="All" />
-            <Button Content="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource OkCancelButtonControlStyle}" CommandParameter="Starred"/>
         </StackPanel>
 
-        
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
+            
+            <Button ToolTip="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource IconButtonControlStyle}" CommandParameter="All">
+                <fa:SvgAwesome Icon="Solid_ArrowsRotate" />
+            </Button>
+
+            <Button ToolTip="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource IconButtonControlStyle}" CommandParameter="Starred">
+                <fa:SvgAwesome Icon="Solid_Star" />
+            </Button>
+
+            <Button ToolTip="{x:Static res:Resources.LoadTasksForSelectedProjectButtonText}" Command="{Binding LoadAllTasksForSelectedProjectCommand}" Style="{StaticResource IconButtonControlStyle}">
+                <fa:SvgAwesome Icon="Solid_HandPointRight" />
+            </Button>
+
+            <Button ToolTip="{x:Static res:Resources.LoadMyTasksForSelectedProjectButtonText}" Command="{Binding LoadMyTasksForSelectedProjectCommand}" Style="{StaticResource IconButtonControlStyle}">
+                <fa:SvgAwesome Icon="Solid_UserCheck" />
+            </Button>
+            
+        </StackPanel>
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

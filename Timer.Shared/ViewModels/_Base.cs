@@ -79,7 +79,7 @@ namespace Timer.Shared.ViewModels
 
         protected void RaiseCanExecuteChangedForCommandList()
         {
-            foreach(var command in Commands)
+            foreach(var command in this.Commands)
             {
                 command.RaiseCanExecuteChanged();
             }

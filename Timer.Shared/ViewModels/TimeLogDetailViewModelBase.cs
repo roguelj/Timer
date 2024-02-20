@@ -96,6 +96,8 @@ namespace Timer.WPF.ViewModels
         // commands
         public DelegateCommand ClearTaskCommand { get; }
         public DelegateCommand<string> LoadAllCommand { get; }
+        public DelegateCommand LoadAllTasksForSelectedProjectCommand { get; }
+        public DelegateCommand LoadMyTasksForSelectedProjectCommand { get; }
 
 
         // bound collection properties
@@ -119,10 +121,14 @@ namespace Timer.WPF.ViewModels
             // commands
             this.ClearTaskCommand = new DelegateCommand(() => this.SelectedTask = null, () => this.SelectedTask is not null);
             this.LoadAllCommand = new DelegateCommand<string>(this.LoadAllDataEventHandler);
+            this.LoadAllTasksForSelectedProjectCommand = new DelegateCommand(this.LoadAllTasksForSelectedProject, () => this.SelectedProject is not null);
+            this.LoadMyTasksForSelectedProjectCommand = new DelegateCommand(this.LoadMyTasksForSelectedProject, () => this.SelectedProject is not null);
 
 
             // add command to the base list
             base.Commands.Add(this.ClearTaskCommand);
+            base.Commands.Add(this.LoadAllTasksForSelectedProjectCommand);
+            base.Commands.Add(this.LoadMyTasksForSelectedProjectCommand);
 
         }
 
@@ -206,6 +212,61 @@ namespace Timer.WPF.ViewModels
 
         }
 
+
+        private async void LoadAllTasksForSelectedProject()
+        {
+
+            // load all tasks for selected project
+            if(this.SelectedProject is not null)
+            {
+
+                if (await this.TimeLogService!.Tasks(this.SelectedProject.Id, CancellationToken.None) is IEnumerable<ProjectTask> tasks)
+                {
+
+                    // build a list of tasks that have not already been added to the list.
+                    var existingTaskIds = this.Tasks.Select(s => s.Id);
+                    var tasksToAdd = tasks.OrderBy(ob => ob.Name).Where(w => !existingTaskIds.Contains(w.Id));
+
+
+                    // clear current selected task, and update the list
+                    // do not clear current list - we're just adding new ones
+                    this.SelectedTask = null;
+                    this.Tasks.AddRange(tasksToAdd, false);                                 
+                    this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
+
+                }
+
+            }  
+
+        }
+
+
+        private async void LoadMyTasksForSelectedProject()
+        {
+
+            // load my tasks for selected project
+            if (this.SelectedProject is not null)
+            {
+
+                if (await this.TimeLogService!.MyTasks(this.SelectedProject.Id, CancellationToken.None) is IEnumerable<ProjectTask> tasks)
+                {
+
+                    // build a list of tasks that have not already been added to the list.
+                    var existingTaskIds = this.Tasks.Select(s => s.Id);
+                    var tasksToAdd = tasks.OrderBy(ob => ob.Name).Where(w => !existingTaskIds.Contains(w.Id));
+
+
+                    // clear current selected task, and update the list
+                    // do not clear current list - we're just adding new ones
+                    this.SelectedTask = null;
+                    this.Tasks.AddRange(tasksToAdd, false);
+                    this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
+
+                }
+
+            }
+
+        }
 
         /// <summary>
         /// Check whether the supplied task is owned by the currently selected project. Returns false if not, or if there is no selected project, or the selected task is null.

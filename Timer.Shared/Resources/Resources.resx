@@ -145,10 +145,16 @@ Check out the GitHub page for configuration details and documentation.
     <value>Is Billable</value>
   </data>
   <data name="LoadAllButtonText" xml:space="preserve">
-    <value>Load All</value>
+    <value>Load all projects, tasks and tags.</value>
+  </data>
+  <data name="LoadMyTasksForSelectedProjectButtonText" xml:space="preserve">
+    <value>Load my tasks for selected project.</value>
   </data>
   <data name="LoadStarredButtonText" xml:space="preserve">
-    <value>Load Starred</value>
+    <value>Load starred projects only (plus recent tasks and tags).</value>
+  </data>
+  <data name="LoadTasksForSelectedProjectButtonText" xml:space="preserve">
+    <value>Load all tasks for selected project.</value>
   </data>
   <data name="LogButtonAboutDialog" xml:space="preserve">
     <value>About</value>
