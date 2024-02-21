@@ -29,6 +29,19 @@ Leave **AuthType** set to Basic.
 
 When logging time, the Timer app will display a list of recent tags, tasks and projects from the last 14 days by default. Alter the **DaysToConsiderRecent** configuration option to override this.
 
+### The UI section
+
+```
+  "UserInterfaceOptions": {
+    "AlwaysOnTop": true,
+    "TimeOfFirstTask":"09:00:00"
+  }
+  ```
+
+**AlwaysOnTop** ensures that the window is always topmost i.e. it will not be obscured by other windows.
+
+When Timer attempts to determine the Start date/time of the entry, it will use the end date/time of the previous entry. Should that Start date/time fall before **TimeOfFirstTask** on the current day, then Start will be set to that Time. You can omit this setting to disable this behaviour.
+
 ## Usage
 When the application has been installed and configured, you will be able to log time. Click the 'Log Time' button to proceed. A window will appear allowing you to set the start date/time (by default, this will be set to the end time of the last time entry) and the end date/time (by default, this will be set to the current date & time). Combo boxes allow you to set the Project and Task to log time against, and a list of multi-selectable tags is available also. Click Ok to log the time, or cancel to discard.
 

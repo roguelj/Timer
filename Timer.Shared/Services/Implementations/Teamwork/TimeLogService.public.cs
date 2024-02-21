@@ -47,7 +47,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             // create the client and add the auth
             var client = this.HttpClientFactory.CreateClient();
             var auth = this.IsBasicAuth() ? "Basic" : "Bearer";
-            var atoken = await this.AccessToken();
+            var atoken = this.AccessToken();
             var token = this.IsBasicAuth() ? Convert.ToBase64String(Encoding.ASCII.GetBytes($"{atoken}:")) : atoken;
             client.DefaultRequestHeaders.Add("Authorization", $"{auth} {token}");
 
@@ -122,7 +122,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
             // get a distinct list of tags
             var tags = recentItems
-                        .Where(s => s.TagIds is not null && s.TagIds.Any())
+                        .Where(s => s.TagIds is not null && s.TagIds.Count != 0)
                         .SelectMany(sm => sm.TagIds)
                         .Distinct()
                         .ToList();
@@ -196,7 +196,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         public async Task<List<ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken)
         {
             var myUserId = (await this.Me(cancellationToken)).Id;
-            return await this.GetAndPageTasks("tasks.json", $"projectIds={projectId},assignees={myUserId}", cancellationToken);
+            return await this.GetAndPageTasks($"projects/{projectId}/tasks.json", $"responsiblePartyIds={myUserId}", cancellationToken);
         }
     }
 

@@ -1,9 +1,11 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Extensions.Options;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Services.Dialogs;
 using Serilog;
 using System;
 using System.Linq;
+using Timer.Shared.Models.Options;
 using Timer.Shared.Services.Interfaces;
 using ResMan = Timer.Shared.Resources.Resources;
 
@@ -17,7 +19,8 @@ namespace Timer.WPF.ViewModels
         public DelegateCommand CloseDialogCancelCommand { get; }
 
         // constructor
-        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService) : base(logger, eventAggregator, timeLogService)
+        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) 
+            : base(logger, eventAggregator, timeLogService, systemClock, options)
         {
 
             // set up commands

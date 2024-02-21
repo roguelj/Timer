@@ -148,7 +148,7 @@ Check out the GitHub page for configuration details and documentation.
     <value>Load all projects, tasks and tags.</value>
   </data>
   <data name="LoadMyTasksForSelectedProjectButtonText" xml:space="preserve">
-    <value>Load my tasks for selected project.</value>
+    <value>Add my tasks for selected project.</value>
   </data>
   <data name="LoadStarredButtonText" xml:space="preserve">
     <value>Load starred projects only (plus recent tasks and tags).</value>

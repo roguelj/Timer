@@ -20,7 +20,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
                 var client = this.HttpClientFactory.CreateClient();
                 var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V1EndpointUrlBase}/me.json");
-                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+                request.AddAuthenticationHeader(this.IsBasicAuth(), this.AccessToken());
 
                 var response = await client.SendAsync(request, cancellationToken);
 
@@ -53,7 +53,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
         }
 
-        private async Task<string> AccessToken()
+        private string AccessToken()
         {
 
             if (this.Options.Value is null)
@@ -71,37 +71,6 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         {
             return this.Options.Value is TeamworkOptions twOptions && twOptions.AuthType.Equals("basic", StringComparison.InvariantCultureIgnoreCase);
         }
-
-        private async Task<Token?> ObtainToken(string temporaryToken, CancellationToken cancellationToken)
-        {
-
-            var options = this.Options.Value;
-            var client = this.HttpClientFactory.CreateClient();
-
-
-            // build the request
-            var tokenRequest = new TokenRequest
-            {
-                Code = temporaryToken,
-                ClientId = options.ClientId,
-                ClientSecret = options.ClientSecret,
-                RedirectUri = options.RedirectUri
-            };
-
-
-            // make the call and interpret the response
-            var response = await client.PostAsJsonAsync(options.TokenRequestUrl, tokenRequest, cancellationToken);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsAsync<Token>();
-            }
-            else
-            {
-                return null;
-            }
-
-        }
-
 
     }
 }

@@ -133,7 +133,7 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load my tasks for selected project..
+        ///   Looks up a localized string similar to Add my tasks for selected project..
         /// </summary>
         public static string LoadMyTasksForSelectedProjectButtonText {
             get {

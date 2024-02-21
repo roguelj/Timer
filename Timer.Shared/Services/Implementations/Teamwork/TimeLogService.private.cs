@@ -29,7 +29,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             };
 
             var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/time.json?{string.Join("&", queryParameters)}");
-            request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+            request.AddAuthenticationHeader(this.IsBasicAuth(), this.AccessToken());
 
             var response = await client.SendAsync(request, cancellationToken);
             await this.LogResponseContent(response, cancellationToken);
@@ -79,7 +79,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
                 // create the HttpRequestMessage
                 var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?{parameterString}");
-                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+                request.AddAuthenticationHeader(this.IsBasicAuth(), this.AccessToken());
 
 
                 // perform the request, get the response
@@ -144,7 +144,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
                 // create the HttpRequestMessage
                 var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?{parameterString}");
-                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+                request.AddAuthenticationHeader(this.IsBasicAuth(), this.AccessToken());
 
 
                 // perform the request, get the response
@@ -208,7 +208,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
                 // create the HttpRequestMessage
                 var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
-                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+                request.AddAuthenticationHeader(this.IsBasicAuth(), this.AccessToken());
 
 
                 // perform the request, get the response
@@ -264,7 +264,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
                 // create the HttpRequestMessage
                 var request = new HttpRequestMessage(HttpMethod.Get, $"{this.V3EndpointUrlBase}/{path}?page={page}&pageSize={pageSize}{additionalParameters}");
-                request.AddAuthenticationHeader(this.IsBasicAuth(), await this.AccessToken());
+                request.AddAuthenticationHeader(this.IsBasicAuth(), this.AccessToken());
 
 
                 // perform the request, get the response

@@ -138,6 +138,7 @@ namespace Timer.WPF.ViewModels
 
         }
 
+
         protected async Task Initialise()
         {
 
@@ -145,32 +146,66 @@ namespace Timer.WPF.ViewModels
             this.IsInitialising = true;
 
 
+            // set the start and end dates
+            await this.SetDates();
+
+
+            // load the projects, tasks and tags
+            await this.LoadData();
+
+
+            // ensure any views that are bound are able to act accordingly
+            this.IsInitialising = false;
+
+        }
+
+
+        private async Task SetDates()
+        {
+
             // determine the most sensible start & end dates.
             // get the start date as the time stamp of the last entry end point.
             // the assumption is that the Time Log Entry button is pressed on task finish, so the end date is now
-            // TODO : if the StartDateTime is the prior day, then it should pick up the start of the current working day. 
+            // we should also calculate if the start date crosses the boundary set in settings
 
-            if(this.Options.Value.TimeOfFirstTask is null)
+            var endDateLastEntry = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
+            var now = this.SystemClock!.UtcNow.DateTime;
+            var start = endDateLastEntry;
+            var end = now;
+
+
+            if (this.Options.Value.TimeOfFirstTask is TimeOnly timeOfFirstTask)
             {
 
-                this.StartDateTime = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
-                this.EndDateTime = this.SystemClock!.UtcNow.DateTime;
+                // the earliest time that an entry should start
+                var startTimeBoundary = now.Date + timeOfFirstTask.ToTimeSpan();  
 
+                // set the start
+                start = endDateLastEntry < startTimeBoundary ? startTimeBoundary : endDateLastEntry;
+
+                // set the end 
+                // if the end date is earlier than the start date, then set to the start (user will need to change)
+                // otherwise, just use the end date (which is 'now') 
+                end = end < start ? start : end;
+      
             }
-            else
-            {
-
-               // var startTimeBoundary
-
-            }
 
 
+            // set the properties
+            this.StartDateTime = start;
+            this.EndDateTime = end;
+
+        }
+
+
+        private async Task LoadData()
+        {
 
             // set recent tags
-            if(await this.TimeLogService!.RecentTags(CancellationToken.None) is IEnumerable<Tag> recentTags)
+            if (await this.TimeLogService!.RecentTags(CancellationToken.None) is IEnumerable<Tag> recentTags)
             {
                 this.Tags.AddRange(recentTags, true);
-                this.Logger.Verbose(LogResMan.FoundEntities,recentTags.Count(), "Tag");
+                this.Logger.Verbose(LogResMan.FoundEntities, recentTags.Count(), "Tag");
             }
 
             // recent tasks
@@ -186,10 +221,6 @@ namespace Timer.WPF.ViewModels
                 this.Projects.AddRange(recentProjects, true);
                 this.Logger.Verbose(LogResMan.FoundEntities, recentProjects.Count(), "Project");
             }
-
-
-            // ensure any views that are bound are able to act accordingly
-            this.IsInitialising = false;
 
         }
 
