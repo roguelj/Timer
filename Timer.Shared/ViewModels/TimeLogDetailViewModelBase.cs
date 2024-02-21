@@ -1,8 +1,10 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Extensions.Options;
+using Prism.Commands;
 using Prism.Events;
 using Serilog;
 using System.Collections.ObjectModel;
 using Timer.Shared.Extensions;
+using Timer.Shared.Models.Options;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
@@ -107,8 +109,10 @@ namespace Timer.WPF.ViewModels
         public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
 
 
+        private IOptions<UserInterfaceOptions> Options { get; }
+
         // constructor
-        public TimeLogDetailViewModelBase(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService) : base(logger)
+        public TimeLogDetailViewModelBase(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) : base(logger)
         {
 
             this.IsInitialising = true;
@@ -116,6 +120,8 @@ namespace Timer.WPF.ViewModels
             // register services
             this.EventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
             this.TimeLogService = timeLogService ?? throw new ArgumentNullException(nameof(timeLogService));
+            this.SystemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+            this.Options = options ?? throw new ArgumentNullException(nameof(options));
 
 
             // commands
@@ -143,12 +149,25 @@ namespace Timer.WPF.ViewModels
             // get the start date as the time stamp of the last entry end point.
             // the assumption is that the Time Log Entry button is pressed on task finish, so the end date is now
             // TODO : if the StartDateTime is the prior day, then it should pick up the start of the current working day. 
-            this.StartDateTime = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
-            this.EndDateTime = DateTime.Now;
+
+            if(this.Options.Value.TimeOfFirstTask is null)
+            {
+
+                this.StartDateTime = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
+                this.EndDateTime = this.SystemClock!.UtcNow.DateTime;
+
+            }
+            else
+            {
+
+               // var startTimeBoundary
+
+            }
+
 
 
             // set recent tags
-            if(await this.TimeLogService.RecentTags(CancellationToken.None) is IEnumerable<Tag> recentTags)
+            if(await this.TimeLogService!.RecentTags(CancellationToken.None) is IEnumerable<Tag> recentTags)
             {
                 this.Tags.AddRange(recentTags, true);
                 this.Logger.Verbose(LogResMan.FoundEntities,recentTags.Count(), "Tag");
@@ -267,6 +286,7 @@ namespace Timer.WPF.ViewModels
             }
 
         }
+
 
         /// <summary>
         /// Check whether the supplied task is owned by the currently selected project. Returns false if not, or if there is no selected project, or the selected task is null.

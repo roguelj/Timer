@@ -56,7 +56,7 @@ namespace Timer.WPF.ViewModels
             return true; // TODO: implement this. needs to determine successful connection to teamwork
         }
 
-        private void LogTime() => this.DialogService.ShowDialog(TimeLogDialogName, LogTimeAsync);
+        private void LogTime() => this.DialogService.ShowDialog(TimeLogDialogName, this.LogTimeAsync);
 
         private async void LogTimeAsync(IDialogResult dialogResult)
         {

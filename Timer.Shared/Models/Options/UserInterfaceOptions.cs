@@ -3,5 +3,7 @@
     public class UserInterfaceOptions
     {
         public bool AlwaysOnTop { get; set; }
+        public TimeOnly? TimeOfFirstTask { get; set; }
+
     }
 }

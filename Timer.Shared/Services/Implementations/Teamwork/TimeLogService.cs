@@ -40,7 +40,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         // logging
         private async Task<string> LogResponseContent(HttpResponseMessage response, CancellationToken cancellationToken)
         {
-
+          
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
             this.Logger.Verbose(responseContent);
             return responseContent;

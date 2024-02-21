@@ -30,7 +30,7 @@
         </Style>
 
         <Style x:Key="ControlStyle" TargetType="FrameworkElement">
-            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Margin" Value="3"/>
             <Setter Property="MinWidth" Value="100"/>
         </Style>
 
@@ -90,12 +90,12 @@
         </DockPanel.Style>
 
         <!-- Ok / Cancel etc-->
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="5">
             <Button Content="{x:Static res:Resources.OkButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
             <Button Content="{x:Static res:Resources.CancelButtonText}" Command="{Binding CloseDialogCancelCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Right" Margin="5">
             
             <Button ToolTip="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource IconButtonControlStyle}" CommandParameter="All">
                 <fa:SvgAwesome Icon="Solid_ArrowsRotate" />

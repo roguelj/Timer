@@ -18,6 +18,7 @@ namespace Timer.Shared.ViewModels
         protected ILogger Logger { get; }
         protected ITimeLogService? TimeLogService { get; set; }
         protected IEventAggregator? EventAggregator { get; set; }
+        protected ISystemClock? SystemClock { get; set; }
 
 
         // get the cached type. set it if not already done so
