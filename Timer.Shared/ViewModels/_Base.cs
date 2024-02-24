@@ -1,4 +1,5 @@
-﻿using Prism.Events;
+﻿using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Serilog;
 using System.Runtime.CompilerServices;
@@ -50,8 +51,10 @@ namespace Timer.Shared.ViewModels
         protected const string AboutBoxViewVersionParameterName = "about-view-version";         // the version of the about box for the view assembly
 
 
-
-        protected List<Prism.Commands.DelegateCommand> Commands { get; } = new List<Prism.Commands.DelegateCommand>();
+        // command collections
+        private List<DelegateCommand> Commands { get; } = new List<DelegateCommand>();
+        private List<DelegateCommand<bool?>> BoolCommands { get; } = new List<DelegateCommand<bool?>>();
+        private List<DelegateCommand<int?>> IntCommands { get; } = new List<DelegateCommand<int?>>();
 
 
         public Base(ILogger logger)
@@ -84,15 +87,35 @@ namespace Timer.Shared.ViewModels
             {
                 command.RaiseCanExecuteChanged();
             }
+
+            foreach(var command in this.BoolCommands)
+            {
+                command.RaiseCanExecuteChanged();
+            }
+
+            foreach (var command in this.IntCommands)
+            {
+                command.RaiseCanExecuteChanged();
+            }
+
         }
 
 
         // provide logging for the SetProperty method
-        protected override bool SetProperty<T>(ref T storage, T value, Action onChanged, [CallerMemberName] string propertyName = null)
+        protected override bool SetProperty<T>(ref T storage, T value, Action onChanged, [CallerMemberName] string? propertyName = null)
         {
             return base.SetProperty(ref storage, value, () => this.Logger.Verbose(LogMessage.PropertySet, value, propertyName), propertyName);
         }
-    
+
+
+        // add command methods
+
+        protected void AddCommand(DelegateCommand delegateCommand) => this.Commands.Add(delegateCommand);
+
+        protected void AddCommand(DelegateCommand<bool?> delegateCommand) => this.BoolCommands.Add(delegateCommand);
+
+        protected void AddCommand(DelegateCommand<int?> delegateCommand) => this.IntCommands.Add(delegateCommand);
+
     }
 
 }

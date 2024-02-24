@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Humanizer;
+using Microsoft.Extensions.Options;
 using Prism.Commands;
 using Prism.Events;
 using Serilog;
@@ -16,6 +17,7 @@ namespace Timer.WPF.ViewModels
     public abstract class TimeLogDetailViewModelBase : Base
     {
 
+        // -----------------------
         // member variables
         private DateTime _startDateTime;
         private DateTime _endDateTime;
@@ -26,14 +28,17 @@ namespace Timer.WPF.ViewModels
         private bool _isInitialising;
 
 
+        // -----------------------
         // bound properties
         public DateTime StartDateTime
         {
             get => this._startDateTime;
             set
             {
-                this.SetProperty(ref this._startDateTime, value);
-                this.RaisePropertyChanged(nameof(this.Duration));
+                base.SetProperty(ref this._startDateTime, value);
+                base.RaisePropertyChanged(nameof(this.Duration));
+                base.RaisePropertyChanged(nameof(this.FriendlyDuration));
+                base.RaiseCanExecuteChangedForCommandList();
             }
         }
 
@@ -42,12 +47,16 @@ namespace Timer.WPF.ViewModels
             get => this._endDateTime;
             set
             {
-                this.SetProperty(ref this._endDateTime, value);
-                this.RaisePropertyChanged(nameof(this.Duration));
+                base.SetProperty(ref this._endDateTime, value);
+                base.RaisePropertyChanged(nameof(this.Duration));
+                base.RaisePropertyChanged(nameof(this.FriendlyDuration));
+                base.RaiseCanExecuteChangedForCommandList();
             }
         }
 
         public TimeSpan Duration => this.EndDateTime - this.StartDateTime;
+
+        public string FriendlyDuration => this.Duration.Humanize(2);
 
         public Project? SelectedProject
         {
@@ -94,14 +103,17 @@ namespace Timer.WPF.ViewModels
         }
 
 
-
+        // -----------------------
         // commands
         public DelegateCommand ClearTaskCommand { get; }
         public DelegateCommand<string> LoadAllCommand { get; }
         public DelegateCommand LoadAllTasksForSelectedProjectCommand { get; }
         public DelegateCommand LoadMyTasksForSelectedProjectCommand { get; }
+        public DelegateCommand<int?> SetStartCommand { get; }
+        public DelegateCommand<int?> SetEndCommand { get; }
 
 
+        // -----------------------
         // bound collection properties
         public ObservableCollection<Tag> Tags { get; } = new ObservableCollection<Tag>();
         public ObservableCollection<ProjectTask> Tasks { get; } = new ObservableCollection<ProjectTask>();
@@ -109,8 +121,33 @@ namespace Timer.WPF.ViewModels
         public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
 
 
+        // -----------------------
+        // command gates
+        protected bool IsValidForTimeLog(bool? billable)
+        {
+
+            if (this.SelectedProject is null)
+            {
+                return false;
+            }
+            else if (this.Duration < TimeSpan.FromMinutes(1))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+
+
+        // -----------------------
+        // injected
         private IOptions<UserInterfaceOptions> Options { get; }
 
+
+        // -----------------------
         // constructor
         public TimeLogDetailViewModelBase(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) : base(logger)
         {
@@ -129,13 +166,16 @@ namespace Timer.WPF.ViewModels
             this.LoadAllCommand = new DelegateCommand<string>(this.LoadAllDataEventHandler);
             this.LoadAllTasksForSelectedProjectCommand = new DelegateCommand(this.LoadAllTasksForSelectedProject, () => this.SelectedProject is not null);
             this.LoadMyTasksForSelectedProjectCommand = new DelegateCommand(this.LoadMyTasksForSelectedProject, () => this.SelectedProject is not null);
+            this.SetStartCommand = new DelegateCommand<int?>(this.SetStart);
+            this.SetEndCommand = new DelegateCommand<int?>(this.SetEnd);
 
 
             // add command to the base list
-            base.Commands.Add(this.ClearTaskCommand);
-            base.Commands.Add(this.LoadAllTasksForSelectedProjectCommand);
-            base.Commands.Add(this.LoadMyTasksForSelectedProjectCommand);
-
+            base.AddCommand(this.ClearTaskCommand);
+            base.AddCommand(this.LoadAllTasksForSelectedProjectCommand);
+            base.AddCommand(this.LoadMyTasksForSelectedProjectCommand);
+            base.AddCommand(this.SetStartCommand);
+            base.AddCommand(this.SetEndCommand);
         }
 
 
@@ -166,34 +206,11 @@ namespace Timer.WPF.ViewModels
             // determine the most sensible start & end dates.
             // get the start date as the time stamp of the last entry end point.
             // the assumption is that the Time Log Entry button is pressed on task finish, so the end date is now
-            // we should also calculate if the start date crosses the boundary set in settings
 
             var endDateLastEntry = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
-            var now = this.SystemClock!.UtcNow.DateTime;
-            var start = endDateLastEntry;
-            var end = now;
 
-
-            if (this.Options.Value.TimeOfFirstTask is TimeOnly timeOfFirstTask)
-            {
-
-                // the earliest time that an entry should start
-                var startTimeBoundary = now.Date + timeOfFirstTask.ToTimeSpan();  
-
-                // set the start
-                start = endDateLastEntry < startTimeBoundary ? startTimeBoundary : endDateLastEntry;
-
-                // set the end 
-                // if the end date is earlier than the start date, then set to the start (user will need to change)
-                // otherwise, just use the end date (which is 'now') 
-                end = end < start ? start : end;
-      
-            }
-
-
-            // set the properties
-            this.StartDateTime = start;
-            this.EndDateTime = end;
+            this.StartDateTime = endDateLastEntry;
+            this.EndDateTime = this.SystemClock!.UtcNow.DateTime;
 
         }
 
@@ -319,11 +336,6 @@ namespace Timer.WPF.ViewModels
         }
 
 
-        /// <summary>
-        /// Check whether the supplied task is owned by the currently selected project. Returns false if not, or if there is no selected project, or the selected task is null.
-        /// </summary>
-        /// <param name="projectTask"></param>
-        /// <returns></returns>
         public bool IsTaskOwnedBySelectedProject(ProjectTask? projectTask)
         {
             if(this.SelectedProject is null || projectTask is null) return false;
@@ -331,6 +343,35 @@ namespace Timer.WPF.ViewModels
         }
 
    
+        private void SetStart(int? minutes)
+        {
+
+            var now = this.SystemClock!.UtcNow;
+
+            if (minutes.HasValue)
+            {
+                this.StartDateTime = now.AddMinutes(minutes.Value).DateTime;
+            }
+            else if (this.Options.Value.TimeOfFirstTask is TimeOnly timeOfFirstTask)
+            {
+                this.StartDateTime = now.Date + timeOfFirstTask.ToTimeSpan();
+            }
+
+        }
+
+
+        private void SetEnd(int? minutes)
+        {
+
+            if(minutes.HasValue)
+            {
+                var now = this.SystemClock!.UtcNow;
+                this.EndDateTime = now.AddMinutes(minutes.Value).DateTime;
+            }
+
+
+        }
+
     }
 
 }

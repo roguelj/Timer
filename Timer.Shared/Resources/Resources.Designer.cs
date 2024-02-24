@@ -88,11 +88,29 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 hour ago.
+        /// </summary>
+        public static string AnHourAgoButtonText {
+            get {
+                return ResourceManager.GetString("AnHourAgoButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string CancelButtonText {
             get {
                 return ResourceManager.GetString("CancelButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Selected Task.
+        /// </summary>
+        public static string ClearSelectedTaskButtonText {
+            get {
+                return ResourceManager.GetString("ClearSelectedTaskButtonText", resourceCulture);
             }
         }
         
@@ -187,11 +205,20 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ok.
+        ///   Looks up a localized string similar to Log Billable Time.
         /// </summary>
-        public static string OkButtonText {
+        public static string OkBillableButtonText {
             get {
-                return ResourceManager.GetString("OkButtonText", resourceCulture);
+                return ResourceManager.GetString("OkBillableButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log Non-Billable Time.
+        /// </summary>
+        public static string OkNonBillableButtonText {
+            get {
+                return ResourceManager.GetString("OkNonBillableButtonText", resourceCulture);
             }
         }
         
@@ -214,6 +241,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start of Day.
+        /// </summary>
+        public static string StartOfDayButtonText {
+            get {
+                return ResourceManager.GetString("StartOfDayButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tags.
         /// </summary>
         public static string TagLabelText {
@@ -232,11 +268,65 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 10 minutes ago.
+        /// </summary>
+        public static string TenMinutesAgoButtonText {
+            get {
+                return ResourceManager.GetString("TenMinutesAgoButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10 minutes from now.
+        /// </summary>
+        public static string TenMinutesFromNowButtonText {
+            get {
+                return ResourceManager.GetString("TenMinutesFromNowButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 30 minutes ago.
+        /// </summary>
+        public static string ThirtyMinutesAgoButtonText {
+            get {
+                return ResourceManager.GetString("ThirtyMinutesAgoButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 30 minutes from now.
+        /// </summary>
+        public static string ThirtyMinutesFromNowButtonText {
+            get {
+                return ResourceManager.GetString("ThirtyMinutesFromNowButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Time Log Detail.
         /// </summary>
         public static string TimeLogDetailDialogTitle {
             get {
                 return ResourceManager.GetString("TimeLogDetailDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 20 minutes ago.
+        /// </summary>
+        public static string TwentyMinutesAgoButtonText {
+            get {
+                return ResourceManager.GetString("TwentyMinutesAgoButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 20 minutes from now.
+        /// </summary>
+        public static string TwentyMinutesFromNowButtonText {
+            get {
+                return ResourceManager.GetString("TwentyMinutesFromNowButtonText", resourceCulture);
             }
         }
     }

@@ -132,8 +132,14 @@ Check out the GitHub page for configuration details and documentation.
   <data name="AboutDialogTitle" xml:space="preserve">
     <value>Timer</value>
   </data>
+  <data name="AnHourAgoButtonText" xml:space="preserve">
+    <value>1 hour ago</value>
+  </data>
   <data name="CancelButtonText" xml:space="preserve">
     <value>Cancel</value>
+  </data>
+  <data name="ClearSelectedTaskButtonText" xml:space="preserve">
+    <value>Clear Selected Task</value>
   </data>
   <data name="DescriptionLabelText" xml:space="preserve">
     <value>Description</value>
@@ -165,8 +171,11 @@ Check out the GitHub page for configuration details and documentation.
   <data name="LogButtonText" xml:space="preserve">
     <value>LOG TIME</value>
   </data>
-  <data name="OkButtonText" xml:space="preserve">
-    <value>Ok</value>
+  <data name="OkBillableButtonText" xml:space="preserve">
+    <value>Log Billable Time</value>
+  </data>
+  <data name="OkNonBillableButtonText" xml:space="preserve">
+    <value>Log Non-Billable Time</value>
   </data>
   <data name="ProjectLabelText" xml:space="preserve">
     <value>Project</value>
@@ -174,13 +183,34 @@ Check out the GitHub page for configuration details and documentation.
   <data name="StartLabelText" xml:space="preserve">
     <value>Start</value>
   </data>
+  <data name="StartOfDayButtonText" xml:space="preserve">
+    <value>Start of Day</value>
+  </data>
   <data name="TagLabelText" xml:space="preserve">
     <value>Tags</value>
   </data>
   <data name="TaskLabelText" xml:space="preserve">
     <value>Task</value>
   </data>
+  <data name="TenMinutesAgoButtonText" xml:space="preserve">
+    <value>10 minutes ago</value>
+  </data>
+  <data name="TenMinutesFromNowButtonText" xml:space="preserve">
+    <value>10 minutes from now</value>
+  </data>
+  <data name="ThirtyMinutesAgoButtonText" xml:space="preserve">
+    <value>30 minutes ago</value>
+  </data>
+  <data name="ThirtyMinutesFromNowButtonText" xml:space="preserve">
+    <value>30 minutes from now</value>
+  </data>
   <data name="TimeLogDetailDialogTitle" xml:space="preserve">
     <value>Time Log Detail</value>
+  </data>
+  <data name="TwentyMinutesAgoButtonText" xml:space="preserve">
+    <value>20 minutes ago</value>
+  </data>
+  <data name="TwentyMinutesFromNowButtonText" xml:space="preserve">
+    <value>20 minutes from now</value>
   </data>
 </root>

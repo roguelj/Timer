@@ -44,9 +44,9 @@ namespace Timer.WPF.ViewModels
 
 
             // add commands to the base collection
-            this.Commands.Add(this.LogTimeCommand);
-            this.Commands.Add(this.OpenSettingsCommand);
-            this.Commands.Add(this.OpenAboutCommand);
+            this.AddCommand(this.LogTimeCommand);
+            this.AddCommand(this.OpenSettingsCommand);
+            this.AddCommand(this.OpenAboutCommand);
 
         }
 
@@ -116,7 +116,7 @@ namespace Timer.WPF.ViewModels
                 { AboutBoxViewVersionParameterName, viewFileVersionInfo.ProductVersion }
             };
 
-            this.DialogService.ShowDialog(AboutBoxDialogName, parameters, LogTimeAsync);
+            this.DialogService.ShowDialog(AboutBoxDialogName, parameters, this.LogTimeAsync);
         }
 
     }

@@ -7,7 +7,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:Timer.WPF.Converters"
              xmlns:viewmodels="clr-namespace:Timer.WPF.ViewModels"
-             xmlns:fa="http://schemas.fontawesome.com/icons/svg"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance Type=viewmodels:TimeLogDetailViewModel}"
              xmlns:res="clr-namespace:Timer.Shared.Resources;assembly=Timer.Shared"
              mc:Ignorable="d" 
@@ -24,33 +24,6 @@
     </prism:Dialog.WindowStyle>
 
     <UserControl.Resources>
-
-        <Style x:Key="HeaderStyle" TargetType="Label">
-            <Setter Property="FontWeight" Value="Bold"/>
-        </Style>
-
-        <Style x:Key="ControlStyle" TargetType="FrameworkElement">
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="MinWidth" Value="100"/>
-        </Style>
-
-        <Style x:Key="OkCancelButtonControlStyle" TargetType="Button" BasedOn="{StaticResource ControlStyle}">
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="MinWidth" Value="80"/>
-        </Style>
-
-        <Style x:Key="IconButtonControlStyle" TargetType="Button" BasedOn="{StaticResource ControlStyle}">
-            <Setter Property="Margin" Value="2"/>
-            <Setter Property="Padding" Value="2"/>
-            <Setter Property="MaxWidth" Value="30"/>
-            <Setter Property="MaxHeight" Value="30"/>
-            <Setter Property="ToolTipService.InitialShowDelay" Value="60" />
-            <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
-        </Style>
-        
-        <Style x:Key="SmallButtonControlStyle" TargetType="Button">
-            <Setter Property="Margin" Value="2"/>
-        </Style>
 
         <CollectionViewSource Source="{Binding Tasks}" x:Key="TasksCollectionViewSource" Filter="CollectionViewSource_Filter"/>
 
@@ -71,7 +44,11 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Name}" Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" Padding="5,2" Margin="0" Foreground="Black" />
+
+                <Border Background="{Binding Path=Colour, Converter={StaticResource HtmlColourConverter}}" CornerRadius="3" BorderThickness="1" BorderBrush="LightGray" Margin="1" Padding="0">
+                    <TextBlock Text="{Binding Name}" Padding="5,2" Margin="0" Foreground="Black" />
+                </Border>
+            
             </Grid>
         </DataTemplate>
 
@@ -91,40 +68,30 @@
 
         <!-- Ok / Cancel etc-->
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="5">
-            <Button Content="{x:Static res:Resources.OkButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
+            <Button Content="{x:Static res:Resources.OkBillableButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}">
+                <Button.CommandParameter>
+                    <s:Boolean>True</s:Boolean>
+                </Button.CommandParameter>
+            </Button>
+
+            <Button Content="{x:Static res:Resources.OkNonBillableButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{StaticResource OkCancelButtonControlStyle}">
+                <Button.CommandParameter>
+                    <s:Boolean>False</s:Boolean>
+                </Button.CommandParameter>
+            </Button>
+            
             <Button Content="{x:Static res:Resources.CancelButtonText}" Command="{Binding CloseDialogCancelCommand}" Style="{StaticResource OkCancelButtonControlStyle}"/>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Right" Margin="5">
-            
-            <Button ToolTip="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource IconButtonControlStyle}" CommandParameter="All">
-                <fa:SvgAwesome Icon="Solid_ArrowsRotate" />
-            </Button>
-
-            <Button ToolTip="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource IconButtonControlStyle}" CommandParameter="Starred">
-                <fa:SvgAwesome Icon="Solid_Star" />
-            </Button>
-
-            <Button ToolTip="{x:Static res:Resources.LoadTasksForSelectedProjectButtonText}" Command="{Binding LoadAllTasksForSelectedProjectCommand}" Style="{StaticResource IconButtonControlStyle}">
-                <fa:SvgAwesome Icon="Solid_HandPointRight" />
-            </Button>
-
-            <Button ToolTip="{x:Static res:Resources.LoadMyTasksForSelectedProjectButtonText}" Command="{Binding LoadMyTasksForSelectedProjectCommand}" Style="{StaticResource IconButtonControlStyle}">
-                <fa:SvgAwesome Icon="Solid_UserCheck" />
-            </Button>
-            
-        </StackPanel>
 
         <Grid>
+            
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition MinWidth="100" MaxWidth="100"/>
+                <ColumnDefinition  MinWidth="300" MaxWidth="400"/>
             </Grid.ColumnDefinitions>
+            
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -134,44 +101,162 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- Start & End times -->
-            <Label Grid.Row="0" Grid.Column="0" Content="{x:Static res:Resources.StartLabelText}" Style="{StaticResource HeaderStyle}" />
+     
+            <!-- start options header -->
+            <xctk:DropDownButton Grid.Row="0" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.StartLabelText}" Button.Click="Button_Click">
+                <xctk:DropDownButton.DropDownContent>
+                    <StackPanel Orientation="Vertical">
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.StartOfDayButtonText}" />
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.TenMinutesAgoButtonText}" >
+                            <Button.CommandParameter>
+                                <s:Int32>-10</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.TwentyMinutesAgoButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>-20</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.ThirtyMinutesAgoButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>-30</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.AnHourAgoButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>-60</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+                        
+                    </StackPanel>
+     
+                </xctk:DropDownButton.DropDownContent>
+            </xctk:DropDownButton>
+
+            <!-- start selector -->
             <xctk:DateTimePicker Grid.Row="0" Grid.Column="1" Value="{Binding StartDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ControlStyle}" />
-            <Label Grid.Row="1" Grid.Column="0" Content="{x:Static res:Resources.EndLabelText}" Style="{StaticResource HeaderStyle}" />
+
+            
+            <!-- end options header -->
+            <xctk:DropDownButton Grid.Row="1" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.EndLabelText}" Button.Click="Button_Click">
+                <xctk:DropDownButton.DropDownContent>
+                    <StackPanel Orientation="Vertical">
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.ThirtyMinutesAgoButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>-30</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TwentyMinutesAgoButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>-20</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TenMinutesAgoButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>-10</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TenMinutesFromNowButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>10</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TwentyMinutesFromNowButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>20</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.ThirtyMinutesFromNowButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>30</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+                        
+                    </StackPanel>
+
+                </xctk:DropDownButton.DropDownContent>
+            </xctk:DropDownButton>
+            
+            <!-- end selector -->
             <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding EndDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ControlStyle}"/>
 
-            <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" >
-                <TextBlock Text="{Binding Duration, StringFormat=d\\d\\ hh\\h\\ mm\\m}"/>
+
+            <!-- duration -->
+            <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource DurationLabelControlStyle}">
+                <TextBlock Text="{Binding FriendlyDuration, FallbackValue=DURATION}" />
             </Label>
 
 
-            <!-- projects -->
-            <Label Grid.Row="2" Grid.Column="0" Content="{x:Static res:Resources.ProjectLabelText}" Style="{StaticResource HeaderStyle}" />
-            <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+            <!-- projects options header -->
+            <xctk:DropDownButton Grid.Row="3" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.ProjectLabelText}" Button.Click="Button_Click">
+
+                <xctk:DropDownButton.DropDownContent>
+                    <StackPanel Orientation="Vertical">
+                        <Button Content="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource DropDownButtonButtonStyle}" CommandParameter="All">
+                        </Button>
+
+                        <Button Content="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{StaticResource DropDownButtonButtonStyle}" CommandParameter="Starred">
+                        </Button>
+
+                    </StackPanel>
+
+                </xctk:DropDownButton.DropDownContent>
+                
+            </xctk:DropDownButton>
+
+            <!-- project selector -->
+            <ComboBox Grid.Row="3" Grid.Column="1"
                       ItemsSource="{Binding Projects}" 
                       IsSynchronizedWithCurrentItem="True" 
                       SelectedItem="{Binding SelectedProject}" 
-                      Style="{StaticResource ControlStyle}"
+                      Style="{StaticResource EntityComboBoxSelectorStyle}"
                       ItemTemplate="{StaticResource NameDataTemplate}" 
                       IsTextSearchEnabled="True"/>
 
 
-            <!-- tasks -->
-            <Label Grid.Row="3" Grid.Column="0" Content="{x:Static res:Resources.TaskLabelText}" Style="{StaticResource HeaderStyle}" />
-            <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1" 
+            <!-- tasks options header -->
+            <xctk:DropDownButton Grid.Row="4" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.TaskLabelText}" Button.Click="Button_Click">
+
+                <xctk:DropDownButton.DropDownContent>
+                    <StackPanel Orientation="Vertical">
+
+                        <Button Content="{x:Static res:Resources.ClearSelectedTaskButtonText}" Style="{StaticResource DropDownButtonButtonStyle}" Command="{Binding ClearTaskCommand}"/>
+               
+                        <Button Content="{x:Static res:Resources.LoadTasksForSelectedProjectButtonText}" Style="{StaticResource DropDownButtonButtonStyle}" Command="{Binding LoadAllTasksForSelectedProjectCommand}" >
+                        </Button>
+
+                        <Button Content="{x:Static res:Resources.LoadMyTasksForSelectedProjectButtonText}" Style="{StaticResource DropDownButtonButtonStyle}" Command="{Binding LoadMyTasksForSelectedProjectCommand}" >
+                        </Button>
+
+                    </StackPanel>
+
+                </xctk:DropDownButton.DropDownContent>
+            </xctk:DropDownButton>
+            
+            <!-- task selector -->
+            <ComboBox Grid.Row="4" Grid.Column="1" 
                       ItemsSource="{Binding Source={StaticResource TasksCollectionViewSource}}" 
                       IsSynchronizedWithCurrentItem="True" 
                       SelectedItem="{Binding SelectedTask}" 
-                      Style="{StaticResource ControlStyle}"
+                      Style="{StaticResource EntityComboBoxSelectorStyle}"
                       x:Name="TaskComboBox"
                       ItemTemplate="{StaticResource NameDataTemplate}"
                       IsTextSearchEnabled="True"/>
 
-            <Button Grid.Row="3" Grid.Column="2" Content="x" Style="{StaticResource SmallButtonControlStyle}" Command="{Binding ClearTaskCommand}" MaxWidth="25"/>
 
             <!-- tags -->
-            <Label Grid.Row="4" Grid.Column="0" Content="{x:Static res:Resources.TagLabelText}" Style="{StaticResource HeaderStyle}" />
-            <ListBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" MaxHeight="200"
+            <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:Resources.TagLabelText}" Style="{StaticResource HeaderStyle}" />
+            <ListBox Grid.Row="5" Grid.Column="1" MaxHeight="300" 
                  ItemsSource="{Binding Tags}" 
                  SelectionMode="Multiple" 
                  x:Name="SelectedTagsListBox" 
@@ -187,14 +272,9 @@
             </ListBox>
 
 
-            <!-- billable -->
-            <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:Resources.IsBillableLabelText}" Style="{StaticResource HeaderStyle}"/>
-            <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Style="{StaticResource ControlStyle}"/>
-
-
             <!-- description -->
             <Label Grid.Row="6" Grid.Column="0"  Content="{x:Static res:Resources.DescriptionLabelText}" Style="{StaticResource HeaderStyle}" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="50" Style="{StaticResource ControlStyle}"/>
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="50" Style="{StaticResource ControlStyle}"/>
 
         </Grid>
 

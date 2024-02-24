@@ -15,8 +15,9 @@ namespace Timer.WPF.ViewModels
     {
 
         // commands
-        public DelegateCommand CloseDialogOkCommand { get; }
+        public DelegateCommand<bool?> CloseDialogOkCommand { get; }
         public DelegateCommand CloseDialogCancelCommand { get; }
+
 
         // constructor
         public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) 
@@ -24,35 +25,16 @@ namespace Timer.WPF.ViewModels
         {
 
             // set up commands
-            this.CloseDialogOkCommand = new DelegateCommand(this.CloseDialogOk, this.CanCloseDialogOk);
+            this.CloseDialogOkCommand = new DelegateCommand<bool?>(this.CloseDialogOk, this.IsValidForTimeLog);
             this.CloseDialogCancelCommand = new DelegateCommand(() => RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel))); // always allow cancel
             
-            this.Commands.Add(this.CloseDialogOkCommand);
-            this.Commands.Add(this.CloseDialogCancelCommand);
+            this.AddCommand(this.CloseDialogOkCommand);
+            this.AddCommand(this.CloseDialogCancelCommand);
 
         }
 
 
-        // command gates
-        private bool CanCloseDialogOk()
-        {
-
-            if (this.SelectedProject is null)
-            {
-                return false;
-            }
-            else if (this.Duration < TimeSpan.FromMinutes(1))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-
-        }
-
-        protected virtual void CloseDialogOk()
+        protected virtual void CloseDialogOk(bool? billable)
         {
 
             var parameters = new DialogParameters
@@ -62,13 +44,14 @@ namespace Timer.WPF.ViewModels
                 { SelectedProjectDialogParameterName, this.SelectedProject },
                 { SelectedTaskDialogParameterName, this.SelectedTask },
                 { SelectedTagsDialogParameterName, this.SelectedTags.ToList() },
-                { IsBillableDialogParameterName, this.IsBillable },
+                { IsBillableDialogParameterName, billable },
                 { DescriptionDialogParameterName, this.Description },
             };
 
             RequestClose?.Invoke(new DialogResult(ButtonResult.OK, parameters));
 
         }
+
 
 
         // IDialogAware implementation

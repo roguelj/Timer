@@ -1,6 +1,7 @@
 ﻿using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -50,6 +51,16 @@ namespace Timer.WPF.Dialogs
 
         // subscribed IEventAggregator event handlers
         private void ProjectChanged() => (this.TaskComboBox.ItemsSource as ListCollectionView)?.Refresh();
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+            if(e.OriginalSource is Button && e.Source is Xceed.Wpf.Toolkit.DropDownButton source)
+            {
+                source.IsOpen = false;
+            }
+
+        }
 
     }
 

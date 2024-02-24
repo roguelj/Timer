@@ -25,7 +25,7 @@ namespace Timer.WPF.ViewModels
             this.CloseDialogCommand = new DelegateCommand(() => RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel)));
 
             // add commands to base collection
-            base.Commands.Add(this.CloseDialogCommand);
+            base.AddCommand(this.CloseDialogCommand);
 
         }
 
