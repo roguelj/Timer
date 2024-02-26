@@ -322,7 +322,7 @@
 
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel MaxWidth="200" Orientation="Horizontal" />
+                        <WrapPanel MaxWidth="300" Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
             </ListBox>
