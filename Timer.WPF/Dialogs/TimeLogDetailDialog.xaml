@@ -78,8 +78,26 @@
         </DockPanel.Style>
 
         <!-- Ok / Cancel etc-->
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="5">
-            <Button Content="{x:Static res:Resources.OkBillableButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{DynamicResource OkCancelButtonControlStyle}">
+        <UniformGrid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" Margin="5" Columns="3">
+            
+            <Button  Command="{Binding CloseDialogOkCommand}" Style="{DynamicResource OkCancelButtonControlStyle}"  >
+
+                <Button.Content>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="{x:Static res:Resources.OkBillableButtonText}" Grid.Column="1"/>
+                        <Border Padding="3" Background="Green" CornerRadius="5" VerticalAlignment="Center"  >
+                            <TextBlock Text="$" Margin="2,0,2,0"  Foreground="White" FontWeight="Bold"/>
+                        </Border>
+                       
+                    </Grid>
+                
+                </Button.Content>
+                
                 <Button.CommandParameter>
                     <s:Boolean>True</s:Boolean>
                 </Button.CommandParameter>
@@ -91,8 +109,25 @@
                 </Button.CommandParameter>
             </Button>
 
-            <Button Content="{x:Static res:Resources.CancelButtonText}" Command="{Binding CloseDialogCancelCommand}" Style="{DynamicResource OkCancelButtonControlStyle}"/>
-        </StackPanel>
+            <Button  Command="{Binding CloseDialogCancelCommand}" Style="{DynamicResource OkCancelButtonControlStyle}">
+
+                <Button.Content>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="{x:Static res:Resources.CancelButtonText}" Grid.Column="1"/>
+                        <Border Padding="3" Background="Red" CornerRadius="5" VerticalAlignment="Center"  >
+                            <TextBlock Text="&#xE711;" Margin="0,0,0,0" FontFamily="Segoe MDL2 Assets" Foreground="White" FontWeight="Bold"/>
+                        </Border>
+
+                    </Grid>
+
+                </Button.Content>
+            </Button>
+        </UniformGrid>
 
 
         <Grid>
@@ -203,7 +238,8 @@
 
 
             <!-- duration -->
-            <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource DurationLabelControlStyle}">
+            <Label Grid.Row="2" Grid.Column="0" Content="{x:Static res:Resources.DurationLabelText}" Style="{DynamicResource HeaderStyle}" />
+            <Label Grid.Row="2" Grid.Column="1" Style="{DynamicResource DurationLabelControlStyle}">
                 <TextBlock Text="{Binding FriendlyDuration, FallbackValue=DURATION}" />
             </Label>
 

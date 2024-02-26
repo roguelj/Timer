@@ -3,10 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Timer.WPF.Dialogs"
+             xmlns:prism="http://prismlibrary.com/"
+             MinWidth="500" MaxWidth="500"
              mc:Ignorable="d" d:Background="White"
+           
              >
-    <Grid MinWidth="500" MaxWidth="500">
+
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="ShowInTaskbar" Value="False"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
+    
+    <Grid >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

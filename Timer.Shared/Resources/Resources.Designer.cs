@@ -124,6 +124,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duration.
+        /// </summary>
+        public static string DurationLabelText {
+            get {
+                return ResourceManager.GetString("DurationLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to End.
         /// </summary>
         public static string EndLabelText {

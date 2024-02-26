@@ -104,16 +104,15 @@ namespace Timer.WPF.ViewModels
 
             var viewAssembly = Assembly.GetExecutingAssembly();
             var sharedAssembly = typeof(Base).Assembly;
-                       
-            var viewFileVersionInfo = FileVersionInfo.GetVersionInfo(viewAssembly.Location);
-            var sharedFileVersionInfo = FileVersionInfo.GetVersionInfo(sharedAssembly.Location);
+            var viewFileVersionInfo = viewAssembly.GetName().Version;
+            var sharedFileVersionInfo = sharedAssembly.GetName().Version;
 
             var parameters = new DialogParameters
             {
                 { AboutBoxTitleParameterName, Res.AboutDialogTitle },
                 { AboutBoxTextParameterName, Res.AboutDialogText },
-                { AboutBoxSharedVersionParameterName, sharedFileVersionInfo.ProductVersion },
-                { AboutBoxViewVersionParameterName, viewFileVersionInfo.ProductVersion }
+                { AboutBoxSharedVersionParameterName, sharedFileVersionInfo!.ToString() },
+                { AboutBoxViewVersionParameterName, viewFileVersionInfo!.ToString() }
             };
 
             this.DialogService.ShowDialog(AboutBoxDialogName, parameters, this.LogTimeAsync);

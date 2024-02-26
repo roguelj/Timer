@@ -15,7 +15,7 @@ namespace Timer.WPF.Dialogs
 
         public AboutDialog(IEventAggregator eventAggregator)
         {
-            InitializeComponent();
+            this.InitializeComponent();
             eventAggregator.GetEvent<ReleaseNotesChangedEvent>().Subscribe(this.ReleaseNotesTextChanged);
         }
 

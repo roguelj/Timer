@@ -144,6 +144,9 @@ Check out the GitHub page for configuration details and documentation.
   <data name="DescriptionLabelText" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="DurationLabelText" xml:space="preserve">
+    <value>Duration</value>
+  </data>
   <data name="EndLabelText" xml:space="preserve">
     <value>End</value>
   </data>
