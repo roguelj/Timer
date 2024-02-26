@@ -135,7 +135,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     $"page={page}",
                     $"pageSize={pageSize}",
                     "include=tasklists",
-                    "fields[tasklists]=id,projectId",
+                    "fields[tasklists]=id,projectId,name",
                     "fields[tasks]=id,name,taskListId",
                     parameters ?? string.Empty
                 };
@@ -178,10 +178,12 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             } while (!shouldExit);
 
 
-            // inject the projectId into each task, using the data from the included items
+            // inject the projectId and task list name into each task, using the data from the included items
             foreach(var projectTask in result)
             {
-                projectTask.ProjectId = taskLists.First(f => f.Id.Equals(projectTask.TaskListId)).ProjectId;
+                var taskList = taskLists.First(f => f.Id.Equals(projectTask.TaskListId));
+                projectTask.ProjectId = taskList.ProjectId;
+                projectTask.TaskListName = taskList.Name;
             }
 
             return result;
@@ -324,7 +326,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     "orderMode=desc",
                     $"startDate={startDate:yyyy-MM-dd}",
                     $"endDate={endDate:yyyy-MM-dd}",
-                    "include=projects,tasks,tags"
+                    "include=projects,tasks,tags,tasks.tasklists",
+                    "fields[tasklists]=id,projectId,name"
                 };
 
                 cacheValue = await this.GetAndPageV3TimeLogResponse("time.json", string.Join("&", queryParameters), cancellationToken);

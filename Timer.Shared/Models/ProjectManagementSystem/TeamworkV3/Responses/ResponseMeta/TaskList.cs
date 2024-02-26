@@ -10,5 +10,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.Respo
         [JsonProperty("projectId")]
         public int ProjectId { get; set; }
 
+        [JsonProperty("name")]
+        public string Name { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace Timer.WPF.Dialogs
 
             // subscribe to events. these are raised in the shared viewmodels
             this.EventAggregator.GetEvent<Shared.EventAggregatorEvents.SelectedProjectChangeEvent>().Subscribe(this.ProjectChanged);
-
+           
         }
 
 

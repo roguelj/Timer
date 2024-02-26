@@ -146,14 +146,27 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
             var recent = await this.GetOrSetRecentActivity(myUserId, cancellationToken);
             var recentItems = recent.SelectMany(sm => sm.Items);
-            var itemLookup = recent.SelectMany(sm => sm.Included.Tasks);
+            var taskLookup = recent.SelectMany(sm => sm.Included.Tasks);
+            var taskListLookup = recent.SelectMany(sm => sm.Included.TaskLists);
 
             // create the projector to create a new ProjectTask from the IGrouping
             var projector = (IGrouping<int?, TimeLog> input) =>
             {
-                var taskId = input.Key.Value;
-                var item = itemLookup.FirstOrDefault(f => f.Key == input.Key).Value;
-                return new ProjectTask(taskId, item.Name, input.First().ProjectId.Value, item.TaskListId);
+                var taskId = input.Key!.Value;
+
+                var task = taskLookup.FirstOrDefault(f => f.Key == input.Key).Value;
+                var taskList = taskListLookup.FirstOrDefault(f => f.Key == task.TaskListId);
+
+
+                return new ProjectTask
+                {
+                    Id = taskId,
+                    Name = task.Name,
+                    ProjectId = input.First().ProjectId!.Value,
+                    TaskListId = task.TaskListId,
+                    TaskListName = taskList.Value.Name
+                };
+
             };
 
             return recentItems

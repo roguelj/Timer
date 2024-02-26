@@ -19,15 +19,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
         [JsonProperty("taskListId")]
         public int TaskListId { get; set; }
 
-        public ProjectTask() { }
-
-        public ProjectTask(int id, string name, int projectId, int taskListId)
-        {
-            this.Id = id;
-            this.Name = name;
-            this.ProjectId = projectId;
-            this.TaskListId = taskListId;
-        }
+        public string TaskListName { get; set; }
 
     }
 
