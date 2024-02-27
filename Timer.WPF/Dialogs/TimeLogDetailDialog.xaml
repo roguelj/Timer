@@ -1,32 +1,34 @@
 ﻿<UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:prism="http://prismlibrary.com/"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:converters="clr-namespace:Timer.WPF.Converters"
-             xmlns:viewmodels="clr-namespace:Timer.WPF.ViewModels"
-             xmlns:s="clr-namespace:System;assembly=mscorlib"
-             xmlns:res="clr-namespace:Timer.Shared.Resources;assembly=Timer.Shared"
-             xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase" x:Class="Timer.WPF.Dialogs.TimeLogDetailDialog"
-             d:DataContext="{d:DesignInstance Type={x:Type viewmodels:TimeLogDetailViewModel}}"
-             mc:Ignorable="d" 
-             d:Background="White"
-             >
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:prism="http://prismlibrary.com/"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+            xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+            xmlns:s="clr-namespace:System;assembly=mscorlib"
+            xmlns:res="clr-namespace:Timer.Shared.Resources;assembly=Timer.Shared"
+            xmlns:converters="clr-namespace:Timer.WPF.Converters"
+            xmlns:viewmodels="clr-namespace:Timer.WPF.ViewModels"
+            x:Class="Timer.WPF.Dialogs.TimeLogDetailDialog"
+            d:DataContext="{d:DesignInstance Type={x:Type viewmodels:TimeLogDetailViewModel}}"
+            mc:Ignorable="d" 
+            d:Background="White"
+            >
 
 
     <UserControl.Resources>
 
         <CollectionViewSource Source="{Binding Tasks}" x:Key="TasksCollectionViewSource" Filter="CollectionViewSource_Filter" >
+            
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="TaskListName" />
             </CollectionViewSource.GroupDescriptions>
+            
             <CollectionViewSource.SortDescriptions>
-
                 <ComponentModel:SortDescription PropertyName="TaskListName"/>
-
             </CollectionViewSource.SortDescriptions>
+            
         </CollectionViewSource>
 
         <converters:HtmlColourConverter x:Key="HtmlColourConverter" />
@@ -151,9 +153,15 @@
             <!-- start options header -->
             <xctk:DropDownButton Grid.Row="0" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.StartLabelText}" ButtonBase.Click="Button_Click">
                 <xctk:DropDownButton.DropDownContent>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
                         <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.StartOfDayButtonText}" />
 
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.NowButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>0</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+                        
                         <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.TenMinutesAgoButtonText}" >
                             <Button.CommandParameter>
                                 <s:Int32>-10</s:Int32>
@@ -190,7 +198,7 @@
             <!-- end options header -->
             <xctk:DropDownButton Grid.Row="1" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.EndLabelText}" ButtonBase.Click="Button_Click">
                 <xctk:DropDownButton.DropDownContent>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
 
                         <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.ThirtyMinutesAgoButtonText}">
                             <Button.CommandParameter>
@@ -210,6 +218,12 @@
                             </Button.CommandParameter>
                         </Button>
 
+                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.NowButtonText}">
+                            <Button.CommandParameter>
+                                <s:Int32>0</s:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+                        
                         <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TenMinutesFromNowButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>10</s:Int32>
@@ -248,7 +262,7 @@
             <xctk:DropDownButton Grid.Row="3" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.ProjectLabelText}" ButtonBase.Click="Button_Click">
 
                 <xctk:DropDownButton.DropDownContent>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
                         <Button Content="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{DynamicResource DropDownButtonButtonStyle}" CommandParameter="All"/>
 
                         <Button Content="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{DynamicResource DropDownButtonButtonStyle}" CommandParameter="Starred"/>
@@ -273,7 +287,7 @@
             <xctk:DropDownButton Grid.Row="4" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.TaskLabelText}" ButtonBase.Click="Button_Click">
 
                 <xctk:DropDownButton.DropDownContent>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
 
                         <Button Content="{x:Static res:Resources.ClearSelectedTaskButtonText}" Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding ClearTaskCommand}"/>
 

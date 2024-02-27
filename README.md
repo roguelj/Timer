@@ -4,7 +4,7 @@
 *Timer* is a small application used to quickly log time against Teamwork (https://www.teamwork.com) tasks and projects.
 
 ## Getting Started
-Download the latest release and run the installer. You will require the .NET 7 runtime installed. You can get that from https://dotnet.microsoft.com/en-us/download.
+Download the latest release and run the installer. You will require the .NET 8 runtime installed. You can get that from https://dotnet.microsoft.com/en-us/download.
 Run the installed application, and a small window will appear with a single 'Log Time' button. Right-click the button, and click 'Settings'. This will open the program settings folder. You will need to enter some data into the *appsettings.json* file to be able to log time.
 
 ## Configuration

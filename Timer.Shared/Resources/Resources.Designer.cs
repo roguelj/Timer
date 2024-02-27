@@ -214,6 +214,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Now.
+        /// </summary>
+        public static string NowButtonText {
+            get {
+                return ResourceManager.GetString("NowButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Log Billable Time.
         /// </summary>
         public static string OkBillableButtonText {
