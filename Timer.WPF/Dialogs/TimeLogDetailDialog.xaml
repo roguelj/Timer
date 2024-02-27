@@ -13,7 +13,7 @@
             x:Class="Timer.WPF.Dialogs.TimeLogDetailDialog"
             d:DataContext="{d:DesignInstance Type={x:Type viewmodels:TimeLogDetailViewModel}}"
             mc:Ignorable="d" 
-            d:Background="White"
+            Style="{DynamicResource DialogStyle}"
             >
 
 

@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Colours -->
+
+    <Color x:Key="WindowBackgroundStartColor">#FFEEEEEE</Color>
+    <Color x:Key="WindowBackgroundEndColor">#FFEEEEEE</Color>
+
+    <Color x:Key="ActionElementBackgroundStartColor">#FFEEEEEE</Color>
+    <Color x:Key="ActionElementBackgroundEndColor">#FFEEEEEE</Color>
+    
+    <Color x:Key="ActionElementForegroundColor">#FF337AB7</Color>
+
+
+
+    
+    <RadialGradientBrush x:Key="ButtonRadialBrush">
+        <GradientStop Offset="0" Color="{StaticResource ActionElementBackgroundStartColor}"/>
+        <GradientStop Offset="1" Color="{StaticResource ActionElementBackgroundEndColor}"/>
+    </RadialGradientBrush>
+
+    <LinearGradientBrush x:Key="DialogLinearGradientBrush">
+        <GradientStop Offset="0" Color="{StaticResource WindowBackgroundStartColor}"/>
+        <GradientStop Offset="1" Color="{StaticResource WindowBackgroundEndColor}"/>
+    </LinearGradientBrush>
+    
+</ResourceDictionary>

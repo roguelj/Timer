@@ -18,7 +18,7 @@
     </Style>
 
     <Style x:Key="OkCancelButtonControlStyle" TargetType="Button" BasedOn="{StaticResource ButtonControlStyle}">
-        
+        <Setter Property="Background" Value="{DynamicResource ButtonRadialBrush }" />
     </Style>
 
     <Style x:Key="DropDownButtonButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonControlStyle}">
@@ -48,6 +48,12 @@
 
     <Style x:Key="DropDownButtonContentStackPanelStyle" TargetType="StackPanel" BasedOn="{StaticResource ControlStyle}">
         <Setter Property="Background" Value="White" />
+    </Style>
+
+    <Style x:Key="DialogStyle" BasedOn="{StaticResource ControlStyle}" TargetType="UserControl">
+
+        <Setter Property="Background" Value="{DynamicResource DialogLinearGradientBrush}" />
+        
     </Style>
     
 </ResourceDictionary>
