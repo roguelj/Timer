@@ -151,36 +151,36 @@
 
 
             <!-- start options header -->
-            <xctk:DropDownButton Grid.Row="0" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.StartLabelText}" ButtonBase.Click="Button_Click">
+            <xctk:DropDownButton Grid.Row="0" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.StartLabelText}" ButtonBase.Click="Button_Click">
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.StartOfDayButtonText}" />
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.StartOfDayButtonText}" />
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.NowButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.NowButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>0</s:Int32>
                             </Button.CommandParameter>
                         </Button>
-                        
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.TenMinutesAgoButtonText}" >
+
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.TenMinutesAgoButtonText}" >
                             <Button.CommandParameter>
                                 <s:Int32>-10</s:Int32>
                             </Button.CommandParameter>
                         </Button>
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.TwentyMinutesAgoButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.TwentyMinutesAgoButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>-20</s:Int32>
                             </Button.CommandParameter>
                         </Button>
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.ThirtyMinutesAgoButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.ThirtyMinutesAgoButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>-30</s:Int32>
                             </Button.CommandParameter>
                         </Button>
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.AnHourAgoButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.AnHourAgoButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>-60</s:Int32>
                             </Button.CommandParameter>
@@ -200,43 +200,43 @@
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.ThirtyMinutesAgoButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.ThirtyMinutesAgoButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>-30</s:Int32>
                             </Button.CommandParameter>
                         </Button>
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TwentyMinutesAgoButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TwentyMinutesAgoButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>-20</s:Int32>
                             </Button.CommandParameter>
                         </Button>
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TenMinutesAgoButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TenMinutesAgoButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>-10</s:Int32>
                             </Button.CommandParameter>
                         </Button>
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.NowButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.NowButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>0</s:Int32>
                             </Button.CommandParameter>
                         </Button>
-                        
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TenMinutesFromNowButtonText}">
+
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TenMinutesFromNowButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>10</s:Int32>
                             </Button.CommandParameter>
                         </Button>
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TwentyMinutesFromNowButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.TwentyMinutesFromNowButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>20</s:Int32>
                             </Button.CommandParameter>
                         </Button>
 
-                        <Button Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.ThirtyMinutesFromNowButtonText}">
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetEndCommand}" Content="{x:Static res:Resources.ThirtyMinutesFromNowButtonText}">
                             <Button.CommandParameter>
                                 <s:Int32>30</s:Int32>
                             </Button.CommandParameter>
@@ -263,9 +263,9 @@
 
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
-                        <Button Content="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{DynamicResource DropDownButtonButtonStyle}" CommandParameter="All"/>
+                        <Button Content="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{DynamicResource DropDownSubButtonStyle}" CommandParameter="All"/>
 
-                        <Button Content="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{DynamicResource DropDownButtonButtonStyle}" CommandParameter="Starred"/>
+                        <Button Content="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{DynamicResource DropDownSubButtonStyle}" CommandParameter="Starred"/>
 
                     </StackPanel>
 
@@ -289,11 +289,11 @@
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
 
-                        <Button Content="{x:Static res:Resources.ClearSelectedTaskButtonText}" Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding ClearTaskCommand}"/>
+                        <Button Content="{x:Static res:Resources.ClearSelectedTaskButtonText}" Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding ClearTaskCommand}"/>
 
-                        <Button Content="{x:Static res:Resources.LoadTasksForSelectedProjectButtonText}" Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding LoadAllTasksForSelectedProjectCommand}" />
+                        <Button Content="{x:Static res:Resources.LoadTasksForSelectedProjectButtonText}" Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding LoadAllTasksForSelectedProjectCommand}" />
 
-                        <Button Content="{x:Static res:Resources.LoadMyTasksForSelectedProjectButtonText}" Style="{DynamicResource DropDownButtonButtonStyle}" Command="{Binding LoadMyTasksForSelectedProjectCommand}" />
+                        <Button Content="{x:Static res:Resources.LoadMyTasksForSelectedProjectButtonText}" Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding LoadMyTasksForSelectedProjectCommand}" />
 
                     </StackPanel>
 

@@ -7,10 +7,12 @@
 
     <Application.Resources>
         <ResourceDictionary>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles\DefaultStyle.xaml" />
-                <ResourceDictionary Source="Styles\DefaultColourDictionary.xaml" />
+                <ResourceDictionary Source="Styles\DarkColourDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
         </ResourceDictionary>
     </Application.Resources>
     

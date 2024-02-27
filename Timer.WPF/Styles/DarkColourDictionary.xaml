@@ -1,0 +1,36 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  - - - - - - - - - -->
+    <!-- Colours -->
+
+
+    <Color x:Key="ContainerBackgroundColor">#FF000000</Color>
+    <Color x:Key="TextForegroundColor">#FFEEEEEE</Color>
+    <Color x:Key="SubContainerBackgroundColor">#ffeeeeee</Color>
+    <Color x:Key="ActionElementBackgroundColour">#111111</Color>
+    <Color x:Key="ActionElementForegroundColour">#ffffffff</Color>
+    <Color x:Key="DropDownButtonContainerBackgroundColor">#FF555555</Color>
+
+    <Color x:Key="NonActionElementBackgroundColour">#444444</Color>
+    <Color x:Key="NonActionElementForegroundColour">#ffffffff</Color>
+
+    <!--  - - - - - - - - - -->
+    <!-- Brushes -->
+
+    <!-- Windows and Dialogs -->
+    <SolidColorBrush x:Key="DialogBackgroundBrush" Color="{StaticResource ContainerBackgroundColor}"/>
+
+
+    <!-- Buttons -->
+    <SolidColorBrush x:Key="ActionElementBackgroundBrush" Color="{StaticResource ActionElementBackgroundColour}"/>
+    <SolidColorBrush x:Key="ActionElementForegroundBrush" Color="{StaticResource ActionElementForegroundColour}"/>
+
+    <SolidColorBrush x:Key="TextForegroundBrush" Color="{StaticResource TextForegroundColor}"/>
+
+    <SolidColorBrush x:Key="DropDownButtonContainerBackgroundBrush" Color="{StaticResource DropDownButtonContainerBackgroundColor}"/>
+
+    <SolidColorBrush x:Key="NonActionElementBackgroundBrush" Color="{StaticResource NonActionElementBackgroundColour}"/>
+    <SolidColorBrush x:Key="NonActionElementForegroundBrush" Color="{StaticResource NonActionElementForegroundColour}"/>
+    
+</ResourceDictionary>
