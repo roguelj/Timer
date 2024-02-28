@@ -105,7 +105,7 @@
                 </Button.CommandParameter>
             </Button>
 
-            <Button Content="{x:Static res:Resources.OkNonBillableButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{DynamicResource OkCancelButtonControlStyle}">
+            <Button Content="{x:Static res:Resources.OkNonBillableButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{DynamicResource ButtonStyle1}">
                 <Button.CommandParameter>
                     <s:Boolean>False</s:Boolean>
                 </Button.CommandParameter>
@@ -152,6 +152,9 @@
 
             <!-- start options header -->
             <xctk:DropDownButton Grid.Row="0" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.StartLabelText}" ButtonBase.Click="Button_Click">
+
+      
+                
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
                         <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.StartOfDayButtonText}" />
@@ -192,7 +195,9 @@
             </xctk:DropDownButton>
 
             <!-- start selector -->
-            <xctk:DateTimePicker Grid.Row="0" Grid.Column="1" Value="{Binding StartDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource DateTimePickerStyle}" />
+            <xctk:DateTimePicker Grid.Row="0" Grid.Column="1" Value="{Binding StartDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource DateTimePickerStyle}" >
+
+            </xctk:DateTimePicker>
 
 
             <!-- end options header -->
@@ -271,14 +276,17 @@
             </xctk:DropDownButton>
 
             <!-- project selector -->
-            <ComboBox Grid.Row="3" Grid.Column="1"
+            <!--<ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" Grid.Row="3" Grid.Column="1" 
                       ItemsSource="{Binding Projects}" 
                       IsSynchronizedWithCurrentItem="True" 
                       SelectedItem="{Binding SelectedProject}" 
                       Style="{DynamicResource EntityComboBoxSelectorStyle}"
                       ItemTemplate="{StaticResource NameDataTemplate}" 
-                      IsTextSearchEnabled="True"/>
+                      IsTextSearchEnabled="True"/>-->
 
+            <ComboBox Grid.Row="3"  >
+
+            </ComboBox>
 
             <!-- tasks options header -->
             <xctk:DropDownButton Grid.Row="4" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.TaskLabelText}" ButtonBase.Click="Button_Click">
@@ -341,7 +349,7 @@
 
             <!-- description -->
             <Label Grid.Row="6" Grid.Column="0"  Content="{x:Static res:Resources.DescriptionLabelText}" Style="{DynamicResource HeaderStyle}" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="50" Style="{DynamicResource ControlStyle}"/>
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="50" Style="{DynamicResource MultiLineTextBoxStyle}"/>
 
         </Grid>
 

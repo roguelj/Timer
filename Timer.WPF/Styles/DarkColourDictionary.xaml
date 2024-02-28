@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:themes="clr-namespace:Xceed.Wpf.Toolkit.Themes;assembly=Xceed.Wpf.Toolkit.NET5">
 
     <!--  - - - - - - - - - -->
     <!-- Colours -->
@@ -19,6 +20,7 @@
     <Color x:Key="NonActionElementBackgroundColour">#444444</Color>
     <Color x:Key="NonActionElementForegroundColour">#ffffffff</Color>
 
+    
     <!--  - - - - - - - - - -->
     <!-- Brushes -->
 
@@ -38,5 +40,8 @@
 
     <SolidColorBrush x:Key="NonActionElementBackgroundBrush" Color="{StaticResource NonActionElementBackgroundColour}"/>
     <SolidColorBrush x:Key="NonActionElementForegroundBrush" Color="{StaticResource NonActionElementForegroundColour}"/>
-    
+
+    <SolidColorBrush x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type themes:ResourceKeys}, ResourceId=ButtonMouseOverBackgroundKey }" Color="{DynamicResource ActionElementBackgroundHoverColour}" />
+    <SolidColorBrush x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type themes:ResourceKeys}, ResourceId=ButtonPressedBackgroundKey  }" Color="{DynamicResource ActionElementBackgroundHoverColour}" />
+
 </ResourceDictionary>
