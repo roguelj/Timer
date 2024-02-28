@@ -111,7 +111,7 @@
                 </Button.CommandParameter>
             </Button>
 
-            <Button  Command="{Binding CloseDialogCancelCommand}" Style="{DynamicResource OkCancelButtonControlStyle}">
+            <Button Command="{Binding CloseDialogCancelCommand}" Style="{DynamicResource OkCancelButtonControlStyle}">
 
                 <Button.Content>
                     <Grid>
@@ -259,7 +259,7 @@
 
 
             <!-- projects options header -->
-            <xctk:DropDownButton Grid.Row="3" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.ProjectLabelText}" ButtonBase.Click="Button_Click">
+            <xctk:DropDownButton Style="{DynamicResource DropDownButtonStyle}" Grid.Row="3" Grid.Column="0"  Content="{x:Static res:Resources.ProjectLabelText}" ButtonBase.Click="Button_Click">
 
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">

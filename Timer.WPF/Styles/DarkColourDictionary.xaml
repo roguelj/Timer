@@ -8,8 +8,12 @@
     <Color x:Key="ContainerBackgroundColor">#FF000000</Color>
     <Color x:Key="TextForegroundColor">#FFEEEEEE</Color>
     <Color x:Key="SubContainerBackgroundColor">#ffeeeeee</Color>
+    
     <Color x:Key="ActionElementBackgroundColour">#111111</Color>
+    <Color x:Key="ActionElementBackgroundHoverColour">#97181d</Color>
     <Color x:Key="ActionElementForegroundColour">#ffffffff</Color>
+    <Color x:Key="ActionElementBorderColour">#444444</Color>
+
     <Color x:Key="DropDownButtonContainerBackgroundColor">#FF999999</Color>
 
     <Color x:Key="NonActionElementBackgroundColour">#444444</Color>
@@ -25,7 +29,9 @@
     <!-- Buttons -->
     <SolidColorBrush x:Key="ActionElementBackgroundBrush" Color="{StaticResource ActionElementBackgroundColour}"/>
     <SolidColorBrush x:Key="ActionElementForegroundBrush" Color="{StaticResource ActionElementForegroundColour}"/>
-
+    <SolidColorBrush x:Key="ActionElementBackgroundHoverBrush" Color="{StaticResource ActionElementBackgroundHoverColour}"/>
+    <SolidColorBrush x:Key="ActionElementBorderBrush" Color="{StaticResource ActionElementBorderColour}"/>
+    
     <SolidColorBrush x:Key="TextForegroundBrush" Color="{StaticResource TextForegroundColor}"/>
 
     <SolidColorBrush x:Key="DropDownButtonContainerBackgroundBrush" Color="{StaticResource DropDownButtonContainerBackgroundColor}"/>
