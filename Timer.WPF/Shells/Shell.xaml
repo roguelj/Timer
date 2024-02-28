@@ -10,7 +10,9 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         Title="Timer"
-        WindowStyle="ToolWindow" Topmost="{Binding AlwaysOnTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        WindowStyle="ToolWindow"
+        WindowStartupLocation="CenterScreen"
+        Topmost="{Binding AlwaysOnTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
     <ContentControl
                 x:Name="ActionContent"

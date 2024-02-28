@@ -192,11 +192,11 @@
             </xctk:DropDownButton>
 
             <!-- start selector -->
-            <xctk:DateTimePicker Grid.Row="0" Grid.Column="1" Value="{Binding StartDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ControlStyle}" />
+            <xctk:DateTimePicker Grid.Row="0" Grid.Column="1" Value="{Binding StartDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource DateTimePickerStyle}" />
 
 
             <!-- end options header -->
-            <xctk:DropDownButton Grid.Row="1" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.EndLabelText}" ButtonBase.Click="Button_Click">
+            <xctk:DropDownButton Grid.Row="1" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.EndLabelText}" ButtonBase.Click="Button_Click">
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
 
@@ -248,7 +248,7 @@
             </xctk:DropDownButton>
 
             <!-- end selector -->
-            <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding EndDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ControlStyle}"/>
+            <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" Value="{Binding EndDateTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource DateTimePickerStyle}"/>
 
 
             <!-- duration -->
@@ -259,16 +259,13 @@
 
 
             <!-- projects options header -->
-            <xctk:DropDownButton Grid.Row="3" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.ProjectLabelText}" ButtonBase.Click="Button_Click">
+            <xctk:DropDownButton Grid.Row="3" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.ProjectLabelText}" ButtonBase.Click="Button_Click">
 
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
                         <Button Content="{x:Static res:Resources.LoadAllButtonText}" Command="{Binding LoadAllCommand}" Style="{DynamicResource DropDownSubButtonStyle}" CommandParameter="All"/>
-
                         <Button Content="{x:Static res:Resources.LoadStarredButtonText}" Command="{Binding LoadAllCommand}" Style="{DynamicResource DropDownSubButtonStyle}" CommandParameter="Starred"/>
-
                     </StackPanel>
-
                 </xctk:DropDownButton.DropDownContent>
 
             </xctk:DropDownButton>
@@ -284,7 +281,7 @@
 
 
             <!-- tasks options header -->
-            <xctk:DropDownButton Grid.Row="4" Grid.Column="0" Style="{DynamicResource ControlStyle}" Content="{x:Static res:Resources.TaskLabelText}" ButtonBase.Click="Button_Click">
+            <xctk:DropDownButton Grid.Row="4" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.TaskLabelText}" ButtonBase.Click="Button_Click">
 
                 <xctk:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
@@ -331,7 +328,7 @@
                  SelectionMode="Multiple" 
                  x:Name="SelectedTagsListBox" 
                  SelectionChanged="SelectedTagsListBox_SelectionChanged" 
-                 Style="{DynamicResource ControlStyle}"
+                 Style="{DynamicResource TagListBoxStyle}"
                  ItemTemplate="{StaticResource ColouredNameDataTemplate}">
 
                 <ListBox.ItemsPanel>

@@ -10,7 +10,7 @@
     <Color x:Key="SubContainerBackgroundColor">#ffeeeeee</Color>
     <Color x:Key="ActionElementBackgroundColour">#111111</Color>
     <Color x:Key="ActionElementForegroundColour">#ffffffff</Color>
-    <Color x:Key="DropDownButtonContainerBackgroundColor">#FF555555</Color>
+    <Color x:Key="DropDownButtonContainerBackgroundColor">#FF999999</Color>
 
     <Color x:Key="NonActionElementBackgroundColour">#444444</Color>
     <Color x:Key="NonActionElementForegroundColour">#ffffffff</Color>
