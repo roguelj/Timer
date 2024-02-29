@@ -14,7 +14,8 @@
     <Color x:Key="ActionElementBackgroundHoverColour">#97181d</Color>
     <Color x:Key="ActionElementForegroundColour">#ffffffff</Color>
     <Color x:Key="ActionElementBorderColour">#444444</Color>
-
+    <Color x:Key="ActionElementBackgroundPressColour">#BF2026</Color>
+    
     <Color x:Key="DropDownButtonContainerBackgroundColor">#FF999999</Color>
 
     <Color x:Key="NonActionElementBackgroundColour">#444444</Color>
@@ -33,6 +34,7 @@
     <SolidColorBrush x:Key="ActionElementForegroundBrush" Color="{StaticResource ActionElementForegroundColour}"/>
     <SolidColorBrush x:Key="ActionElementBackgroundHoverBrush" Color="{StaticResource ActionElementBackgroundHoverColour}"/>
     <SolidColorBrush x:Key="ActionElementBorderBrush" Color="{StaticResource ActionElementBorderColour}"/>
+    <SolidColorBrush x:Key="ActionElementBackgroundPressBrush" Color="{StaticResource ActionElementBackgroundPressColour}"/>
     
     <SolidColorBrush x:Key="TextForegroundBrush" Color="{StaticResource TextForegroundColor}"/>
 

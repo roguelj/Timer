@@ -11,6 +11,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles\DefaultStyle.xaml" />
                 <ResourceDictionary Source="Styles\DarkColourDictionary.xaml" />
+                <ResourceDictionary Source="Styles\ContentTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
         </ResourceDictionary>

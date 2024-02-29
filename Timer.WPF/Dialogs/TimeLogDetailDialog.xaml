@@ -79,56 +79,45 @@
             </Style>
         </DockPanel.Style>
 
-        <!-- Ok / Cancel etc-->
+        
+        <!-- log billable, non billable, cancel -->
         <UniformGrid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" Margin="5" Columns="3">
+
             
-            <Button  Command="{Binding CloseDialogOkCommand}" Style="{DynamicResource OkCancelButtonControlStyle}"  >
-
-                <Button.Content>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-
-                        <Label Content="{x:Static res:Resources.OkBillableButtonText}" Grid.Column="1"/>
-                        <Border Padding="3" Background="Green" CornerRadius="5" VerticalAlignment="Center"  >
-                            <TextBlock Text="$" Margin="2,0,2,0"  Foreground="White" FontWeight="Bold"/>
-                        </Border>
-                       
-                    </Grid>
-                
-                </Button.Content>
-                
+            <!-- log billable -->
+            <Button Name="LogBillableTimeButton"
+                    Command="{Binding CloseDialogOkCommand}" 
+                    Content="{x:Static res:Resources.OkBillableButtonText}" 
+                    Style="{DynamicResource OkCancelButtonControlStyle}"
+                    Template="{DynamicResource BillableButtonTemplate}">
+                                
                 <Button.CommandParameter>
                     <s:Boolean>True</s:Boolean>
                 </Button.CommandParameter>
+                
             </Button>
 
-            <Button Content="{x:Static res:Resources.OkNonBillableButtonText}" Command="{Binding CloseDialogOkCommand}" Style="{DynamicResource ButtonStyle1}">
+
+            <!-- log non billable -->
+            <Button Name="LogNonBillableTimeButton"
+                    Content="{x:Static res:Resources.OkNonBillableButtonText}" 
+                    Command="{Binding CloseDialogOkCommand}" 
+                    Style="{DynamicResource OkCancelButtonControlStyle}">
+                
                 <Button.CommandParameter>
                     <s:Boolean>False</s:Boolean>
                 </Button.CommandParameter>
+                
             </Button>
 
-            <Button Command="{Binding CloseDialogCancelCommand}" Style="{DynamicResource OkCancelButtonControlStyle}">
-
-                <Button.Content>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-
-                        <Label Content="{x:Static res:Resources.CancelButtonText}" Grid.Column="1"/>
-                        <Border Padding="3" Background="Red" CornerRadius="5" VerticalAlignment="Center"  >
-                            <TextBlock Text="&#xE711;" Margin="0,0,0,0" FontFamily="Segoe MDL2 Assets" Foreground="White" FontWeight="Bold"/>
-                        </Border>
-
-                    </Grid>
-
-                </Button.Content>
-            </Button>
+            
+            <!-- cancel -->
+            <Button Name="CancelButton"
+                    Command="{Binding CloseDialogCancelCommand}" 
+                    Content="{x:Static res:Resources.CancelButtonText}" 
+                    Style="{DynamicResource OkCancelButtonControlStyle}"
+                    Template="{DynamicResource CancelButtonTemplate}"/>
+            
         </UniformGrid>
 
 
@@ -276,17 +265,14 @@
             </xctk:DropDownButton>
 
             <!-- project selector -->
-            <!--<ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" Grid.Row="3" Grid.Column="1" 
+            <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" Grid.Row="3" Grid.Column="1" 
                       ItemsSource="{Binding Projects}" 
                       IsSynchronizedWithCurrentItem="True" 
                       SelectedItem="{Binding SelectedProject}" 
                       Style="{DynamicResource EntityComboBoxSelectorStyle}"
                       ItemTemplate="{StaticResource NameDataTemplate}" 
-                      IsTextSearchEnabled="True"/>-->
+                      IsTextSearchEnabled="True"/>
 
-            <ComboBox Grid.Row="3"  >
-
-            </ComboBox>
 
             <!-- tasks options header -->
             <xctk:DropDownButton Grid.Row="4" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.TaskLabelText}" ButtonBase.Click="Button_Click">
