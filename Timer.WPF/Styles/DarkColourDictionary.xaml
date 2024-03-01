@@ -10,7 +10,7 @@
     <Color x:Key="TextForegroundColor">#FFEEEEEE</Color>
     <Color x:Key="SubContainerBackgroundColor">#ffeeeeee</Color>
     
-    <Color x:Key="ActionElementBackgroundColour">#111111</Color>
+    <Color x:Key="ActionElementBackgroundColour">#222222</Color>
     <Color x:Key="ActionElementBackgroundHoverColour">#97181d</Color>
     <Color x:Key="ActionElementForegroundColour">#ffffffff</Color>
     <Color x:Key="ActionElementBorderColour">#444444</Color>
