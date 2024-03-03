@@ -1,4 +1,5 @@
-﻿using Prism.Services.Dialogs;
+﻿using Microsoft.Extensions.Options;
+using Prism.Services.Dialogs;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows;
+using Timer.Shared.Models.Options;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
@@ -30,7 +33,7 @@ namespace Timer.WPF.ViewModels
 
 
         // constructor
-        public TimeLogViewModel(ILogger logger, ITimeLogService timeLogService, IDialogService dialogService) :base(logger, timeLogService)
+        public TimeLogViewModel(ILogger logger, ITimeLogService timeLogService, IDialogService dialogService, IOptions<UserInterfaceOptions> options) :base(logger, timeLogService)
         {
 
             // initialise services
@@ -47,6 +50,33 @@ namespace Timer.WPF.ViewModels
             this.AddCommand(this.LogTimeCommand);
             this.AddCommand(this.OpenSettingsCommand);
             this.AddCommand(this.OpenAboutCommand);
+
+
+            // set theme
+            var theme = options.Value.Theme;
+            var allowedthemes =new[] { "Light", "Dark" };
+
+            if (theme is not null && !string.IsNullOrEmpty(theme) && allowedthemes.Contains(theme))
+            {
+                var md = Application.Current.Resources.MergedDictionaries;
+                md.Clear();
+
+                md.Add(new ResourceDictionary()
+                {
+                    Source = new Uri($"/Styles/{theme}/ColourDictionary.xaml", UriKind.RelativeOrAbsolute)
+                });
+
+                md.Add(new ResourceDictionary()
+                {
+                    Source = new Uri("/Styles/Common/Templates.xaml", UriKind.RelativeOrAbsolute)
+                });
+
+                md.Add(new ResourceDictionary()
+                {
+                    Source = new Uri("/Styles/Common/ControlStyles.xaml", UriKind.RelativeOrAbsolute)
+                });
+
+            }
 
         }
 

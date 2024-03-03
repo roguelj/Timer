@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:converters="clr-namespace:Timer.WPF.Converters">
 
     
     <!-- template for log billable button -->
@@ -105,5 +105,29 @@
         </ControlTemplate.Triggers>
         
     </ControlTemplate>
+
+
+    <DataTemplate x:Key="NameDataTemplate">
+        <Border Background="{DynamicResource ActionElementBackgroundBrush}"  HorizontalAlignment="Center" Padding="5,2" CornerRadius="3">
+            <TextBlock Text="{Binding Name}" Foreground="{DynamicResource ActionElementForegroundBrush}"/>
+        </Border>
+    </DataTemplate>
+
+    
+    <!-- tags template -->
+    <converters:HtmlColourConverter x:Key="HtmlColourConverter" />
+    
+    <DataTemplate x:Key="ColouredNameDataTemplate">
+        <Grid Margin="0,2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Background="{Binding Colour, Converter={StaticResource HtmlColourConverter}}" CornerRadius="3" BorderThickness="1" BorderBrush="{DynamicResource TextForegroundBrush}" Margin="1" Padding="0">
+                <TextBlock Text="{Binding Name}" Padding="5,2" Margin="0" Foreground="Black" />
+            </Border>
+
+        </Grid>
+    </DataTemplate>
     
 </ResourceDictionary>

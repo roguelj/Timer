@@ -250,6 +250,24 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start of Break.
+        /// </summary>
+        public static string SetEndToStartOfBreakButtonText {
+            get {
+                return ResourceManager.GetString("SetEndToStartOfBreakButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End of Break.
+        /// </summary>
+        public static string SetStartToEndOfBreakButtonText {
+            get {
+                return ResourceManager.GetString("SetStartToEndOfBreakButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start.
         /// </summary>
         public static string StartLabelText {

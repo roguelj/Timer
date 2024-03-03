@@ -9,9 +9,12 @@
         <ResourceDictionary>
             
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Styles\DefaultStyle.xaml" />
-                <ResourceDictionary Source="Styles\DarkColourDictionary.xaml" />
-                <ResourceDictionary Source="Styles\ContentTemplates.xaml" />
+
+                <ResourceDictionary Source="Styles\Light\ColourDictionary.xaml" x:Name="ThemeResourceDictionary" />
+                
+                <ResourceDictionary Source="Styles\Common\ControlStyles.xaml" />
+                <ResourceDictionary Source="Styles\Common\Templates.xaml" />
+                
             </ResourceDictionary.MergedDictionaries>
             
         </ResourceDictionary>

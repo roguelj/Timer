@@ -30,31 +30,8 @@
             </CollectionViewSource.SortDescriptions>
             
         </CollectionViewSource>
-
-        <converters:HtmlColourConverter x:Key="HtmlColourConverter" />
+        
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-        <DataTemplate x:Key="NameDataTemplate">
-            <Grid Margin="0,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Name}" />
-            </Grid>
-        </DataTemplate>
-
-        <DataTemplate x:Key="ColouredNameDataTemplate">
-            <Grid Margin="0,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Border Background="{Binding Colour, Converter={StaticResource HtmlColourConverter}}" CornerRadius="3" BorderThickness="1" BorderBrush="LightGray" Margin="1" Padding="0">
-                    <TextBlock Text="{Binding Name}" Padding="5,2" Margin="0" Foreground="Black" />
-                </Border>
-
-            </Grid>
-        </DataTemplate>
 
     </UserControl.Resources>
 
@@ -142,11 +119,12 @@
 
             <!-- start options header -->
             <xctk:DropDownButton Grid.Row="0" Grid.Column="0" Style="{DynamicResource DropDownButtonStyle}" Content="{x:Static res:Resources.StartLabelText}" ButtonBase.Click="Button_Click">
-
-      
+     
                 
                 <xctk:DropDownButton.DropDownContent>
+                    
                     <StackPanel Orientation="Vertical" Style="{DynamicResource DropDownButtonContentStackPanelStyle}">
+                        
                         <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.StartOfDayButtonText}" />
 
                         <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartCommand}" Content="{x:Static res:Resources.NowButtonText}">
@@ -179,9 +157,12 @@
                             </Button.CommandParameter>
                         </Button>
 
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartToEndOfBreakCommand}" Content="{x:Static res:Resources.SetStartToEndOfBreakButtonText}"/>
+
                     </StackPanel>
 
                 </xctk:DropDownButton.DropDownContent>
+          
             </xctk:DropDownButton>
 
             <!-- start selector -->
@@ -237,6 +218,8 @@
                             </Button.CommandParameter>
                         </Button>
 
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetEndToStartOfBreakCommand}" Content="{x:Static res:Resources.SetEndToStartOfBreakButtonText}"/>
+                        
                     </StackPanel>
 
                 </xctk:DropDownButton.DropDownContent>
@@ -266,13 +249,19 @@
             </xctk:DropDownButton>
 
             <!-- project selector -->
-            <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" Grid.Row="3" Grid.Column="1" 
+            <ComboBox Grid.Row="3" Grid.Column="1" 
                       ItemsSource="{Binding Projects}" 
                       IsSynchronizedWithCurrentItem="True" 
                       SelectedItem="{Binding SelectedProject}" 
                       Style="{DynamicResource EntityComboBoxSelectorStyle}"
                       ItemTemplate="{StaticResource NameDataTemplate}" 
-                      IsTextSearchEnabled="True"/>
+                      IsTextSearchEnabled="True">
+
+                <ComboBox.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="{DynamicResource ActionElementBackgroundColour}" />
+                </ComboBox.Resources>
+                
+            </ComboBox>
 
 
             <!-- tasks options header -->
@@ -301,18 +290,23 @@
                       x:Name="TaskComboBox"
                       ItemTemplate="{StaticResource NameDataTemplate}"
                       IsTextSearchEnabled="True">
-
+                
+                <ComboBox.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="{DynamicResource ActionElementBackgroundColour}" />
+                </ComboBox.Resources>
+                
                 <ComboBox.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.HeaderTemplate>
                             <DataTemplate>
-                                <Border Style="{DynamicResource TaskListHeaderBorderControlStyle}">
-                                    <Label Content="{Binding Name}" Style="{DynamicResource TaskListHeaderLabelControlStyle}"/>
+                                <Border Style="{DynamicResource ComboBoxGroupHeaderBorderControlStyle}">
+                                    <Label Content="{Binding Name}" Style="{DynamicResource ComboBoxGroupHeaderLabelControlStyle}"/>
                                 </Border>
                             </DataTemplate>
                         </GroupStyle.HeaderTemplate>
                     </GroupStyle>
                 </ComboBox.GroupStyle>
+
             </ComboBox>
 
 

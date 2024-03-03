@@ -111,6 +111,8 @@ namespace Timer.WPF.ViewModels
         public DelegateCommand LoadMyTasksForSelectedProjectCommand { get; }
         public DelegateCommand<int?> SetStartCommand { get; }
         public DelegateCommand<int?> SetEndCommand { get; }
+        public DelegateCommand SetStartToEndOfBreakCommand { get; }
+        public DelegateCommand SetEndToStartOfBreakCommand { get; }
 
 
         // -----------------------
@@ -168,6 +170,8 @@ namespace Timer.WPF.ViewModels
             this.LoadMyTasksForSelectedProjectCommand = new DelegateCommand(this.LoadMyTasksForSelectedProject, () => this.SelectedProject is not null);
             this.SetStartCommand = new DelegateCommand<int?>(this.SetStart);
             this.SetEndCommand = new DelegateCommand<int?>(this.SetEnd);
+            this.SetStartToEndOfBreakCommand = new DelegateCommand(this.SetStartToEndOfBreak);
+            this.SetEndToStartOfBreakCommand = new DelegateCommand(this.SetEndToStartOfBreak);
 
 
             // add command to the base list
@@ -176,6 +180,9 @@ namespace Timer.WPF.ViewModels
             base.AddCommand(this.LoadMyTasksForSelectedProjectCommand);
             base.AddCommand(this.SetStartCommand);
             base.AddCommand(this.SetEndCommand);
+            base.AddCommand(this.SetStartToEndOfBreakCommand);
+            base.AddCommand(this.SetEndToStartOfBreakCommand);
+
         }
 
 
@@ -372,6 +379,31 @@ namespace Timer.WPF.ViewModels
 
         }
 
+
+        private void SetStartToEndOfBreak()
+        {
+
+            var now = this.SystemClock!.UtcNow;
+
+            if (this.Options.Value.BreakEnd is TimeOnly breakEnd)
+            {
+                this.StartDateTime = now.Date + breakEnd.ToTimeSpan();
+            }
+
+        }
+
+
+        private void SetEndToStartOfBreak()
+        {
+
+            var now = this.SystemClock!.UtcNow;
+
+            if (this.Options.Value.BreakStart is TimeOnly breakStart)
+            {
+                this.EndDateTime = now.Date + breakStart.ToTimeSpan();
+            }
+
+        }
     }
 
 }
