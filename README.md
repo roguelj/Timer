@@ -34,7 +34,10 @@ When logging time, the Timer app will display a list of recent tags, tasks and p
 ```
   "UserInterfaceOptions": {
     "AlwaysOnTop": true,
-    "TimeOfFirstTask":"09:00:00"
+    "TimeOfFirstTask":"09:00:00",
+    "BreakStart": "12:00:00",
+    "BreakEnd": "13:00:00",
+    "Theme": "Light"
   }
   ```
 

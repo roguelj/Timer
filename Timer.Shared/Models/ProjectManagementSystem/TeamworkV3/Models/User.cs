@@ -61,7 +61,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models
         [JsonIgnore]
         public string Name
         {
-            get => $"{FirstName} {LastName}";
+            get => $"{this.FirstName} {this.LastName}";
         }
 
         [JsonIgnore]

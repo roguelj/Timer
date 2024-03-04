@@ -19,7 +19,7 @@ namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests
         public TimeLogEntryRequest(DateTime startDateTime, DateTime endDateTime, int projectID, int? taskId, List<int>? tagIds, bool isBillable, string description)
         {
 
-            Timelog = new TimeLogInput
+            this.Timelog = new TimeLogInput
             {
                 Minutes = (endDateTime - startDateTime).Minutes,
                 Hours = (endDateTime - startDateTime).Hours,

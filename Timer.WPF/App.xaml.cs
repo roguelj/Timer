@@ -1,10 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
+using System.Linq;
+using System;
 using System.Windows;
 using Timer.Shared.Application;
+using Timer.Shared.Models.Options;
 using Timer.Shared.ViewModels;
 using Timer.WPF.Dialogs;
 using Timer.WPF.Shells;
@@ -27,7 +31,47 @@ namespace Timer.WPF
         }
 
 
-        protected override Window CreateShell() => this.Container.Resolve<Shell>();
+        protected override Window CreateShell()
+        {
+
+            var options = this.Container.Resolve<IOptions<UserInterfaceOptions>>();
+
+
+            // set theme
+            var theme = options.Value.Theme;
+
+
+            // don't allow the user to inject anything they want.
+            var allowedthemes = new[] { "Light", "Dark" };
+
+
+            // do some sanity checks, and clear / re-add the ResourceDictionary's to the MergedDictionaries
+            if (theme is not null && !string.IsNullOrEmpty(theme) && allowedthemes.Contains(theme))
+            {
+                var md = Application.Current.Resources.MergedDictionaries;
+                md.Clear();
+
+                md.Add(new ResourceDictionary()
+                {
+                    Source = new Uri($"/Styles/{theme}/ColourDictionary.xaml", UriKind.RelativeOrAbsolute)
+                });
+
+                md.Add(new ResourceDictionary()
+                {
+                    Source = new Uri("/Styles/Common/Templates.xaml", UriKind.RelativeOrAbsolute)
+                });
+
+                md.Add(new ResourceDictionary()
+                {
+                    Source = new Uri("/Styles/Common/ControlStyles.xaml", UriKind.RelativeOrAbsolute)
+                });
+
+            }
+
+
+            return this.Container.Resolve<Shell>();
+
+        }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {      

@@ -10,7 +10,7 @@
             
             <ResourceDictionary.MergedDictionaries>
 
-                <ResourceDictionary Source="Styles\Light\ColourDictionary.xaml" x:Name="ThemeResourceDictionary" />
+                <ResourceDictionary Source="Styles\Dark\ColourDictionary.xaml" x:Name="ThemeResourceDictionary" />
                 
                 <ResourceDictionary Source="Styles\Common\ControlStyles.xaml" />
                 <ResourceDictionary Source="Styles\Common\Templates.xaml" />

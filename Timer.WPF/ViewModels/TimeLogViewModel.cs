@@ -51,33 +51,6 @@ namespace Timer.WPF.ViewModels
             this.AddCommand(this.OpenSettingsCommand);
             this.AddCommand(this.OpenAboutCommand);
 
-
-            // set theme
-            var theme = options.Value.Theme;
-            var allowedthemes =new[] { "Light", "Dark" };
-
-            if (theme is not null && !string.IsNullOrEmpty(theme) && allowedthemes.Contains(theme))
-            {
-                var md = Application.Current.Resources.MergedDictionaries;
-                md.Clear();
-
-                md.Add(new ResourceDictionary()
-                {
-                    Source = new Uri($"/Styles/{theme}/ColourDictionary.xaml", UriKind.RelativeOrAbsolute)
-                });
-
-                md.Add(new ResourceDictionary()
-                {
-                    Source = new Uri("/Styles/Common/Templates.xaml", UriKind.RelativeOrAbsolute)
-                });
-
-                md.Add(new ResourceDictionary()
-                {
-                    Source = new Uri("/Styles/Common/ControlStyles.xaml", UriKind.RelativeOrAbsolute)
-                });
-
-            }
-
         }
 
 
