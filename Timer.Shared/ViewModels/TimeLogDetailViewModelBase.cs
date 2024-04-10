@@ -217,7 +217,7 @@ namespace Timer.WPF.ViewModels
             var endDateLastEntry = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
 
             this.StartDateTime = endDateLastEntry;
-            this.EndDateTime = this.SystemClock!.UtcNow.DateTime;
+            this.EndDateTime = this.SystemClock!.Now.DateTime;
 
         }
 
