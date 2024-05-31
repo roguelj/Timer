@@ -37,14 +37,6 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             this.SystemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
         }
 
-        // logging
-        private async Task<string> LogResponseContent(HttpResponseMessage response, CancellationToken cancellationToken)
-        {
-          
-            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            this.Logger.Verbose(responseContent);
-            return responseContent;
-        }
 
     }
 

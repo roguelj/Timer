@@ -192,6 +192,9 @@ Check out the GitHub page for configuration details and documentation.
   <data name="SetStartToEndOfBreakButtonText" xml:space="preserve">
     <value>End of Break</value>
   </data>
+  <data name="SetStartToPcBootTimeButtonText" xml:space="preserve">
+    <value>PC Boot Time</value>
+  </data>
   <data name="StartLabelText" xml:space="preserve">
     <value>Start</value>
   </data>

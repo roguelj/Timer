@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using Timer.Shared.Application;
+using Timer.Shared.Constants;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta;
-using Timer.Shared.Resources;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
@@ -32,11 +30,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             request.AddAuthenticationHeader(this.IsBasicAuth(), this.AccessToken());
 
             var response = await client.SendAsync(request, cancellationToken);
-            await this.LogResponseContent(response, cancellationToken);
+         
 
             // process the response
             if (response.IsSuccessStatusCode)
             {
+                this.Logger.Information(LogMessage.HTTP_STATUS_CODE, response.StatusCode);
+
                 var teResponse = await response.Content.ReadAsAsync<TimeLogResponse>();
                 return teResponse.Items.OrderByDescending(o => o.TimeLogged.Value.AddMinutes(o.Minutes ?? 0)).FirstOrDefault();
             }
@@ -44,7 +44,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             {
 
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                this.Logger.Error(responseContent);
+                this.Logger.Error(LogMessage.HTTP_RESPONSE_CONTENT, responseContent);
 
                 return null;
 
@@ -106,7 +106,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 else
                 {
                     shouldExit = true;
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                    this.Logger.Error(LogMessage.HTTP_STATUS_CODE, httpResponse.StatusCode);
                 }
 
             } while (!shouldExit);
@@ -172,7 +172,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 else
                 {
                     shouldExit = true;
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                    this.Logger.Error(LogMessage.HTTP_STATUS_CODE, httpResponse.StatusCode);
                 }
 
             } while (!shouldExit);
@@ -237,7 +237,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 else
                 {
                     shouldExit = true;
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                    this.Logger.Error(LogMessage.HTTP_STATUS_CODE, httpResponse.StatusCode);
                 }
 
             } while (!shouldExit);
@@ -271,12 +271,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
                 // perform the request, get the response
                 var httpResponse = await client.SendAsync(request, cancellationToken);
-                await this.LogResponseContent(httpResponse, cancellationToken);
-
+             
 
                 // process the response
                 if (httpResponse.IsSuccessStatusCode)
                 {
+
+                    this.Logger.Information(LogMessage.HTTP_STATUS_CODE_FOR, httpResponse.StatusCode, request.RequestUri);
 
                     var response = await httpResponse.Content.ReadAsAsync<TimeLogResponse>();
                     result.Add(response);
@@ -294,7 +295,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 else
                 {
                     shouldExit = true;
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                    this.Logger.Error(LogMessage.HTTP_STATUS_CODE, httpResponse.StatusCode);
                 }
 
             } while (!shouldExit);
@@ -313,13 +314,15 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             if (!this.MemoryCache.TryGetValue(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, out List<TimeLogResponse>? cacheValue))
             {
 
+                this.Logger.Information(LogMessage.CACHE_RESULT_FOR, false, CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY);
+
                 var daysToConsiderRecent = Math.Max(0, this.Options.Value.DaysToConsiderRecent ?? 14);
                 var startDate = this.SystemClock.UtcNow.AddDays(-daysToConsiderRecent);
                 var endDate = this.SystemClock.UtcNow;
 
                 // build the query parameter string
-                List<string> queryParameters = new List<string>
-                {
+                List<string> queryParameters =
+                [
                     $"assignedToUserIds={myUserId}",
                     "pageSize=500",
                     "orderBy=date",
@@ -328,10 +331,15 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     $"endDate={endDate:yyyy-MM-dd}",
                     "include=projects,tasks,tags,tasks.tasklists",
                     "fields[tasklists]=id,projectId,name"
-                };
+                ];
 
                 cacheValue = await this.GetAndPageV3TimeLogResponse("time.json", string.Join("&", queryParameters), cancellationToken);
                 this.MemoryCache.Set(CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY, cacheValue, RecentActivityMemoryCacheEntryOptions);
+                                
+            }
+            else
+            {
+                this.Logger.Information(LogMessage.CACHE_RESULT_FOR, true, CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY);
             }
 
             return cacheValue;

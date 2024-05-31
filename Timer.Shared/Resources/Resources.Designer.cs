@@ -268,6 +268,15 @@ namespace Timer.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PC Boot Time.
+        /// </summary>
+        public static string SetStartToPcBootTimeButtonText {
+            get {
+                return ResourceManager.GetString("SetStartToPcBootTimeButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start.
         /// </summary>
         public static string StartLabelText {

@@ -4,12 +4,14 @@ using Prism.Commands;
 using Prism.Events;
 using Serilog;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Diagnostics.Tracing;
+using Timer.Shared.Constants;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.Options;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
-using LogResMan = Timer.Shared.Resources.LogMessages;
 
 namespace Timer.WPF.ViewModels
 {
@@ -113,14 +115,15 @@ namespace Timer.WPF.ViewModels
         public DelegateCommand<int?> SetEndCommand { get; }
         public DelegateCommand SetStartToEndOfBreakCommand { get; }
         public DelegateCommand SetEndToStartOfBreakCommand { get; }
+        public DelegateCommand SetStartToPcBootTimeCommand { get; }
 
 
         // -----------------------
         // bound collection properties
-        public ObservableCollection<Tag> Tags { get; } = new ObservableCollection<Tag>();
-        public ObservableCollection<ProjectTask> Tasks { get; } = new ObservableCollection<ProjectTask>();
-        public ObservableCollection<Project> Projects { get; } = new ObservableCollection<Project>();
-        public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
+        public ObservableCollection<Tag> Tags { get; } = [];
+        public ObservableCollection<ProjectTask> Tasks { get; } = [];
+        public ObservableCollection<Project> Projects { get; } = [];
+        public ObservableCollection<Tag> SelectedTags { get; } = [];
 
 
         // -----------------------
@@ -172,6 +175,7 @@ namespace Timer.WPF.ViewModels
             this.SetEndCommand = new DelegateCommand<int?>(this.SetEnd);
             this.SetStartToEndOfBreakCommand = new DelegateCommand(this.SetStartToEndOfBreak);
             this.SetEndToStartOfBreakCommand = new DelegateCommand(this.SetEndToStartOfBreak);
+            this.SetStartToPcBootTimeCommand = new DelegateCommand(this.SetStartToPcBootTime);
 
 
             // add command to the base list
@@ -182,6 +186,7 @@ namespace Timer.WPF.ViewModels
             base.AddCommand(this.SetEndCommand);
             base.AddCommand(this.SetStartToEndOfBreakCommand);
             base.AddCommand(this.SetEndToStartOfBreakCommand);
+            base.AddCommand(this.SetStartToPcBootTimeCommand);
 
         }
 
@@ -214,8 +219,20 @@ namespace Timer.WPF.ViewModels
             // get the start date as the time stamp of the last entry end point.
             // the assumption is that the Time Log Entry button is pressed on task finish, so the end date is now
 
-            var endDateLastEntry = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
+            DateTime endDateLastEntry;
 
+            try
+            {
+                endDateLastEntry = (await this.TimeLogService!.GetEndTimeOfLastTimeLogEntryAsync(CancellationToken.None)).Value.DateTime;
+            }
+            catch (Exception ex)
+            {
+                endDateLastEntry = this.SystemClock!.Now.DateTime;
+                this.Logger.Error(ex, LogMessage.EXCEPTION_DURING_METHOD, "b8347e24-25c4-43e4-a9f5-18e663b79e01");
+            }
+
+
+            // set the properties
             this.StartDateTime = endDateLastEntry;
             this.EndDateTime = this.SystemClock!.Now.DateTime;
 
@@ -229,21 +246,33 @@ namespace Timer.WPF.ViewModels
             if (await this.TimeLogService!.RecentTags(CancellationToken.None) is IEnumerable<Tag> recentTags)
             {
                 this.Tags.AddRange(recentTags, true);
-                this.Logger.Verbose(LogResMan.FoundEntities, recentTags.Count(), "Tag");
+                this.Logger.Information(LogMessage.ENTITY_COUNT, recentTags.Count(), "Tag");
+            }
+            else
+            {
+                this.Logger.Warning(LogMessage.RECENT_FAILURE, "Tag");
             }
 
             // recent tasks
             if (await this.TimeLogService.RecentTasks(CancellationToken.None) is IEnumerable<ProjectTask> recentTasks)
             {
                 this.Tasks.AddRange(recentTasks, true);
-                this.Logger.Verbose(LogResMan.FoundEntities, recentTasks.Count(), "Task");
+                this.Logger.Information(LogMessage.ENTITY_COUNT, recentTasks.Count(), "Task");
+            }
+            else
+            {
+                this.Logger.Warning(LogMessage.RECENT_FAILURE, "Task");
             }
 
             // recent projects
             if (await this.TimeLogService.RecentProjects(CancellationToken.None) is IEnumerable<Project> recentProjects)
             {
                 this.Projects.AddRange(recentProjects, true);
-                this.Logger.Verbose(LogResMan.FoundEntities, recentProjects.Count(), "Project");
+                this.Logger.Information(LogMessage.ENTITY_COUNT, recentProjects.Count(), "Project");
+            }
+            else
+            {
+                this.Logger.Warning(LogMessage.RECENT_FAILURE, "Project");
             }
 
         }
@@ -261,23 +290,37 @@ namespace Timer.WPF.ViewModels
             {
                 this.SelectedTags.Clear();
                 this.Tags.AddRange(tags.OrderBy(ob => ob.Name), true);
-                this.Logger.Verbose(LogResMan.FoundEntities, tags.Count(), "Tag");
+                this.Logger.Information(LogMessage.ENTITY_COUNT, tags.Count(), "Tag");
             }
+            else
+            {
+                this.Logger.Warning(LogMessage.ALL_FAILURE, "Tag");
+            }
+
 
             // set all tasks
             if (await this.TimeLogService!.Tasks(CancellationToken.None) is IEnumerable<ProjectTask> tasks)
             {
                 this.SelectedTask = null;
                 this.Tasks.AddRange(tasks.OrderBy(ob => ob.Name), true);
-                this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
+                this.Logger.Information(LogMessage.ENTITY_COUNT, tasks.Count(), "Task");
             }
+            else
+            {
+                this.Logger.Warning(LogMessage.ALL_FAILURE, "Task");
+            }
+
 
             // set all (or starred only) projects
             if (await this.TimeLogService!.Projects(parameter == "Starred", CancellationToken.None) is IEnumerable<Project> projects)
             {
                 this.SelectedProject = null;
                 this.Projects.AddRange(projects.OrderBy(ob => ob.Name), true);
-                this.Logger.Verbose(LogResMan.FoundEntities, projects.Count(), "Project");
+                this.Logger.Information(LogMessage.ENTITY_COUNT, projects.Count(), "Project");
+            }
+            else
+            {
+                this.Logger.Warning(LogMessage.ALL_FAILURE, "Project");
             }
 
 
@@ -306,7 +349,7 @@ namespace Timer.WPF.ViewModels
                     // do not clear current list - we're just adding new ones
                     this.SelectedTask = null;
                     this.Tasks.AddRange(tasksToAdd, false);                                 
-                    this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
+                    this.Logger.Information(LogMessage.ENTITY_COUNT, tasks.Count(), "Task");
 
                 }
 
@@ -334,7 +377,7 @@ namespace Timer.WPF.ViewModels
                     // do not clear current list - we're just adding new ones
                     this.SelectedTask = null;
                     this.Tasks.AddRange(tasksToAdd, false);
-                    this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
+                    this.Logger.Information(LogMessage.ENTITY_COUNT, tasks.Count(), "Task");
 
                 }
 
@@ -376,7 +419,6 @@ namespace Timer.WPF.ViewModels
                 this.EndDateTime = now.AddMinutes(minutes.Value).DateTime;
             }
 
-
         }
 
 
@@ -404,6 +446,14 @@ namespace Timer.WPF.ViewModels
             }
 
         }
+
+
+        private void SetStartToPcBootTime()
+        {
+            var ticks = Stopwatch.GetTimestamp();
+            this.StartDateTime = this.SystemClock!.Now.DateTime.AddSeconds(-(ticks / Stopwatch.Frequency));
+        }
+  
     }
 
 }

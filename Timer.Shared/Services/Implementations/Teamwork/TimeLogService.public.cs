@@ -1,9 +1,10 @@
 ﻿using System.Text;
+using Timer.Shared.Constants;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
 using Timer.Shared.Resources;
 using Timer.Shared.Services.Interfaces;
-using LogRes = Timer.Shared.Resources.LogMessages;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
@@ -34,7 +35,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             }
             else
             {
-                this.Logger.Error(LogRes.UnknownUser);
+                this.Logger.Error(LogMessage.UNKNOWN_USER);
                 return null;
 
             }
@@ -59,7 +60,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
             // post the request
             var response = await client.PostAsJsonAsync(endpoint, timeLogEntryRequest, cancellationToken);
-            await this.LogResponseContent(response, cancellationToken);
+          
+            this.Logger.Information(LogMessage.HTTP_STATUS_CODE, response.StatusCode);
 
             // process response
             if (response.IsSuccessStatusCode)
@@ -68,8 +70,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             }
             else
             {
-                this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "");
-                this.Logger.Error(LogMessages.LogTimeFailure);
+                this.Logger.Error(LogMessage.LOG_TIME_FAILURE);
                 return false;
             }
 
@@ -95,9 +96,20 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         public async Task<List<Project>?> RecentProjects(CancellationToken cancellationToken)
         {
 
-            var myUserId = (await this.Me(cancellationToken)).Id;
+            int myUserId;
+            List<TimeLogResponse> recent;
 
-            var recent = await this.GetOrSetRecentActivity(myUserId, cancellationToken);
+            try
+            {
+                myUserId = (await this.Me(cancellationToken)).Id;
+                recent = await this.GetOrSetRecentActivity(myUserId, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(ex, LogMessage.EXCEPTION_DURING_METHOD, "3847c909-284c-4de5-a0e8-4099b2e00e9a");
+                return null;
+            }
+
             var recentItems = recent.SelectMany(sm => sm.Items);
             var itemLookup = recent.SelectMany(sm => sm.Included.Projects);
 
@@ -113,9 +125,20 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         public async Task<List<Tag>?> RecentTags(CancellationToken cancellationToken)
         {
 
-            var myUserId = (await this.Me(cancellationToken)).Id;
+            int myUserId;
+            List<TimeLogResponse> recent;
 
-            var recent = await this.GetOrSetRecentActivity(myUserId, cancellationToken);
+            try
+            {
+                myUserId = (await this.Me(cancellationToken)).Id;
+                recent = await this.GetOrSetRecentActivity(myUserId, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(ex, LogMessage.EXCEPTION_DURING_METHOD, "620523d6-0ae0-4eb4-95a8-ef3dd36a3eb6");
+                return null;
+            }
+
             var recentItems = recent.SelectMany(sm => sm.Items);
             var itemLookup = recent.SelectMany(sm => sm.Included.Tags);
 
@@ -142,9 +165,20 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         public async Task<List<ProjectTask>?> RecentTasks(CancellationToken cancellationToken)
         {
 
-            var myUserId = (await this.Me(cancellationToken)).Id;
+            int myUserId;
+            List<TimeLogResponse> recent;
 
-            var recent = await this.GetOrSetRecentActivity(myUserId, cancellationToken);
+            try
+            {
+                myUserId = (await this.Me(cancellationToken)).Id;
+                recent = await this.GetOrSetRecentActivity(myUserId, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(ex, LogMessage.EXCEPTION_DURING_METHOD, "b34478c0-3fbc-4aec-b3fe-435175660e95");
+                return null;
+            }
+
             var recentItems = recent.SelectMany(sm => sm.Items);
             var taskLookup = recent.SelectMany(sm => sm.Included.Tasks);
             var taskListLookup = recent.SelectMany(sm => sm.Included.TaskLists);

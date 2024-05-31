@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Timer.Shared.Application;
+using Timer.Shared.Constants;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.Options;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests;
-using Timer.Shared.Resources;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
@@ -27,7 +25,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 if (response.IsSuccessStatusCode && await response.Content.ReadAsStringAsync(cancellationToken) is string responseContent)
                 {
 
-                    await this.LogResponseContent(response, cancellationToken);
+                    this.Logger.Information(LogMessage.HTTP_STATUS_CODE, response.StatusCode);
 
                     // deserialise the response
                     var userDetailResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDetailResponse>(responseContent);
@@ -40,11 +38,11 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 }
                 else if (!response.IsSuccessStatusCode)
                 {
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "Me");
+                    this.Logger.Error(LogMessage.HTTP_STATUS_CODE, response.StatusCode);
                 }
                 else
                 {
-                    this.Logger.Error(LogMessages.ResponseReadFailure, "Me");
+                    this.Logger.Error(LogMessage.RESPONSE_READ_FAILURE);
                 }
 
             }

@@ -15,6 +15,8 @@ using Timer.WPF.Shells;
 using Timer.WPF.View;
 using Timer.WPF.ViewModels;
 using AboutViewModel = Timer.WPF.ViewModels.AboutViewModel;
+using Serilog;
+using Timer.Shared.Constants;
 
 namespace Timer.WPF
 {
@@ -28,6 +30,12 @@ namespace Timer.WPF
         { 
             PrismContainerExtension.Init();     // REQUIRED. see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
             this.Configuration = ConfigurationServices.GetConfiguration();
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                var ex = (Exception)args.ExceptionObject;
+                this.Container.Resolve<ILogger>().Fatal(ex, LogMessage.APPLICATION_FATAL_EXCEPTION);
+            };
         }
 
 
@@ -82,6 +90,7 @@ namespace Timer.WPF
             // register dialogs
             containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(Base.TimeLogDialogName);
             containerRegistry.RegisterDialog<AboutDialog, AboutViewModel> (Base.AboutBoxDialogName);
+       
         }
 
         protected override void ConfigureViewModelLocator()
@@ -96,7 +105,7 @@ namespace Timer.WPF
         {
             base.ConfigureModuleCatalog(moduleCatalog);
 
-            moduleCatalog.AddModule<Timer.Wpf.Modules.TimeLogModule>(InitializationMode.WhenAvailable);
+            moduleCatalog.AddModule<Wpf.Modules.TimeLogModule>(InitializationMode.WhenAvailable);
 
         }
 

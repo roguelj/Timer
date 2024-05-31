@@ -159,6 +159,8 @@
 
                         <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartToEndOfBreakCommand}" Content="{x:Static res:Resources.SetStartToEndOfBreakButtonText}"/>
 
+                        <Button Style="{DynamicResource DropDownSubButtonStyle}" Command="{Binding SetStartToPcBootTimeCommand}" Content="{x:Static res:Resources.SetStartToPcBootTimeButtonText}"/>
+                        
                     </StackPanel>
 
                 </xctk:DropDownButton.DropDownContent>

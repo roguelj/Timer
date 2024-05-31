@@ -3,8 +3,8 @@ using Prism.Events;
 using Prism.Mvvm;
 using Serilog;
 using System.Runtime.CompilerServices;
+using Timer.Shared.Constants;
 using Timer.Shared.Services.Interfaces;
-using LogMessage = Timer.Shared.Resources.LogMessages;
 
 namespace Timer.Shared.ViewModels
 {
@@ -52,9 +52,9 @@ namespace Timer.Shared.ViewModels
 
 
         // command collections
-        private List<DelegateCommand> Commands { get; } = new List<DelegateCommand>();
-        private List<DelegateCommand<bool?>> BoolCommands { get; } = new List<DelegateCommand<bool?>>();
-        private List<DelegateCommand<int?>> IntCommands { get; } = new List<DelegateCommand<int?>>();
+        private List<DelegateCommand> Commands { get; } = [];
+        private List<DelegateCommand<bool?>> BoolCommands { get; } = [];
+        private List<DelegateCommand<int?>> IntCommands { get; } = [];
 
 
         public Base(ILogger logger)
@@ -64,7 +64,7 @@ namespace Timer.Shared.ViewModels
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             // log
-            this.Logger.Verbose(LogMessage.TraceMethodHit, "Constructor", this.CachedType.Name);
+            this.Logger.Verbose(LogMessage.TRACE_METHOD_HIT, "Constructor", this.CachedType.Name);
 
         }
 
@@ -76,7 +76,7 @@ namespace Timer.Shared.ViewModels
             this.TimeLogService = timeLogService ?? throw new ArgumentNullException(nameof(timeLogService));
 
             // log
-            this.Logger.Verbose(LogMessage.TraceMethodHit, "Constructor", this.CachedType.Name);
+            this.Logger.Verbose(LogMessage.TRACE_METHOD_HIT, "Constructor", this.CachedType.Name);
 
         }
 
@@ -104,7 +104,7 @@ namespace Timer.Shared.ViewModels
         // provide logging for the SetProperty method
         protected override bool SetProperty<T>(ref T storage, T value, Action onChanged, [CallerMemberName] string? propertyName = null)
         {
-            return base.SetProperty(ref storage, value, () => this.Logger.Verbose(LogMessage.PropertySet, value, propertyName), propertyName);
+            return base.SetProperty(ref storage, value, () => this.Logger.Verbose(LogMessage.PROPERTY_SET, propertyName, value), propertyName);
         }
 
 
