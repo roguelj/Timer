@@ -1,14 +1,14 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Extensions.Logging;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using Serilog;
 using System.Runtime.CompilerServices;
-using Timer.Shared.Services.Interfaces;
-using LogMessage = Timer.Shared.Resources.LogMessages;
+using Timer.Base.Interfaces;
+using LogMessage = Timer.Base.Resources.LogMessages;
 
 namespace Timer.Shared.ViewModels
 {
-    public abstract class Base : BindableBase
+    public abstract class BaseViewModel : BindableBase
     {
 
         // member variables
@@ -16,7 +16,7 @@ namespace Timer.Shared.ViewModels
 
 
         // injected services
-        protected ILogger Logger { get; }
+        protected ILogger<BaseViewModel> Logger { get; }
         protected ITimeLogService? TimeLogService { get; set; }
         protected IEventAggregator? EventAggregator { get; set; }
         protected ISystemClock? SystemClock { get; set; }
@@ -57,18 +57,18 @@ namespace Timer.Shared.ViewModels
         private List<DelegateCommand<int?>> IntCommands { get; } = new List<DelegateCommand<int?>>();
 
 
-        public Base(ILogger logger)
+        public BaseViewModel(ILogger<BaseViewModel> logger)
         {
 
             // services
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             // log
-            this.Logger.Verbose(LogMessage.TraceMethodHit, "Constructor", this.CachedType.Name);
+            this.Logger.LogTrace(LogMessage.TraceMethodHit, "Constructor", this.CachedType.Name);
 
         }
 
-        public Base(ILogger logger, ITimeLogService timeLogService)
+        public BaseViewModel(ILogger<BaseViewModel> logger, ITimeLogService timeLogService)
         {
 
             // services
@@ -76,7 +76,7 @@ namespace Timer.Shared.ViewModels
             this.TimeLogService = timeLogService ?? throw new ArgumentNullException(nameof(timeLogService));
 
             // log
-            this.Logger.Verbose(LogMessage.TraceMethodHit, "Constructor", this.CachedType.Name);
+            this.Logger.LogTrace(LogMessage.TraceMethodHit, "Constructor", this.CachedType.Name);
 
         }
 
@@ -104,7 +104,7 @@ namespace Timer.Shared.ViewModels
         // provide logging for the SetProperty method
         protected override bool SetProperty<T>(ref T storage, T value, Action onChanged, [CallerMemberName] string? propertyName = null)
         {
-            return base.SetProperty(ref storage, value, () => this.Logger.Verbose(LogMessage.PropertySet, value, propertyName), propertyName);
+            return base.SetProperty(ref storage, value, () => this.Logger.LogTrace(LogMessage.PropertySet, value, propertyName), propertyName);
         }
 
 

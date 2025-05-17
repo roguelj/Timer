@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Options;
-using Serilog;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Timer.Shared.Models.Options;
 
 namespace Timer.Shared.ViewModels
 {
-    public class ShellViewModel:Base
+    public class ShellViewModel: BaseViewModel
     {
 
         // member variables
@@ -22,7 +22,7 @@ namespace Timer.Shared.ViewModels
         // injected services
         private IOptions<UserInterfaceOptions> Options { get; }
 
-        public ShellViewModel(ILogger logger, IOptions<UserInterfaceOptions> options):base(logger)
+        public ShellViewModel(ILogger<ShellViewModel> logger, IOptions<UserInterfaceOptions> options):base(logger)
         {
 
             // injected

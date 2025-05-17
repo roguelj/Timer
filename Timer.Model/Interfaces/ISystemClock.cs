@@ -1,4 +1,4 @@
-﻿namespace Timer.Shared.Services.Interfaces
+﻿namespace Timer.Base.Interfaces
 {
     public interface ISystemClock
     {

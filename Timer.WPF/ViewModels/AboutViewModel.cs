@@ -1,7 +1,7 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Extensions.Logging;
+using Prism.Commands;
 using Prism.Events;
-using Prism.Services.Dialogs;
-using Serilog;
+using Prism.Dialogs;
 using System;
 using System.ComponentModel;
 using Timer.Shared.EventAggregatorEvents;
@@ -15,7 +15,7 @@ namespace Timer.WPF.ViewModels
         public DelegateCommand CloseDialogCommand { get; }
 
         // constructor
-        public AboutViewModel(ILogger logger, IEventAggregator eventAggregator) : base(logger)
+        public AboutViewModel(ILogger<AboutViewModel> logger, IEventAggregator eventAggregator) : base(logger)
         {
 
             // injected
@@ -32,7 +32,8 @@ namespace Timer.WPF.ViewModels
         // IDialogAware implementation
         public event Action<IDialogResult>? RequestClose;
 
-        string IDialogAware.Title => base.Title;
+
+        DialogCloseListener IDialogAware.RequestClose { get; }
 
         bool IDialogAware.CanCloseDialog() => true;
 

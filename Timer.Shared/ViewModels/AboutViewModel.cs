@@ -1,8 +1,10 @@
-﻿using Serilog;
+﻿
+
+using Microsoft.Extensions.Logging;
 
 namespace Timer.Shared.ViewModels
 {
-    public abstract class AboutViewModel : Base
+    public abstract class AboutViewModel : BaseViewModel
     {
 
         // member variables
@@ -39,7 +41,7 @@ namespace Timer.Shared.ViewModels
 
 
         // constructor
-        public AboutViewModel(ILogger logger) : base(logger) {}
+        public AboutViewModel(ILogger<AboutViewModel> logger) : base(logger) {}
 
 
     }

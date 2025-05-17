@@ -1,7 +1,6 @@
-﻿using Timer.Shared.Models;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+﻿using Timer.Base.Models;
 
-namespace Timer.Shared.Services.Interfaces
+namespace Timer.Base.Interfaces
 {
     public interface ITimeLogService
     {
@@ -88,7 +87,7 @@ namespace Timer.Shared.Services.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> RecentTasks(CancellationToken cancellationToken);
+        Task<List<ProjectTask>?> RecentTasks(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Tags that have time logged against them recently.
@@ -101,7 +100,7 @@ namespace Timer.Shared.Services.Interfaces
         /// <summary>
         /// Get the DateTime of the end of the last time entry
         /// </summary>
-        /// <param name="cancellationToken"></param>
+        ///// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<DateTimeOffset?> GetEndTimeOfLastTimeLogEntryAsync(CancellationToken cancellationToken);
 

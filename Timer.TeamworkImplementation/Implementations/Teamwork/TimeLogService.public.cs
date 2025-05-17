@@ -1,13 +1,14 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Logging;
+using System.Text;
+using Timer.Base.Resources;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
-using Timer.Shared.Resources;
-using Timer.Shared.Services.Interfaces;
-using LogRes = Timer.Shared.Resources.LogMessages;
+using Timer.Base.Interfaces;
+using Timer.TeamworkImplementation.Extensions;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
-    internal partial class TimeLogService : ITimeLogService
+    public partial class TimeLogService : ITimeLogService
     {
 
         public async Task<DateTimeOffset?> GetEndTimeOfLastTimeLogEntryAsync(CancellationToken cancellationToken)
@@ -34,7 +35,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             }
             else
             {
-                this.Logger.Error(LogRes.UnknownUser);
+                this.Logger.LogError(LogMessages.UnknownUser);
                 return null;
 
             }
@@ -68,31 +69,31 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             }
             else
             {
-                this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "");
-                this.Logger.Error(LogMessages.LogTimeFailure);
+                this.Logger.LogError(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "");
+                this.Logger.LogError(LogMessages.LogTimeFailure);
                 return false;
             }
 
         }
 
 
-        public async Task<List<Project>?> Projects(CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.Project>?> Projects(CancellationToken cancellationToken)
         {
             return await this.GetAndPageProjects("projects.json", null, cancellationToken);
         }
 
 
-        public async Task<List<Project>?> Projects(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.Project>?> Projects(string searchCriteria, CancellationToken cancellationToken)
         {
             return await this.GetAndPageProjects("projects.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
-        public async Task<List<Project>?> Projects(bool starredOnly, CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.Project>?> Projects(bool starredOnly, CancellationToken cancellationToken)
         {
             return await this.GetAndPageProjects("projects.json", $"onlyStarredProjects={starredOnly}", cancellationToken);
         }
 
-        public async Task<List<Project>?> RecentProjects(CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.Project>?> RecentProjects(CancellationToken cancellationToken)
         {
 
             var myUserId = (await this.Me(cancellationToken)).Id;
@@ -104,13 +105,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             return recentItems
                 .GroupBy(gb => gb.ProjectId)
                 .OrderByDescending(ob => ob.Sum(s => s.Minutes))
-                .Select(s => new Project(s.Key!.Value, itemLookup.FirstOrDefault(f => f.Key == s.Key).Value.Name))
+                .Select(s => new Base.Models.Project(s.Key!.Value, itemLookup.FirstOrDefault(f => f.Key == s.Key).Value.Name))
                 .ToList();
 
         }
 
 
-        public async Task<List<Tag>?> RecentTags(CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.Tag>?> RecentTags(CancellationToken cancellationToken)
         {
 
             var myUserId = (await this.Me(cancellationToken)).Id;
@@ -133,13 +134,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     .Select(s =>
                     {
                         var tag = itemLookup.FirstOrDefault(f => f.Key == s).Value;
-                        return new Tag(s, tag.Name, tag.Colour);
+                        return new Base.Models.Tag(s, tag.ProjectId, tag.Project.ToModelSubType(), tag.Name, tag.Colour);
                     })
                     .ToList();
         }
 
 
-        public async Task<List<ProjectTask>?> RecentTasks(CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.ProjectTask>?> RecentTasks(CancellationToken cancellationToken)
         {
 
             var myUserId = (await this.Me(cancellationToken)).Id;
@@ -158,14 +159,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 var taskList = taskListLookup.FirstOrDefault(f => f.Key == task.TaskListId);
 
 
-                return new ProjectTask
-                {
-                    Id = taskId,
-                    Name = task.Name,
-                    ProjectId = input.First().ProjectId!.Value,
-                    TaskListId = task.TaskListId,
-                    TaskListName = taskList.Value.Name
-                };
+                return new Base.Models.ProjectTask(taskId, task.Name, input.First().ProjectId!.Value, task.TaskListId, taskList.Value.Name);
 
             };
 
@@ -179,34 +173,34 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        public async Task<List<Tag>?> Tags(CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.Tag>?> Tags(CancellationToken cancellationToken)
         {
             return await this.GetAndPageTags("tags.json", null, cancellationToken);
         }
 
 
-        public async Task<List<Tag>?> Tags(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.Tag>?> Tags(string searchCriteria, CancellationToken cancellationToken)
         {
             return await this.GetAndPageTags("tag.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
 
-        public async Task<List<ProjectTask>?> Tasks(CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.ProjectTask>?> Tasks(CancellationToken cancellationToken)
         {
             return await this.GetAndPageTasks("tasks.json", null, cancellationToken);
         }
 
-        public async Task<List<ProjectTask>?> Tasks(int projectId, CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.ProjectTask>?> Tasks(int projectId, CancellationToken cancellationToken)
         {
             return await this.GetAndPageTasks("tasks.json", $"projectIds={projectId}", cancellationToken);
         }
 
-        public async Task<List<ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
         {
             return await this.GetAndPageTasks("tasks.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
-        public async Task<List<ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken)
+        public async Task<List<Timer.Base.Models.ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken)
         {
             var myUserId = (await this.Me(cancellationToken)).Id;
             return await this.GetAndPageTasks($"projects/{projectId}/tasks.json", $"responsiblePartyIds={myUserId}", cancellationToken);

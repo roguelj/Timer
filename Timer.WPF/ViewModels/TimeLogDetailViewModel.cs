@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Options;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Services.Dialogs;
-using Serilog;
+using Prism.Dialogs;
 using System;
 using System.Linq;
 using Timer.Shared.Models.Options;
-using Timer.Shared.Services.Interfaces;
+using Timer.Base.Interfaces;
 using ResMan = Timer.Shared.Resources.Resources;
+using Microsoft.Extensions.Logging;
 
 namespace Timer.WPF.ViewModels
 {
@@ -20,7 +20,7 @@ namespace Timer.WPF.ViewModels
 
 
         // constructor
-        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) 
+        public TimeLogDetailViewModel(ILogger<TimeLogDetailViewModel> logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) 
             : base(logger, eventAggregator, timeLogService, systemClock, options)
         {
 
@@ -48,7 +48,7 @@ namespace Timer.WPF.ViewModels
                 { DescriptionDialogParameterName, this.Description },
             };
 
-            RequestClose?.Invoke(new DialogResult(ButtonResult.OK, parameters));
+            RequestClose?.Invoke(new DialogResult(ButtonResult.OK) { Parameters = parameters});
 
         }
 
@@ -64,6 +64,8 @@ namespace Timer.WPF.ViewModels
         async void IDialogAware.OnDialogOpened(IDialogParameters parameters) => await base.Initialise();
 
         public string Title => ResMan.TimeLogDetailDialogTitle;
+
+        DialogCloseListener IDialogAware.RequestClose { get; }
 
     }
 

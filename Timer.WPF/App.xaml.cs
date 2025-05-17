@@ -22,7 +22,7 @@ namespace Timer.WPF
 
         public App()
         { 
-            PrismContainerExtension.Init();     // REQUIRED. see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
+            //PrismContainerExtension.Init();     // REQUIRED. see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
             this.Configuration = ConfigurationServices.GetConfiguration();
         }
 
@@ -36,8 +36,8 @@ namespace Timer.WPF
             ServiceContainer.RegisterTypes(containerRegistry, this.Configuration);
 
             // register dialogs
-            containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(Base.TimeLogDialogName);
-            containerRegistry.RegisterDialog<AboutDialog, AboutViewModel> (Base.AboutBoxDialogName);
+            containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(BaseViewModel.TimeLogDialogName);
+            containerRegistry.RegisterDialog<AboutDialog, AboutViewModel> (BaseViewModel.AboutBoxDialogName);
         }
 
         protected override void ConfigureViewModelLocator()

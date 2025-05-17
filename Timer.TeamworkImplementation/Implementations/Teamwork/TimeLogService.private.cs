@@ -1,17 +1,16 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
+using Timer.Base.Resources;
 using Timer.Shared.Application;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta;
-using Timer.Shared.Resources;
+using Timer.TeamworkImplementation.Extensions;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
-    internal partial class TimeLogService
+    public partial class TimeLogService
     {
 
         private async Task<TimeLog?> MyLastTimeEntry(int myUserId, CancellationToken cancellationToken)
@@ -44,7 +43,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             {
 
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                this.Logger.Error(responseContent);
+                this.Logger.LogError(responseContent);
 
                 return null;
 
@@ -53,11 +52,11 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        private async Task<List<Project>> GetAndPageProjects(string path, string? parameters, CancellationToken cancellationToken) 
+        private async Task<List<Base.Models.Project>> GetAndPageProjects(string path, string? parameters, CancellationToken cancellationToken) 
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var result = new List<Project>();
+            var result = new List<Base.Models.Project>();
             var shouldExit = false;
             var page = 1;
 
@@ -91,7 +90,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 {
 
                     var response = await httpResponse.Content.ReadAsAsync<ProjectResponse>();
-                    result.AddRange(response.Items);
+                    result.AddRange(response.Items.Select(s => s.ToModelProject()));
 
                     if (response.Meta.Page.HasMore)
                     {
@@ -106,7 +105,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 else
                 {
                     shouldExit = true;
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                    this.Logger.LogError(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
                 }
 
             } while (!shouldExit);
@@ -116,12 +115,12 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        private async Task<List<ProjectTask>> GetAndPageTasks(string path, string? parameters, CancellationToken cancellationToken)
+        private async Task<List<Base.Models.ProjectTask>> GetAndPageTasks(string path, string? parameters, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var result = new List<ProjectTask>();
-            var taskLists = new List<TaskList>();
+            var result = new List<Base.Models.ProjectTask>();
+            var taskLists = new List<Base.Models.TaskList>();
 
             var shouldExit = false;
             var page = 1;
@@ -156,8 +155,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 {
 
                     var response = await httpResponse.Content.ReadAsAsync<TaskResponse>();
-                    result.AddRange(response.Items);
-                    taskLists.AddRange(response.Included.TaskLists.Select(s => s.Value));
+                    result.AddRange(response.Items.ToModelProjectTasks());
+                    taskLists.AddRange(response.Included.TaskLists.Select(s => s.Value).ToModelTasklists());
 
                     if (response.Meta.Page.HasMore)
                     {
@@ -172,7 +171,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 else
                 {
                     shouldExit = true;
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                    this.Logger.LogError(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
                 }
 
             } while (!shouldExit);
@@ -191,11 +190,11 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        private async Task<List<Tag>> GetAndPageTags(string path, string? parameters, CancellationToken cancellationToken)
+        private async Task<List<Base.Models.Tag>> GetAndPageTags(string path, string? parameters, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
-            var result = new List<Tag>();
+            var result = new List<Base.Models.Tag>();
             var shouldExit = false;
             var page = 1;
 
@@ -222,7 +221,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 {
 
                     var response = await httpResponse.Content.ReadAsAsync<TagResponse>();
-                    result.AddRange(response.Items);
+                    result.AddRange(response.Items.ToModelTags());
 
                     if (response.Meta.Page.HasMore)
                     {
@@ -237,7 +236,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 else
                 {
                     shouldExit = true;
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                    this.Logger.LogError(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
                 }
 
             } while (!shouldExit);
@@ -294,7 +293,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 else
                 {
                     shouldExit = true;
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
+                    this.Logger.LogError(LogMessages.IsSuccessStatusCodeFailure, httpResponse.StatusCode, "GetAndPage");
                 }
 
             } while (!shouldExit);

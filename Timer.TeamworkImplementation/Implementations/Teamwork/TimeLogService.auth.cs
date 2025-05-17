@@ -1,15 +1,14 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Timer.Base.Resources;
 using Timer.Shared.Application;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.Options;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Requests;
-using Timer.Shared.Resources;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
-    internal partial class TimeLogService
+    public partial class TimeLogService
     {
 
         private async Task<Person> Me(CancellationToken cancellationToken)
@@ -40,11 +39,11 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 }
                 else if (!response.IsSuccessStatusCode)
                 {
-                    this.Logger.Error(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "Me");
+                    this.Logger.LogError(LogMessages.IsSuccessStatusCodeFailure, response.StatusCode, "Me");
                 }
                 else
                 {
-                    this.Logger.Error(LogMessages.ResponseReadFailure, "Me");
+                    this.Logger.LogError(LogMessages.ResponseReadFailure, "Me");
                 }
 
             }

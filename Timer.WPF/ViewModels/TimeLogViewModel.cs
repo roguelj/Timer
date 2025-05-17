@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using Prism.Services.Dialogs;
-using Serilog;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Prism.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,16 +9,16 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
+using Timer.Base.Interfaces;
 using Timer.Shared.Models.Options;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
-using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 using Res = Timer.Shared.Resources.Resources;
 
 namespace Timer.WPF.ViewModels
 {
 
-    public class TimeLogViewModel:Base
+    public class TimeLogViewModel: BaseViewModel
     {
 
 
@@ -33,7 +33,7 @@ namespace Timer.WPF.ViewModels
 
 
         // constructor
-        public TimeLogViewModel(ILogger logger, ITimeLogService timeLogService, IDialogService dialogService, IOptions<UserInterfaceOptions> options) :base(logger, timeLogService)
+        public TimeLogViewModel(ILogger<TimeLogViewModel> logger, ITimeLogService timeLogService, IDialogService dialogService, IOptions<UserInterfaceOptions> options) :base(logger, timeLogService)
         {
 
             // initialise services
@@ -133,7 +133,7 @@ namespace Timer.WPF.ViewModels
         {
 
             var viewAssembly = Assembly.GetExecutingAssembly();
-            var sharedAssembly = typeof(Base).Assembly;
+            var sharedAssembly = typeof(BaseViewModel).Assembly;
             var viewFileVersionInfo = viewAssembly.GetName().Version;
             var sharedFileVersionInfo = sharedAssembly.GetName().Version;
 

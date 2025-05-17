@@ -1,4 +1,6 @@
-﻿using Timer.Shared.Services.Interfaces;
+﻿
+
+using Timer.Base.Interfaces;
 
 namespace Timer.Shared.Services.Implementations
 {

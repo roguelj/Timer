@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Serilog;
 using Timer.Shared.Models.Options;
-using Timer.Shared.Services.Interfaces;
+using Timer.Base.Interfaces;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
-    internal partial class TimeLogService
+    public partial class TimeLogService
     {
 
         // injected services
@@ -42,7 +42,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         {
           
             var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            this.Logger.Verbose(responseContent);
+            this.Logger.LogTrace(responseContent);
             return responseContent;
         }
 

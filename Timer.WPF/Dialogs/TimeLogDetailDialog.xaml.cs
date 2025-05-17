@@ -1,11 +1,10 @@
 ﻿using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+using Timer.Base.Models;
 using Timer.WPF.ViewModels;
 
 namespace Timer.WPF.Dialogs
@@ -46,7 +45,7 @@ namespace Timer.WPF.Dialogs
 
         }
 
-        private void CollectionViewSource_Filter(object sender, FilterEventArgs e) => e.Accepted = this.ViewModel?.IsTaskOwnedBySelectedProject(e.Item as Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask) ?? false;
+        private void CollectionViewSource_Filter(object sender, FilterEventArgs e) => e.Accepted = this.ViewModel?.IsTaskOwnedBySelectedProject(e.Item as ProjectTask) ?? false;
 
 
         // subscribed IEventAggregator event handlers

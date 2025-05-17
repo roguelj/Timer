@@ -2,19 +2,19 @@
 using Microsoft.Extensions.Options;
 using Prism.Commands;
 using Prism.Events;
-using Serilog;
 using System.Collections.ObjectModel;
+using Timer.Base.Models;
 using Timer.Shared.Extensions;
 using Timer.Shared.Models.Options;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
-using Timer.Shared.Services.Interfaces;
+using Timer.Base.Interfaces;
 using Timer.Shared.ViewModels;
-using LogResMan = Timer.Shared.Resources.LogMessages;
+using LogResMan = Timer.Base.Resources.LogMessages;
+using Microsoft.Extensions.Logging;
 
 namespace Timer.WPF.ViewModels
 {
 
-    public abstract class TimeLogDetailViewModelBase : Base
+    public abstract class TimeLogDetailViewModelBase : BaseViewModel
     {
 
         // -----------------------
@@ -151,7 +151,7 @@ namespace Timer.WPF.ViewModels
 
         // -----------------------
         // constructor
-        public TimeLogDetailViewModelBase(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) : base(logger)
+        public TimeLogDetailViewModelBase(ILogger<TimeLogDetailViewModelBase> logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) : base(logger)
         {
 
             this.IsInitialising = true;
@@ -229,21 +229,21 @@ namespace Timer.WPF.ViewModels
             if (await this.TimeLogService!.RecentTags(CancellationToken.None) is IEnumerable<Tag> recentTags)
             {
                 this.Tags.AddRange(recentTags, true);
-                this.Logger.Verbose(LogResMan.FoundEntities, recentTags.Count(), "Tag");
+                this.Logger.LogTrace(LogResMan.FoundEntities, recentTags.Count(), "Tag");
             }
 
             // recent tasks
             if (await this.TimeLogService.RecentTasks(CancellationToken.None) is IEnumerable<ProjectTask> recentTasks)
             {
                 this.Tasks.AddRange(recentTasks, true);
-                this.Logger.Verbose(LogResMan.FoundEntities, recentTasks.Count(), "Task");
+                this.Logger.LogTrace(LogResMan.FoundEntities, recentTasks.Count(), "Task");
             }
 
             // recent projects
             if (await this.TimeLogService.RecentProjects(CancellationToken.None) is IEnumerable<Project> recentProjects)
             {
                 this.Projects.AddRange(recentProjects, true);
-                this.Logger.Verbose(LogResMan.FoundEntities, recentProjects.Count(), "Project");
+                this.Logger.LogTrace(LogResMan.FoundEntities, recentProjects.Count(), "Project");
             }
 
         }
@@ -261,7 +261,7 @@ namespace Timer.WPF.ViewModels
             {
                 this.SelectedTags.Clear();
                 this.Tags.AddRange(tags.OrderBy(ob => ob.Name), true);
-                this.Logger.Verbose(LogResMan.FoundEntities, tags.Count(), "Tag");
+                this.Logger.LogTrace(LogResMan.FoundEntities, tags.Count(), "Tag");
             }
 
             // set all tasks
@@ -269,7 +269,7 @@ namespace Timer.WPF.ViewModels
             {
                 this.SelectedTask = null;
                 this.Tasks.AddRange(tasks.OrderBy(ob => ob.Name), true);
-                this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
+                this.Logger.LogTrace(LogResMan.FoundEntities, tasks.Count(), "Task");
             }
 
             // set all (or starred only) projects
@@ -277,7 +277,7 @@ namespace Timer.WPF.ViewModels
             {
                 this.SelectedProject = null;
                 this.Projects.AddRange(projects.OrderBy(ob => ob.Name), true);
-                this.Logger.Verbose(LogResMan.FoundEntities, projects.Count(), "Project");
+                this.Logger.LogTrace(LogResMan.FoundEntities, projects.Count(), "Project");
             }
 
 
@@ -306,7 +306,7 @@ namespace Timer.WPF.ViewModels
                     // do not clear current list - we're just adding new ones
                     this.SelectedTask = null;
                     this.Tasks.AddRange(tasksToAdd, false);                                 
-                    this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
+                    this.Logger.LogTrace(LogResMan.FoundEntities, tasks.Count(), "Task");
 
                 }
 
@@ -334,7 +334,7 @@ namespace Timer.WPF.ViewModels
                     // do not clear current list - we're just adding new ones
                     this.SelectedTask = null;
                     this.Tasks.AddRange(tasksToAdd, false);
-                    this.Logger.Verbose(LogResMan.FoundEntities, tasks.Count(), "Task");
+                    this.Logger.LogTrace(LogResMan.FoundEntities, tasks.Count(), "Task");
 
                 }
 
