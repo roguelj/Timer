@@ -1,6 +1,6 @@
 ﻿using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Navigation.Regions;
+using Prism.Regions;
 using Timer.WPF.View;
 
 namespace Timer.Wpf.Modules

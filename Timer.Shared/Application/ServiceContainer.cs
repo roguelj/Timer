@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Prism.Ioc;
 using Serilog;
 using Timer.Shared.Models.Options;
 using Timer.Shared.Services.Implementations;
@@ -23,7 +24,8 @@ namespace Timer.Shared.Application
             containerRegistry.Register<Base.Interfaces.ITimeLogService, Services.Implementations.Teamwork.TimeLogService>();
             containerRegistry.Register<Base.Interfaces.ISystemClock, SystemClock>();
 
-     
+            
+   
             // register to service collection
             containerRegistry.RegisterServices(services =>
             {
@@ -33,7 +35,10 @@ namespace Timer.Shared.Application
                 services.Configure<TeamworkOptions>(configuration.GetSection("Teamwork"));
                 services.Configure<UserInterfaceOptions>(configuration.GetSection("UserInterfaceOptions"));
 
-                services.AddLogging(logging => logging.AddSerilog(seriLog));
+                services.AddLogging(logging =>
+                {
+                    logging.AddSerilog(seriLog);
+                });
 
             });
 

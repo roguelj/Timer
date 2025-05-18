@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Dialogs;
+using Prism.Services.Dialogs;
 using System;
 using System.ComponentModel;
 using Timer.Shared.EventAggregatorEvents;
@@ -32,8 +32,6 @@ namespace Timer.WPF.ViewModels
         // IDialogAware implementation
         public event Action<IDialogResult>? RequestClose;
 
-
-        DialogCloseListener IDialogAware.RequestClose { get; }
 
         bool IDialogAware.CanCloseDialog() => true;
 

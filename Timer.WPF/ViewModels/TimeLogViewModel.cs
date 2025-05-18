@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Prism.Dialogs;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,7 +37,7 @@ namespace Timer.WPF.ViewModels
         {
 
             // initialise services
-            this.DialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));   
+            this.DialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
 
             // setup commands
@@ -54,7 +54,7 @@ namespace Timer.WPF.ViewModels
 
             // set theme
             var theme = options.Value.Theme;
-            var allowedthemes =new[] { "Light", "Dark" };
+            var allowedthemes = new[] { "Light", "Dark" };
 
             if (theme is not null && !string.IsNullOrEmpty(theme) && allowedthemes.Contains(theme))
             {

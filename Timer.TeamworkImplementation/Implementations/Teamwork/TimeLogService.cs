@@ -10,7 +10,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
     {
 
         // injected services
-        private ILogger Logger { get; }
+        private ILogger<TimeLogService> Logger { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private IOptions<TeamworkOptions> Options { get; }
         private IMemoryCache MemoryCache { get; }
@@ -28,7 +28,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
 
         // constructor
-        public TimeLogService(ILogger logger, IHttpClientFactory httpClientFactory, IOptions<TeamworkOptions> options, IMemoryCache memoryCache, ISystemClock systemClock)
+        public TimeLogService(ILogger<TimeLogService> logger, IHttpClientFactory httpClientFactory, IOptions<TeamworkOptions> options, IMemoryCache memoryCache, ISystemClock systemClock)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));

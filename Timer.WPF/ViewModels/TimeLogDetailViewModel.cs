@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Dialogs;
+using Prism.Services.Dialogs;
 using System;
 using System.Linq;
 using Timer.Shared.Models.Options;
@@ -48,7 +48,7 @@ namespace Timer.WPF.ViewModels
                 { DescriptionDialogParameterName, this.Description },
             };
 
-            RequestClose?.Invoke(new DialogResult(ButtonResult.OK) { Parameters = parameters});
+            RequestClose?.Invoke(new DialogResult(ButtonResult.OK, parameters));
 
         }
 
@@ -64,8 +64,6 @@ namespace Timer.WPF.ViewModels
         async void IDialogAware.OnDialogOpened(IDialogParameters parameters) => await base.Initialise();
 
         public string Title => ResMan.TimeLogDetailDialogTitle;
-
-        DialogCloseListener IDialogAware.RequestClose { get; }
 
     }
 

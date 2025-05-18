@@ -21,8 +21,9 @@ namespace Timer.WPF
         private IConfiguration Configuration { get; }
 
         public App()
-        { 
-            //PrismContainerExtension.Init();     // REQUIRED. see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
+        {
+   
+            Prism.DryIoc.PrismContainerExtension.Init();   // REQUIRED. see https://github.com/dansiegel/Prism.Container.Extensions/issues/80 
             this.Configuration = ConfigurationServices.GetConfiguration();
         }
 
@@ -31,10 +32,11 @@ namespace Timer.WPF
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {      
-
+    
             // register types in the shared namespace
             ServiceContainer.RegisterTypes(containerRegistry, this.Configuration);
 
+  
             // register dialogs
             containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(BaseViewModel.TimeLogDialogName);
             containerRegistry.RegisterDialog<AboutDialog, AboutViewModel> (BaseViewModel.AboutBoxDialogName);
@@ -55,6 +57,7 @@ namespace Timer.WPF
             moduleCatalog.AddModule<Timer.Wpf.Modules.TimeLogModule>(InitializationMode.WhenAvailable);
 
         }
+
 
     }
 
