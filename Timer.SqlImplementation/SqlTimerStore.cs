@@ -73,18 +73,13 @@ namespace Timer.SqlImplementation
             
             var userId = this.GetCurrentUserId();
 
-            return await this.SqlTimeContext
-                .ProjectTasks
-                .Include(i => i.ProjectTaskUsers.Where(w => w.UserId == userId));
+            return (await this.SqlTimeContext
+                                .Users
+                                .Include(i => i.ProjectTasks).ToListAsync(cancellationToken))
+                                .SelectMany(s=> s.ProjectTasks)
+                                .Select(s => s.ToModelProjectTask())
+                                .ToList();
          
-
-
-            //return await this.SqlTimeContext
-            //                 .Projects
-            //                 .Include(i => i.ProjectTasks)
-            //                 .Where(w => w.Id == projectId)
-            //                 .SelectMany(s => s.ProjectTasks)
-
         }
 
         public async Task<List<Project>?> Projects(CancellationToken cancellationToken)
@@ -125,9 +120,10 @@ namespace Timer.SqlImplementation
             throw new NotImplementedException();
         }
 
-        public Task<List<ProjectTask>?> RecentTasks(CancellationToken cancellationToken)
+        public async Task<List<ProjectTask>?> RecentTasks(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            
+
         }
 
         public async Task<List<Tag>?> Tags(CancellationToken cancellationToken)
@@ -152,20 +148,40 @@ namespace Timer.SqlImplementation
                         .ToList();
         }
 
-        public Task<List<ProjectTask>?> Tasks(CancellationToken cancellationToken)
+
+        // tasks
+        public async Task<List<ProjectTask>?> Tasks(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+
+            return (await this.SqlTimeContext
+                                .ProjectTasks
+                                .ToListAsync(cancellationToken))
+                                .Select(s => s.ToModelProjectTask())
+                                .ToList();
+
         }
 
-        public Task<List<ProjectTask>?> Tasks(int projectId, CancellationToken cancellationToken)
+        public async Task<List<ProjectTask>?> Tasks(int projectId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            
+            return await this.SqlTimeContext
+                                .ProjectTasks
+                                .Where(w => w.ProjectId == projectId)
+                                .Select(s => s.ToModelProjectTask())
+                                .ToListAsync(cancellationToken);
         }
 
-        public Task<List<ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
+        public async Task<List<ProjectTask>?> Tasks(string searchCriteria, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            
+            return await this.SqlTimeContext
+                                .ProjectTasks
+                                .Where(w => w.Name.Contains(searchCriteria, StringComparison.OrdinalIgnoreCase))
+                                .Select(s => s.ToModelProjectTask())
+                                .ToListAsync(cancellationToken);
+
         }
+
 
         // private methods
         private int GetCurrentUserId() => throw new NotImplementedException();

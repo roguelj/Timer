@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 
 namespace Timer.SqlImplementation.Db.Models
 {
@@ -16,8 +11,9 @@ namespace Timer.SqlImplementation.Db.Models
         public required int TaskListId { get; set; }
         public required string TaskListName { get; set; }
 
-        public Collection<ProjectTaskUser> ProjectTaskUsers { get; set; } = [];
+        public Collection<User> AssignedUsers { get; set; } = [];
 
+         
     }
 
 }

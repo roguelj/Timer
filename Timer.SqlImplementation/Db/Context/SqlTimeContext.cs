@@ -21,6 +21,8 @@ namespace Timer.SqlImplementation.Db.Context
 
         public DbSet<Models.TimeLogEntry> TimeLogEntries { get; set; } 
 
+        public DbSet<Models.User> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
