@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timer.TeamworkImplementatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timer.Base", "Timer.Model\Timer.Base.csproj", "{74F25787-44E6-4864-A008-A7B1B0D50A3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timer.SqlImplementation", "Timer.SqlImplementation\Timer.SqlImplementation.csproj", "{8D4720E3-AF77-4D59-8EFB-4AF16C5C1B32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{74F25787-44E6-4864-A008-A7B1B0D50A3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74F25787-44E6-4864-A008-A7B1B0D50A3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74F25787-44E6-4864-A008-A7B1B0D50A3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D4720E3-AF77-4D59-8EFB-4AF16C5C1B32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D4720E3-AF77-4D59-8EFB-4AF16C5C1B32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D4720E3-AF77-4D59-8EFB-4AF16C5C1B32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D4720E3-AF77-4D59-8EFB-4AF16C5C1B32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
