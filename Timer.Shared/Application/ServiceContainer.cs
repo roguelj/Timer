@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Azure.Identity;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Graph;
 using Prism.Ioc;
 using Serilog;
 using Timer.Shared.Models.Options;
@@ -22,7 +25,43 @@ namespace Timer.Shared.Application
 
 
             // register services
-            containerRegistry.Register<ITimeLogService, Services.Implementations.Teamwork.TimeLogService>();
+
+            // register the correct ITimeLogService based on settings
+            var timeLogProvider = configuration.GetSection("TimeLogService").Value;
+            if (string.Equals(timeLogProvider, "Planner", StringComparison.OrdinalIgnoreCase))
+            {
+
+                containerRegistry.Register<ITimeLogService, Services.PlannerTimeLogService>();
+                containerRegistry.RegisterSingleton<AuthService>();
+
+                // register Microsoft Graph client
+                containerRegistry.RegisterSingleton<GraphServiceClient>(() =>
+                {
+                    var graphOptions = configuration.GetSection("Graph");
+
+                    var credential = new ClientSecretCredential(
+                        graphOptions["TenantId"],
+                        graphOptions["ClientId"],
+                        graphOptions["ClientSecret"]);
+
+                    var scopes = new[] { "https://graph.microsoft.com/.default" };
+
+                    return new GraphServiceClient(credential, scopes);
+                });
+
+                // register Cosmos client
+                containerRegistry.RegisterSingleton<CosmosClient>(() =>
+                {
+                    var cosmosOptions = configuration.GetSection("Cosmos");
+
+                    return new CosmosClient(cosmosOptions["Endpoint"], cosmosOptions["Key"]);
+                });
+            }
+            else
+            {
+                containerRegistry.Register<ITimeLogService, Services.Implementations.Teamwork.TimeLogService>();
+            }
+
             containerRegistry.RegisterInstance<ILogger>(seriLog);
             containerRegistry.Register<ISystemClock, SystemClock>();
 

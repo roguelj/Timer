@@ -91,6 +91,7 @@ namespace Timer.WPF
             containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(Base.TimeLogDialogName);
             containerRegistry.RegisterDialog<AboutDialog, AboutViewModel> (Base.AboutBoxDialogName);
        
+
         }
 
         protected override void ConfigureViewModelLocator()

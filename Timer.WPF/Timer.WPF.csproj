@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Version>0.7.2</Version>
+    <BaseOutputPath>Q:\headstock-temporary-build-path\Timer\bin</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
