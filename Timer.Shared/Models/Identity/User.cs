@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Timer.Shared.Models.Identity
+﻿namespace Timer.Shared.Models.Identity
 {
-    internal class User
+    public class User
     {
 
         public required int Id { get; set; }

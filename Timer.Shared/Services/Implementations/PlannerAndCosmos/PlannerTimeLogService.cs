@@ -1,13 +1,12 @@
 using Microsoft.Azure.Cosmos;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
-using Timer.Shared.Services.Implementations;
 using Timer.Shared.Services.Interfaces;
 using Project = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Project;
 using ProjectTask = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask;
 using Tag = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Tag;
 
-namespace Timer.Shared.Services
+namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
 {
     /// <summary>
     /// ITimeLogService implementation backed by the Microsoft Planner API (via Microsoft Graph).

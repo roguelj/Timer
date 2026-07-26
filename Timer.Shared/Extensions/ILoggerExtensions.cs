@@ -60,8 +60,8 @@ namespace Timer.Shared.Extensions
         public static partial void SavedChangesToDatabase(this ILogger logger, int changeCount);
 
 
-        [LoggerMessage(EventId = 1206, Level = LogLevel.Error, Message = "Exception during database operation in {Method}")]
-        public static partial void DatabaseOperationException(this ILogger logger, DbUpdateException ex, string method);
+        //[LoggerMessage(EventId = 1206, Level = LogLevel.Error, Message = "Exception during database operation in {Method}")]
+        //public static partial void DatabaseOperationException(this ILogger logger, DbUpdateException ex, string method);
 
 
         // ------------------------------------------

@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Azure.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Graph;
 using Microsoft.Identity.Client;
-using Microsoft.Identity.Client.Desktop;
+using Microsoft.Kiota.Abstractions.Authentication;
 using Prism.Events;
-using System.IO;
-using System.Reflection;
 using System.Security.Cryptography;
-using System.Windows;
-using System.Windows.Interop;
 using Timer.Shared.Extensions;
+using Timer.Shared.Models.Identity;
+using Timer.Shared.Models.Options;
 
 namespace Timer.Shared.Services.Implementations
 {
@@ -24,7 +24,7 @@ namespace Timer.Shared.Services.Implementations
 
         private ILogger<PublicClientApplication> MsalLogger { get; }
 
-        private IOptions<AzureAdConfig> Options { get; }
+        private IOptions<EntraOptions> Options { get; }
 
         private IPublicClientApplication PublicClientApp { get; }
 
@@ -43,14 +43,38 @@ namespace Timer.Shared.Services.Implementations
 
         private List<string> Scopes { get; } = [];
 
-        public Models.Identity.User? LoggedInUser { get; private set; }
+        private static readonly string[] scopes = ["User.Read"];
+
+        public User? LoggedInUser { get; private set; }
+
+
+        private GraphServiceClient? graphClient;
+        public GraphServiceClient GraphClient
+        {
+            get
+            {
+                if(graphClient == null)
+                {
+
+                    var tokenProvider = new MsalTokenProvider(this.PublicClientApp, scopes);
+            
+                    var authProvider = new BaseBearerTokenAuthenticationProvider(tokenProvider);
+
+                    graphClient = new GraphServiceClient(authProvider);
+                }
+                return graphClient;
+            }
+        }
+
+
 
 
         // ------------------------
         // constructor
-        public AuthService(ILogger<AuthService> logger,
+        public AuthService(
+            ILogger<AuthService> logger,
                             ILogger<PublicClientApplication> msalLogger,
-                            IOptions<AzureAdConfig> options,
+                            IOptions<EntraOptions> options,
                             IOptions<TokenCacheOptions> tokenCacheOptions,
                             IEventAggregator eventAggregator,
                             TimeProvider timeProvider)
@@ -73,7 +97,7 @@ namespace Timer.Shared.Services.Implementations
                                    .WithAuthority(options.Value.Authority)
                                    .WithDefaultRedirectUri()
                                    .WithLogging(logCallback, enablePiiLogging: false)
-                                   .WithWindowsEmbeddedBrowserSupport()
+                                   //.WithWindowsEmbeddedBrowserSupport()
                                    .Build();
 
 
@@ -143,7 +167,7 @@ namespace Timer.Shared.Services.Implementations
         {
 
 
-            var user = await context.Users.FirstOrDefaultAsync(f => f.ObjectId == authresult.Account.HomeAccountId.ObjectId);
+            User user = null;
             if (user == null)
             {
                 user = new Models.Identity.User
@@ -154,8 +178,7 @@ namespace Timer.Shared.Services.Implementations
                     ObjectId = authresult.Account.HomeAccountId.ObjectId,
                     TenantId = authresult.TenantId
                 };
-                context.Users.Add(user);
-                await context.SaveChangesAsync();
+
             }
             this.LoggedInUser = user;
 
@@ -262,4 +285,32 @@ namespace Timer.Shared.Services.Implementations
 
     }
 
+
+    public class MsalTokenProvider : IAccessTokenProvider
+    {
+        private readonly IPublicClientApplication _pca;
+        private readonly string[] _scopes;
+
+        public MsalTokenProvider(IPublicClientApplication pca, string[] scopes)
+        {
+            _pca = pca;
+            _scopes = scopes;
+        }
+
+        public AllowedHostsValidator AllowedHostsValidator { get; } = new AllowedHostsValidator(new[] { "graph.microsoft.com" });
+
+        public async Task<string> GetAuthorizationTokenAsync(
+            Uri uri,
+            Dictionary<string, object>? additionalAuthenticationContext = null,
+            CancellationToken cancellationToken = default)
+        {
+            var account = (await _pca.GetAccountsAsync()).FirstOrDefault();
+
+            var result = await _pca
+                .AcquireTokenSilent(_scopes, account)
+                .ExecuteAsync(cancellationToken);
+
+            return result.AccessToken;
+        }
+    }
 }

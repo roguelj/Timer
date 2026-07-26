@@ -7,6 +7,7 @@ using Prism.Ioc;
 using Serilog;
 using Timer.Shared.Models.Options;
 using Timer.Shared.Services.Implementations;
+using Timer.Shared.Services.Implementations.PlannerAndCosmos;
 using Timer.Shared.Services.Interfaces;
 
 namespace Timer.Shared.Application
@@ -31,30 +32,19 @@ namespace Timer.Shared.Application
             if (string.Equals(timeLogProvider, "Planner", StringComparison.OrdinalIgnoreCase))
             {
 
-                containerRegistry.Register<ITimeLogService, Services.PlannerTimeLogService>();
+                containerRegistry.Register<ITimeLogService, PlannerTimeLogService>();
                 containerRegistry.RegisterSingleton<AuthService>();
-
-                // register Microsoft Graph client
-                containerRegistry.RegisterSingleton<GraphServiceClient>(() =>
-                {
-                    var graphOptions = configuration.GetSection("Graph");
-
-                    var credential = new ClientSecretCredential(
-                        graphOptions["TenantId"],
-                        graphOptions["ClientId"],
-                        graphOptions["ClientSecret"]);
-
-                    var scopes = new[] { "https://graph.microsoft.com/.default" };
-
-                    return new GraphServiceClient(credential, scopes);
-                });
+                containerRegistry.RegisterSingleton<TimeProvider>(() => TimeProvider.System);
 
                 // register Cosmos client
                 containerRegistry.RegisterSingleton<CosmosClient>(() =>
                 {
-                    var cosmosOptions = configuration.GetSection("Cosmos");
 
-                    return new CosmosClient(cosmosOptions["Endpoint"], cosmosOptions["Key"]);
+                    var endpoint = configuration["Cosmos:Endpoint"];
+                    var key = configuration["Cosmos:Key"];
+                         
+
+                    return new CosmosClient(endpoint,  key);
                 });
             }
             else
