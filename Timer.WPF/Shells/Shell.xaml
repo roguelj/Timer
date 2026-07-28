@@ -12,6 +12,7 @@
         Title="Timer"
         WindowStyle="ToolWindow"
         WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded"
         Topmost="{Binding AlwaysOnTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
     <ContentControl

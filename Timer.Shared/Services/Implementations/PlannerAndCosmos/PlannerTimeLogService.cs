@@ -1,6 +1,7 @@
 using Microsoft.Azure.Cosmos;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
+using Timer.Shared.Services.Implementations.Auth;
 using Timer.Shared.Services.Interfaces;
 using Project = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Project;
 using ProjectTask = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask;
@@ -19,14 +20,12 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
         private const string DatabaseId = "TimerDb";
         private const string ContainerId = "TimeLogEntries";
 
-        private readonly GraphServiceClient _graphClient;
         private readonly CosmosClient _cosmosClient;
 
         private AuthService AuthService { get; }
 
-        public PlannerTimeLogService(GraphServiceClient graphClient, CosmosClient cosmosClient, AuthService authService)
+        public PlannerTimeLogService(CosmosClient cosmosClient, AuthService authService)
         {
-            this._graphClient = graphClient;
             this._cosmosClient = cosmosClient;
             this.AuthService    = authService;
         }
@@ -34,7 +33,7 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
 
         public async Task<List<Project>?> Projects(CancellationToken cancellationToken)
         {
-            var plans = await this._graphClient.Me.Planner.Plans.GetAsync(cancellationToken: cancellationToken);
+            var plans = await this.AuthService.GraphClient.Me.Planner.Plans.GetAsync(cancellationToken: cancellationToken);
             return plans?.Value?.Select(MapPlan).ToList();
         }
 
@@ -58,20 +57,20 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
 
         public async Task<List<ProjectTask>?> Tasks(CancellationToken cancellationToken)
         {
-            var tasks = await this._graphClient.Me.Planner.Tasks.GetAsync(cancellationToken: cancellationToken);
+            var tasks = await this.AuthService.GraphClient.Me.Planner.Tasks.GetAsync(cancellationToken: cancellationToken);
             return tasks?.Value?.Select(MapTask).ToList();
         }
 
         public async Task<List<ProjectTask>?> Tasks(int projectId, CancellationToken cancellationToken)
         {
-            var tasks = await this._graphClient.Planner.Plans[projectId.ToString()].Tasks.GetAsync(cancellationToken: cancellationToken);
+            var tasks = await this.AuthService.GraphClient.Planner.Plans[projectId.ToString()].Tasks.GetAsync(cancellationToken: cancellationToken);
             return tasks?.Value?.Select(MapTask).ToList();
         }
 
         public async Task<List<ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken)
         {
-            var me = await this._graphClient.Me.GetAsync(cancellationToken: cancellationToken);
-            var tasks = await this._graphClient.Planner.Plans[projectId.ToString()].Tasks.GetAsync(cancellationToken: cancellationToken);
+            var me = await this.AuthService.GraphClient.Me.GetAsync(cancellationToken: cancellationToken);
+            var tasks = await this.AuthService.GraphClient.Planner.Plans[projectId.ToString()].Tasks.GetAsync(cancellationToken: cancellationToken);
             return tasks?.Value?
                 .Where(t => t.Assignments?.AdditionalData?.ContainsKey(me?.Id ?? string.Empty) ?? false)
                 .Select(MapTask)
@@ -86,7 +85,7 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
 
         public async Task<List<ProjectTask>?> RecentTasks(CancellationToken cancellationToken)
         {
-            var tasks = await this._graphClient.Me.Planner.Tasks.GetAsync(cancellationToken: cancellationToken);
+            var tasks = await this.AuthService.GraphClient.Me.Planner.Tasks.GetAsync(cancellationToken: cancellationToken);
             return tasks?.Value?
                 .OrderByDescending(t => t.CreatedDateTime)
                 .Take(10)
@@ -97,12 +96,12 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
         public async Task<List<Tag>?> Tags(CancellationToken cancellationToken)
         {
             // Planner "tags" are the category label descriptions defined per-plan.
-            var plans = await this._graphClient.Me.Planner.Plans.GetAsync(cancellationToken: cancellationToken);
+            var plans = await this.AuthService.GraphClient.Me.Planner.Plans.GetAsync(cancellationToken: cancellationToken);
             var tags = new List<Tag>();
 
             foreach (var plan in plans?.Value ?? [])
             {
-                var details = await this._graphClient.Planner.Plans[plan.Id].Details.GetAsync(cancellationToken: cancellationToken);
+                var details = await this.AuthService.GraphClient.Planner.Plans[plan.Id].Details.GetAsync(cancellationToken: cancellationToken);
                 var labels = details?.CategoryDescriptions?.AdditionalData?
                     .Where(kvp => kvp.Value is string s && !string.IsNullOrWhiteSpace(s))
                     .Select(kvp => new Tag { Name = kvp.Value!.ToString() });
@@ -191,6 +190,7 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
         private static ProjectTask MapTask(PlannerTask task) => new()
         {
             Id = task.Id?.GetHashCode() ?? 0,
+            ProjectId = task.PlanId?.GetHashCode() ?? 0,
             Name = task.Title
         };
 

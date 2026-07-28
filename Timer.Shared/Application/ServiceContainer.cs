@@ -7,6 +7,7 @@ using Prism.Ioc;
 using Serilog;
 using Timer.Shared.Models.Options;
 using Timer.Shared.Services.Implementations;
+using Timer.Shared.Services.Implementations.Auth;
 using Timer.Shared.Services.Implementations.PlannerAndCosmos;
 using Timer.Shared.Services.Interfaces;
 
@@ -64,6 +65,8 @@ namespace Timer.Shared.Application
 
                 services.Configure<TeamworkOptions>(configuration.GetSection("Teamwork"));
                 services.Configure<UserInterfaceOptions>(configuration.GetSection("UserInterfaceOptions"));
+                services.Configure<EntraOptions>(configuration.GetSection("EntraOptions"));
+                services.Configure<TokenCacheOptions>(configuration.GetSection("TokenCacheOptions"));
 
             });
 

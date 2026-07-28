@@ -7,6 +7,7 @@
     <UseWPF>true</UseWPF>
     <Version>0.7.2</Version>
     <BaseOutputPath>Q:\headstock-temporary-build-path\Timer\bin</BaseOutputPath>
+    <UserSecretsId>89eb934c-f502-4d24-a0ab-b3706cca74ba</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

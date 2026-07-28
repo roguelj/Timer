@@ -87,11 +87,11 @@ namespace Timer.WPF
             // register types in the shared namespace
             ServiceContainer.RegisterTypes(containerRegistry, this.Configuration);
 
+
             // register dialogs
             containerRegistry.RegisterDialog<TimeLogDetailDialog, TimeLogDetailViewModel>(Base.TimeLogDialogName);
             containerRegistry.RegisterDialog<AboutDialog, AboutViewModel> (Base.AboutBoxDialogName);
        
-
         }
 
         protected override void ConfigureViewModelLocator()

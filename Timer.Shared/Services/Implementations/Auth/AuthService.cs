@@ -1,4 +1,5 @@
 ﻿using Azure.Identity;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
@@ -10,7 +11,7 @@ using Timer.Shared.Extensions;
 using Timer.Shared.Models.Identity;
 using Timer.Shared.Models.Options;
 
-namespace Timer.Shared.Services.Implementations
+namespace Timer.Shared.Services.Implementations.Auth
 {
 
     public class AuthService
@@ -34,6 +35,8 @@ namespace Timer.Shared.Services.Implementations
 
         private IOptions<TokenCacheOptions> TokenCacheOptions { get; }
 
+        private CosmosClient CosmosClient { get; }
+
 
         // ------------------------
         // properties
@@ -41,11 +44,13 @@ namespace Timer.Shared.Services.Implementations
 
         private string CacheFilePath { get; }
 
-        private List<string> Scopes { get; } = [];
+        private List<string> Scopes { get; } = ["User.Read", "Tasks.Read"];
 
-        private static readonly string[] scopes = ["User.Read"];
 
-        public User? LoggedInUser { get; private set; }
+        private const string DatabaseId = "TimerDb";
+        private const string ContainerId = "Users";
+
+        public Timer.Shared.Models.Identity.User? LoggedInUser { get; private set; }
 
 
         private GraphServiceClient? graphClient;
@@ -56,7 +61,7 @@ namespace Timer.Shared.Services.Implementations
                 if(graphClient == null)
                 {
 
-                    var tokenProvider = new MsalTokenProvider(this.PublicClientApp, scopes);
+                    var tokenProvider = new MsalTokenProvider(this.PublicClientApp, this.Scopes.ToArray());
             
                     var authProvider = new BaseBearerTokenAuthenticationProvider(tokenProvider);
 
@@ -77,12 +82,14 @@ namespace Timer.Shared.Services.Implementations
                             IOptions<EntraOptions> options,
                             IOptions<TokenCacheOptions> tokenCacheOptions,
                             IEventAggregator eventAggregator,
-                            TimeProvider timeProvider)
+                            TimeProvider timeProvider,
+                            CosmosClient cosmosClient)
         {
 
             // set up injected services
             this.Options = options ?? throw new ArgumentNullException(nameof(options));
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.CosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
             this.MsalLogger = msalLogger ?? throw new ArgumentNullException(nameof(msalLogger));
             this.EventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
             this.TimeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
@@ -163,25 +170,39 @@ namespace Timer.Shared.Services.Implementations
 
         }
 
-        private async Task UpdateDb(AuthenticationResult authresult)
+        private async Task UpdateDb(AuthenticationResult authresult, CancellationToken cancellationToken)
         {
+            var container = await this.GetContainerAsync(cancellationToken);
 
-
-            User user = null;
-            if (user == null)
+            var user = new Models.Identity.User
             {
-                user = new Models.Identity.User
-                {
-                    Id = default,
-                    Name = authresult.Account.Username,
-                    UserName = authresult.Account.Username,
-                    ObjectId = authresult.Account.HomeAccountId.ObjectId,
-                    TenantId = authresult.TenantId
-                };
+                Id = authresult.Account.HomeAccountId.ObjectId,
+                Name = authresult.Account.Username,
+                UserName = authresult.Account.Username,
+                ObjectId = authresult.Account.HomeAccountId.ObjectId,
+                TenantId = authresult.TenantId,
+                LastAuthActivity = this.TimeProvider.GetUtcNow()
+            };
 
+            try
+            {
+                var response = await container.CreateItemAsync(user, new PartitionKey(user.TenantId), cancellationToken: cancellationToken);
             }
-            this.LoggedInUser = user;
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Error creating user in Cosmos DB");
+            }
 
+
+            this.LoggedInUser = user;
+        
+        }
+
+        private async Task<Container> GetContainerAsync(CancellationToken cancellationToken)
+        {
+            var database = (await this.CosmosClient.CreateDatabaseIfNotExistsAsync(DatabaseId, cancellationToken: cancellationToken)).Database;
+            var container = (await database.CreateContainerIfNotExistsAsync(ContainerId, "/tenantId", cancellationToken: cancellationToken)).Container;
+            return container;
         }
 
 
@@ -212,7 +233,7 @@ namespace Timer.Shared.Services.Implementations
                 this.EventAggregator.PublishNotification(this.TimeProvider, $"Signed in as {authResult.Account.Username}", EventAggregatorEvents.NotificationLevel.Information);
                 this.EventAggregator.PublishSilentSignIn(this.TimeProvider, authResult.Account.Username);
 
-                await this.UpdateDb(authResult);
+                await this.UpdateDb(authResult, CancellationToken.None);
 
             }
             catch (MsalUiRequiredException ex)
@@ -228,13 +249,12 @@ namespace Timer.Shared.Services.Implementations
                                         .WithAccount(accounts.FirstOrDefault())
                                         .WithParentActivityOrWindow(windowHandle)
                                         .WithPrompt(Prompt.SelectAccount)
-                                        .WithUseEmbeddedWebView(true)
                                         .ExecuteAsync();
 
                     this.Logger.TokenAcquired("interactively", authResult.Account.HomeAccountId.ObjectId, authResult.TenantId);
 
                     this.EventAggregator.PublishNotification(this.TimeProvider, $"Signed in as {authResult.Account.Username}", EventAggregatorEvents.NotificationLevel.Information);
-                    await this.UpdateDb(authResult);
+                    await this.UpdateDb(authResult, CancellationToken.None);
 
                     this.EventAggregator.PublishInteractiveSignIn(this.TimeProvider, authResult.Account.Username);
                 }
@@ -285,32 +305,4 @@ namespace Timer.Shared.Services.Implementations
 
     }
 
-
-    public class MsalTokenProvider : IAccessTokenProvider
-    {
-        private readonly IPublicClientApplication _pca;
-        private readonly string[] _scopes;
-
-        public MsalTokenProvider(IPublicClientApplication pca, string[] scopes)
-        {
-            _pca = pca;
-            _scopes = scopes;
-        }
-
-        public AllowedHostsValidator AllowedHostsValidator { get; } = new AllowedHostsValidator(new[] { "graph.microsoft.com" });
-
-        public async Task<string> GetAuthorizationTokenAsync(
-            Uri uri,
-            Dictionary<string, object>? additionalAuthenticationContext = null,
-            CancellationToken cancellationToken = default)
-        {
-            var account = (await _pca.GetAccountsAsync()).FirstOrDefault();
-
-            var result = await _pca
-                .AcquireTokenSilent(_scopes, account)
-                .ExecuteAsync(cancellationToken);
-
-            return result.AccessToken;
-        }
-    }
 }

@@ -33,7 +33,10 @@ namespace Timer.WPF.ViewModels
 
 
         // constructor
-        public TimeLogViewModel(ILogger logger, ITimeLogService timeLogService, IDialogService dialogService, IOptions<UserInterfaceOptions> options) :base(logger, timeLogService)
+        public TimeLogViewModel(ILogger logger, 
+                                ITimeLogService timeLogService, 
+                                IDialogService dialogService, 
+                                IOptions<UserInterfaceOptions> options) :base(logger, timeLogService)
         {
 
             // initialise services
