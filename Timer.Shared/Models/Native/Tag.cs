@@ -39,6 +39,15 @@ namespace Timer.Shared.Models.Native
             this.ProjectId = projectId.ToString();
         }
 
+
+        public Tag()
+        {
+            this.Id = null;
+            this.Name = null;
+            this.ProjectId = null;
+        }   
+
+
     }
 
 }

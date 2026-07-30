@@ -174,8 +174,6 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
                 UserId = userId,
                 StartDateTime = startDateTime,
                 EndDateTime = endDateTime,
-                ProjectId = project.Id,
-                TaskId = projectTask?.Id,
                 Project = project,
                 Task = projectTask,
                 TagIds = tagIds,

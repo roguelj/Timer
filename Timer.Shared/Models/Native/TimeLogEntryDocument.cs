@@ -11,46 +11,40 @@ namespace Timer.Shared.Models.Native
         public required string Id { get; set; }
 
 
-        [JsonPropertyName("startDateTime")]
+        [JsonProperty("startDateTime")]
         public required DateTimeOffset StartDateTime { get; set; }
 
 
-        [JsonPropertyName("endDateTime")]
+        [JsonProperty("endDateTime")]
         public required DateTimeOffset EndDateTime { get; set; }
 
 
-        [JsonPropertyName("tagIds")]
+        [JsonProperty("tagIds")]
         public List<int> TagIds { get; set; } = [];
 
 
-        [JsonPropertyName("isBillable")]
+        [JsonProperty("isBillable")]
         public bool IsBillable { get; set; }
 
 
-        [JsonPropertyName("description")]
+        [JsonProperty("description")]
         public required string Description { get; set; }
 
 
 
-        [JsonPropertyName("userId")]
+        [JsonProperty("userId")]
         public required string UserId { get; set; }
 
-        [JsonPropertyName("user")]
+        [JsonProperty("user")]
         public required User User { get; set; }
 
 
-        [JsonPropertyName("projectId")]
-        public required string ProjectId { get; set; }
-
-        [JsonPropertyName("project")]
+        [JsonProperty("project")]
         public required Project Project { get; set; }
 
 
 
-        [JsonPropertyName("taskId")]
-        public required string TaskId { get; set; }
-
-        [JsonPropertyName("task")]
+        [JsonProperty("task")]
         public required ProjectTask Task { get; set; }
 
     }

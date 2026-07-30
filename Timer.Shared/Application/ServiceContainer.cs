@@ -45,6 +45,7 @@ namespace Timer.Shared.Application
                     var key = configuration["Cosmos:Key"];
                          
 
+
                     return new CosmosClient(endpoint,  key);
                 });
             }
