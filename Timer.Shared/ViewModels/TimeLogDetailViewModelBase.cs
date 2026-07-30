@@ -8,8 +8,8 @@ using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using Timer.Shared.Constants;
 using Timer.Shared.Extensions;
+using Timer.Shared.Models.Native;
 using Timer.Shared.Models.Options;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 

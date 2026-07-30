@@ -1,9 +1,7 @@
 ﻿using System.Text;
 using Timer.Shared.Constants;
+using Timer.Shared.Models.Native;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV1;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
-using Timer.Shared.Resources;
 using Timer.Shared.Services.Interfaces;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
@@ -43,7 +41,14 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         }
 
 
-        public async Task<bool> LogTime(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int> tagIds, bool isBillable, string description, CancellationToken cancellationToken)
+        public async Task<bool> LogTime(DateTime startDateTime,
+                            DateTime endDateTime,
+                            Project project,
+                            ProjectTask? projectTask,
+                            List<int> tagIds,
+                            bool isBillable,
+                            string description,
+                            CancellationToken cancellationToken)
         {
             // create the client and add the auth
             var client = this.HttpClientFactory.CreateClient();
@@ -53,10 +58,10 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             client.DefaultRequestHeaders.Add("Authorization", $"{auth} {token}");
 
             // create the request object
-            var timeLogEntryRequest = new Models.ProjectManagementSystem.TeamworkV3.Requests.TimeLogEntryRequest(startDateTime, endDateTime, projectId, taskId, tagIds, isBillable, description);
+            var timeLogEntryRequest = new Models.ProjectManagementSystem.TeamworkV3.Requests.TimeLogEntryRequest(startDateTime, endDateTime, project.Id, projectTask?.Id, tagIds, isBillable, description);
 
             // determine the endpoint to hit
-            var endpoint = taskId.HasValue ? $"{this.V3EndpointUrlBase}/tasks/{taskId}/time.json" : $"{this.V3EndpointUrlBase}/projects/{projectId}/time.json";
+            var endpoint = projectTask?.Id is not null ? $"{this.V3EndpointUrlBase}/tasks/{projectTask.Id}/time.json" : $"{this.V3EndpointUrlBase}/projects/{project.Id}/time.json";
 
             // post the request
             var response = await client.PostAsJsonAsync(endpoint, timeLogEntryRequest, cancellationToken);
@@ -97,7 +102,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         {
 
             int myUserId;
-            List<TimeLogResponse> recent;
+            List<Models.ProjectManagementSystem.TeamworkV3.Responses.TimeLogResponse> recent;
 
             try
             {
@@ -126,7 +131,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         {
 
             int myUserId;
-            List<TimeLogResponse> recent;
+            List<Models.ProjectManagementSystem.TeamworkV3.Responses.TimeLogResponse> recent;
 
             try
             {
@@ -156,7 +161,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                     .Select(s =>
                     {
                         var tag = itemLookup.FirstOrDefault(f => f.Key == s).Value;
-                        return new Tag(s, tag.Name, tag.Colour);
+                        return new Tag(s, tag.Name, tag.ProjectId);
                     })
                     .ToList();
         }
@@ -166,7 +171,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         {
 
             int myUserId;
-            List<TimeLogResponse> recent;
+            List<Models.ProjectManagementSystem.TeamworkV3.Responses.TimeLogResponse> recent;
 
             try
             {
@@ -184,20 +189,17 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             var taskListLookup = recent.SelectMany(sm => sm.Included.TaskLists);
 
             // create the projector to create a new ProjectTask from the IGrouping
-            var projector = (IGrouping<int?, TimeLog> input) =>
+            var projector = (IGrouping<int?, Models.ProjectManagementSystem.TeamworkV3.Models.TimeLog> input) =>
             {
-                var taskId = input.Key!.Value;
 
+                var taskId = input.Key!.Value;
                 var task = taskLookup.FirstOrDefault(f => f.Key == input.Key).Value;
                 var taskList = taskListLookup.FirstOrDefault(f => f.Key == task.TaskListId);
+                var projectId = input.First().ProjectId!.Value;
 
-
-                return new ProjectTask
+                return new ProjectTask(taskId, task.Name, projectId)
                 {
-                    Id = taskId,
-                    Name = task.Name,
-                    ProjectId = input.First().ProjectId!.Value,
-                    TaskListId = task.TaskListId,
+                    TaskListId = task.TaskListId.ToString(),
                     TaskListName = taskList.Value.Name
                 };
 
@@ -240,11 +242,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             return await this.GetAndPageTasks("tasks.json", $"searchTerm={searchCriteria}", cancellationToken);
         }
 
-        public async Task<List<ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken)
+        public async Task<List<ProjectTask>?> MyTasks(string projectId, CancellationToken cancellationToken)
         {
             var myUserId = (await this.Me(cancellationToken)).Id;
             return await this.GetAndPageTasks($"projects/{projectId}/tasks.json", $"responsiblePartyIds={myUserId}", cancellationToken);
         }
+   
+    
     }
 
 }

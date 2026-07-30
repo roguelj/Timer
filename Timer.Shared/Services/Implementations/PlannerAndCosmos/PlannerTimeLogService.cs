@@ -1,14 +1,24 @@
+//using Microsoft.Azure.Cosmos;
+//using Microsoft.Graph;
+//using Microsoft.Graph.Models;
+//using Timer.Shared.Models.Cosmos;
+//using Timer.Shared.Models.Identity;
+//using Timer.Shared.Services.Implementations.Auth;
+//using Timer.Shared.Services.Interfaces;
+//using Project = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Project;
+//using ProjectTask = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask;
+//using Tag = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Tag;
+//using User = Timer.Shared.Models.Identity.User;
+
 using Microsoft.Azure.Cosmos;
-using Microsoft.Graph;
 using Microsoft.Graph.Models;
+using Timer.Shared.Models.Native;
 using Timer.Shared.Services.Implementations.Auth;
 using Timer.Shared.Services.Interfaces;
-using Project = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Project;
-using ProjectTask = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask;
-using Tag = Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models.Tag;
 
 namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
 {
+
     /// <summary>
     /// ITimeLogService implementation backed by the Microsoft Planner API (via Microsoft Graph).
     /// Mapping: Planner Plan -> Project, Planner Task -> ProjectTask, Plan Category labels -> Tags.
@@ -67,7 +77,7 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
             return tasks?.Value?.Select(MapTask).ToList();
         }
 
-        public async Task<List<ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken)
+        public async Task<List<ProjectTask>?> MyTasks(string projectId, CancellationToken cancellationToken)
         {
             var me = await this.AuthService.GraphClient.Me.GetAsync(cancellationToken: cancellationToken);
             var tasks = await this.AuthService.GraphClient.Planner.Plans[projectId.ToString()].Tasks.GetAsync(cancellationToken: cancellationToken);
@@ -104,7 +114,7 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
                 var details = await this.AuthService.GraphClient.Planner.Plans[plan.Id].Details.GetAsync(cancellationToken: cancellationToken);
                 var labels = details?.CategoryDescriptions?.AdditionalData?
                     .Where(kvp => kvp.Value is string s && !string.IsNullOrWhiteSpace(s))
-                    .Select(kvp => new Tag { Name = kvp.Value!.ToString() });
+                    .Select(kvp => new Tag(kvp.Key, kvp.Value.ToString(), plan.Id));
 
                 if (labels is not null) tags.AddRange(labels);
             }
@@ -146,7 +156,14 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
             return null;
         }
 
-        public async Task<bool> LogTime(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int> tagIds, bool isBillable, string description, CancellationToken cancellationToken)
+        public async Task<bool> LogTime(DateTime startDateTime,
+                            DateTime endDateTime,
+                            Project project,
+                            ProjectTask? projectTask,
+                            List<int> tagIds,
+                            bool isBillable,
+                            string description,
+                            CancellationToken cancellationToken)
         {
             var container = await this.GetContainerAsync(cancellationToken);
             var userId = await this.GetUserIdAsync(cancellationToken);
@@ -157,15 +174,27 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
                 UserId = userId,
                 StartDateTime = startDateTime,
                 EndDateTime = endDateTime,
-                ProjectId = projectId,
-                TaskId = taskId,
+                ProjectId = project.Id,
+                TaskId = projectTask?.Id,
+                Project = project,
+                Task = projectTask,
                 TagIds = tagIds,
                 IsBillable = isBillable,
-                Description = description
+                Description = description,
+                User = this.AuthService.LoggedInUser ?? throw new InvalidOperationException("Unable to resolve the current user.")
             };
 
-            var response = await container.CreateItemAsync(entry, new PartitionKey(userId), cancellationToken: cancellationToken);
-            return response.StatusCode == System.Net.HttpStatusCode.Created;
+            try
+            {
+                var response = await container.CreateItemAsync(entry, new PartitionKey(userId), cancellationToken: cancellationToken);
+                return response.StatusCode == System.Net.HttpStatusCode.Created;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+
         }
 
         private async Task<Container> GetContainerAsync(CancellationToken cancellationToken)
@@ -181,48 +210,9 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
             return me?.ObjectId ?? throw new InvalidOperationException("Unable to resolve the current user id.");
         }
 
-        private static Project MapPlan(PlannerPlan plan) => new()
-        {
-            Id = plan.Id?.GetHashCode() ?? 0, // Planner uses string ids; hashed to fit the int contract
-            Name = plan.Title
-        };
+        private static Project MapPlan(PlannerPlan plan) => new(plan.Id, plan.Title);
 
-        private static ProjectTask MapTask(PlannerTask task) => new()
-        {
-            Id = task.Id?.GetHashCode() ?? 0,
-            ProjectId = task.PlanId?.GetHashCode() ?? 0,
-            Name = task.Title
-        };
-
-        private sealed class TimeLogEntryDocument
-        {
-            [Newtonsoft.Json.JsonProperty("id")]
-            public string Id { get; set; } = string.Empty;
-
-            [Newtonsoft.Json.JsonProperty("userId")]
-            public string UserId { get; set; } = string.Empty;
-
-            [Newtonsoft.Json.JsonProperty("startDateTime")]
-            public DateTimeOffset StartDateTime { get; set; }
-
-            [Newtonsoft.Json.JsonProperty("endDateTime")]
-            public DateTimeOffset EndDateTime { get; set; }
-
-            [Newtonsoft.Json.JsonProperty("projectId")]
-            public int ProjectId { get; set; }
-
-            [Newtonsoft.Json.JsonProperty("taskId")]
-            public int? TaskId { get; set; }
-
-            [Newtonsoft.Json.JsonProperty("tagIds")]
-            public List<int> TagIds { get; set; } = [];
-
-            [Newtonsoft.Json.JsonProperty("isBillable")]
-            public bool IsBillable { get; set; }
-
-            [Newtonsoft.Json.JsonProperty("description")]
-            public string Description { get; set; } = string.Empty;
-        }
+        private static ProjectTask MapTask(PlannerTask task) => new(task.Id, task.Title, task.PlanId);
 
     }
 

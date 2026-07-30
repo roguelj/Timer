@@ -1,8 +1,8 @@
-﻿using Timer.Shared.Models;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+﻿using Timer.Shared.Models.Native;
 
 namespace Timer.Shared.Services.Interfaces
 {
+
     public interface ITimeLogService
     {
 
@@ -35,7 +35,7 @@ namespace Timer.Shared.Services.Interfaces
         /// <param name="projectId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<ProjectTask>?> MyTasks(int projectId, CancellationToken cancellationToken);
+        Task<List<ProjectTask>?> MyTasks(string projectId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Get all Tags
@@ -88,7 +88,7 @@ namespace Timer.Shared.Services.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>A List of Tasks as keyed entities</returns>
-        Task<List<Shared.Models.ProjectManagementSystem.TeamworkV3.Models.ProjectTask>?> RecentTasks(CancellationToken cancellationToken);
+        Task<List<ProjectTask>?> RecentTasks(CancellationToken cancellationToken);
 
         /// <summary>
         /// Get Tags that have time logged against them recently.
@@ -118,7 +118,14 @@ namespace Timer.Shared.Services.Interfaces
         /// <param name="description"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> LogTime(DateTime startDateTime, DateTime endDateTime, int projectId, int? taskId, List<int> tagIds, bool isBillable, string description, CancellationToken cancellationToken);
+        Task<bool> LogTime(DateTime startDateTime, 
+                            DateTime endDateTime, 
+                            Project project, 
+                            ProjectTask? projectTask, 
+                            List<int> tagIds,
+                            bool isBillable, 
+                            string description, 
+                            CancellationToken cancellationToken);
 
     }
 

@@ -186,7 +186,7 @@ namespace Timer.Shared.Services.Implementations.Auth
 
             try
             {
-                var response = await container.CreateItemAsync(user, new PartitionKey(user.TenantId), cancellationToken: cancellationToken);
+                var response = await container.UpsertItemAsync(user, new PartitionKey(user.TenantId), cancellationToken: cancellationToken);
             }
             catch (Exception ex)
             {

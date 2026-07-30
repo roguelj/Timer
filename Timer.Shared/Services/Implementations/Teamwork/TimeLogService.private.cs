@@ -1,18 +1,25 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿//using Microsoft.Extensions.Caching.Memory;
+//using Timer.Shared.Application;
+//using Timer.Shared.Constants;
+//using Timer.Shared.Extensions;
+//using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
+//using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+//using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
+//using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta;
+
+using Microsoft.Extensions.Caching.Memory;
 using Timer.Shared.Application;
 using Timer.Shared.Constants;
 using Timer.Shared.Extensions;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
+using Timer.Shared.Models.Native;
 using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta;
 
 namespace Timer.Shared.Services.Implementations.Teamwork
 {
     internal partial class TimeLogService
     {
 
-        private async Task<TimeLog?> MyLastTimeEntry(int myUserId, CancellationToken cancellationToken)
+        private async Task<Models.ProjectManagementSystem.TeamworkV3.Models.TimeLog?> MyLastTimeEntry(int myUserId, CancellationToken cancellationToken)
         {
 
             var client = this.HttpClientFactory.CreateClient();
@@ -90,8 +97,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 if (httpResponse.IsSuccessStatusCode)
                 {
 
-                    var response = await httpResponse.Content.ReadAsAsync<ProjectResponse>();
-                    result.AddRange(response.Items);
+                    var response = await httpResponse.Content.ReadAsAsync<Models.ProjectManagementSystem.TeamworkV3.ProjectResponse>();
+                    result.AddRange(response.Items.Select(s => new Project(s.Id, s.Name)));
 
                     if (response.Meta.Page.HasMore)
                     {
@@ -121,7 +128,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
             var client = this.HttpClientFactory.CreateClient();
             var result = new List<ProjectTask>();
-            var taskLists = new List<TaskList>();
+            var taskLists = new List<Models.ProjectManagementSystem.TeamworkV3.Responses.ResponseMeta.TaskList>();
 
             var shouldExit = false;
             var page = 1;
@@ -155,8 +162,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 if (httpResponse.IsSuccessStatusCode)
                 {
 
-                    var response = await httpResponse.Content.ReadAsAsync<TaskResponse>();
-                    result.AddRange(response.Items);
+                    var response = await httpResponse.Content.ReadAsAsync<Models.ProjectManagementSystem.TeamworkV3.TaskResponse>();
+                    result.AddRange(response.Items.Select(s => new ProjectTask(s.Id, s.Name, s.ProjectId)));
                     taskLists.AddRange(response.Included.TaskLists.Select(s => s.Value));
 
                     if (response.Meta.Page.HasMore)
@@ -182,7 +189,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
             foreach(var projectTask in result)
             {
                 var taskList = taskLists.First(f => f.Id.Equals(projectTask.TaskListId));
-                projectTask.ProjectId = taskList.ProjectId;
+                projectTask.ProjectId = taskList.ProjectId.ToString();
                 projectTask.TaskListName = taskList.Name;
             }
 
@@ -221,8 +228,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 if (httpResponse.IsSuccessStatusCode)
                 {
 
-                    var response = await httpResponse.Content.ReadAsAsync<TagResponse>();
-                    result.AddRange(response.Items);
+                    var response = await httpResponse.Content.ReadAsAsync<Models.ProjectManagementSystem.TeamworkV3.TagResponse>();
+                    result.AddRange(response.Items.Select(s=> new Tag(s.Id, s.Name, s.ProjectId)));
 
                     if (response.Meta.Page.HasMore)
                     {

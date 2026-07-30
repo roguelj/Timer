@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using Newtonsoft.Json;
+using Timer.Shared.Models.Native;
 
 namespace Timer.Shared.Models.ProjectManagementSystem.TeamworkV1
 {

@@ -8,9 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows;
+using Timer.Shared.Models.Native;
 using Timer.Shared.Models.Options;
-using Timer.Shared.Models.ProjectManagementSystem.TeamworkV3.Models;
 using Timer.Shared.Services.Interfaces;
 using Timer.Shared.ViewModels;
 using Res = Timer.Shared.Resources.Resources;
@@ -79,8 +78,8 @@ namespace Timer.WPF.ViewModels
                 var isBillable = dialogResult.Parameters.GetValue<bool>(IsBillableDialogParameterName);
                 var description = dialogResult.Parameters.GetValue<string>(DescriptionDialogParameterName);
 
-
-                await this.TimeLogService!.LogTime(startDateTime, endDateTime, project.Id, task?.Id, tags?.Select(s => s.Id).ToList(),isBillable, description, CancellationToken.None);
+     
+                await this.TimeLogService!.LogTime(startDateTime, endDateTime, project, task, tags?.Select(s => int.Parse(s.Id)).ToList(),isBillable, description, CancellationToken.None);
 
             }
 
