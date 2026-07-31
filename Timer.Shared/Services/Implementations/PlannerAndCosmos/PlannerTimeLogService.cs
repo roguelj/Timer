@@ -98,7 +98,7 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
             var tasks = await this.AuthService.GraphClient.Me.Planner.Tasks.GetAsync(cancellationToken: cancellationToken);
             return tasks?.Value?
                 .OrderByDescending(t => t.CreatedDateTime)
-                .Take(10)
+                .Take(100)
                 .Select(MapTask)
                 .ToList();
         }
