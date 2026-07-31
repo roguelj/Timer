@@ -19,7 +19,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 var entry = (await this.MyLastTimeEntry(currentUser.Id, cancellationToken));
 
                 // get the datetime of the last entry, or the current datetime if there is none
-                var lastTimeEntry = (entry?.TimeLogged ?? this.SystemClock.UtcNow);
+                var lastTimeEntry = (entry?.TimeLogged ?? this.TimeProvider.GetLocalNow());
 
                 // get the duration of the last entry
                 var durationMinutes = entry?.Minutes ?? 0;

@@ -154,7 +154,7 @@ namespace Timer.WPF.ViewModels
 
         // -----------------------
         // constructor
-        public TimeLogDetailViewModelBase(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) : base(logger)
+        public TimeLogDetailViewModelBase(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, TimeProvider timeProvider, IOptions<UserInterfaceOptions> options) : base(logger)
         {
 
             this.IsInitialising = true;
@@ -162,7 +162,7 @@ namespace Timer.WPF.ViewModels
             // register services
             this.EventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
             this.TimeLogService = timeLogService ?? throw new ArgumentNullException(nameof(timeLogService));
-            this.SystemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+            this.TimeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
             this.Options = options ?? throw new ArgumentNullException(nameof(options));
 
 
@@ -227,14 +227,14 @@ namespace Timer.WPF.ViewModels
             }
             catch (Exception ex)
             {
-                endDateLastEntry = this.SystemClock!.Now.DateTime;
+                endDateLastEntry = this.TimeProvider!.GetLocalNow().DateTime;
                 this.Logger.Error(ex, LogMessage.EXCEPTION_DURING_METHOD, "b8347e24-25c4-43e4-a9f5-18e663b79e01");
             }
 
 
             // set the properties
             this.StartDateTime = endDateLastEntry;
-            this.EndDateTime = this.SystemClock!.Now.DateTime;
+            this.EndDateTime = this.TimeProvider!.GetLocalNow().DateTime;
 
         }
 
@@ -396,7 +396,7 @@ namespace Timer.WPF.ViewModels
         private void SetStart(int? minutes)
         {
 
-            var now = this.SystemClock!.UtcNow;
+            var now = this.TimeProvider!.GetLocalNow();
 
             if (minutes.HasValue)
             {
@@ -415,7 +415,7 @@ namespace Timer.WPF.ViewModels
 
             if(minutes.HasValue)
             {
-                var now = this.SystemClock!.UtcNow;
+                var now = this.TimeProvider!.GetLocalNow();
                 this.EndDateTime = now.AddMinutes(minutes.Value).DateTime;
             }
 
@@ -425,7 +425,7 @@ namespace Timer.WPF.ViewModels
         private void SetStartToEndOfBreak()
         {
 
-            var now = this.SystemClock!.UtcNow;
+            var now = this.TimeProvider!.GetLocalNow();
 
             if (this.Options.Value.BreakEnd is TimeOnly breakEnd)
             {
@@ -438,7 +438,7 @@ namespace Timer.WPF.ViewModels
         private void SetEndToStartOfBreak()
         {
 
-            var now = this.SystemClock!.UtcNow;
+            var now = this.TimeProvider!.GetLocalNow();
 
             if (this.Options.Value.BreakStart is TimeOnly breakStart)
             {
@@ -451,7 +451,7 @@ namespace Timer.WPF.ViewModels
         private void SetStartToPcBootTime()
         {
             var ticks = Stopwatch.GetTimestamp();
-            this.StartDateTime = this.SystemClock!.Now.DateTime.AddSeconds(-(ticks / Stopwatch.Frequency));
+            this.StartDateTime = this.TimeProvider!.GetLocalNow().DateTime.AddSeconds(-(ticks / Stopwatch.Frequency));
         }
   
     }

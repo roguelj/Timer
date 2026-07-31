@@ -44,8 +44,6 @@ namespace Timer.Shared.Application
                     var endpoint = configuration["Cosmos:Endpoint"];
                     var key = configuration["Cosmos:Key"];
                          
-
-
                     return new CosmosClient(endpoint,  key);
                 });
             }
@@ -55,7 +53,7 @@ namespace Timer.Shared.Application
             }
 
             containerRegistry.RegisterInstance<ILogger>(seriLog);
-            containerRegistry.Register<ISystemClock, SystemClock>();
+            containerRegistry.RegisterSingleton<TimeProvider>(() => TimeProvider.System);
 
 
             // register to service collection

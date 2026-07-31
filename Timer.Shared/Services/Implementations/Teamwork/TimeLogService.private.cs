@@ -324,8 +324,8 @@ namespace Timer.Shared.Services.Implementations.Teamwork
                 this.Logger.Information(LogMessage.CACHE_RESULT_FOR, false, CacheKeyConstants.ITIMELOG_SERVICE_TEAMWORK_RECENT_ACTIVITY_KEY);
 
                 var daysToConsiderRecent = Math.Max(0, this.Options.Value.DaysToConsiderRecent ?? 14);
-                var startDate = this.SystemClock.UtcNow.AddDays(-daysToConsiderRecent);
-                var endDate = this.SystemClock.UtcNow;
+                var startDate = this.TimeProvider.GetLocalNow().AddDays(-daysToConsiderRecent);
+                var endDate = this.TimeProvider.GetLocalNow();
 
                 // build the query parameter string
                 List<string> queryParameters =

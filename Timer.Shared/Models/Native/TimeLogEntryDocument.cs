@@ -19,6 +19,13 @@ namespace Timer.Shared.Models.Native
         public required DateTimeOffset EndDateTime { get; set; }
 
 
+        [JsonProperty("span")]
+        public required TimeSpan Span { get; set; }
+
+        [JsonProperty("durationInSeconds")]
+        public required int DurationInSeconds { get; set; }
+
+
         [JsonProperty("tagIds")]
         public List<int> TagIds { get; set; } = [];
 
@@ -45,7 +52,7 @@ namespace Timer.Shared.Models.Native
 
 
         [JsonProperty("task")]
-        public required ProjectTask Task { get; set; }
+        public ProjectTask? Task { get; set; }
 
     }
 

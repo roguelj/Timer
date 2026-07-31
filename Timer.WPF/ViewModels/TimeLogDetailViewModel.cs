@@ -20,8 +20,8 @@ namespace Timer.WPF.ViewModels
 
 
         // constructor
-        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, ISystemClock systemClock, IOptions<UserInterfaceOptions> options) 
-            : base(logger, eventAggregator, timeLogService, systemClock, options)
+        public TimeLogDetailViewModel(ILogger logger, IEventAggregator eventAggregator, ITimeLogService timeLogService, TimeProvider timeProvider, IOptions<UserInterfaceOptions> options) 
+            : base(logger, eventAggregator, timeLogService, timeProvider, options)
         {
 
             // set up commands

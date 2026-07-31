@@ -174,6 +174,8 @@ namespace Timer.Shared.Services.Implementations.PlannerAndCosmos
                 UserId = userId,
                 StartDateTime = startDateTime,
                 EndDateTime = endDateTime,
+                Span = endDateTime - startDateTime,
+                DurationInSeconds = (int)(endDateTime - startDateTime).TotalSeconds,
                 Project = project,
                 Task = projectTask,
                 TagIds = tagIds,

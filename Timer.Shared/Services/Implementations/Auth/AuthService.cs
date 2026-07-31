@@ -104,7 +104,6 @@ namespace Timer.Shared.Services.Implementations.Auth
                                    .WithAuthority(options.Value.Authority)
                                    .WithDefaultRedirectUri()
                                    .WithLogging(logCallback, enablePiiLogging: false)
-                                   //.WithWindowsEmbeddedBrowserSupport()
                                    .Build();
 
 

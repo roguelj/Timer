@@ -14,7 +14,7 @@ namespace Timer.Shared.Services.Implementations.Teamwork
         private IHttpClientFactory HttpClientFactory { get; }
         private IOptions<TeamworkOptions> Options { get; }
         private IMemoryCache MemoryCache { get; }
-        private ISystemClock SystemClock { get; }
+        private TimeProvider TimeProvider { get; }
 
 
         // endpoint properties
@@ -28,13 +28,13 @@ namespace Timer.Shared.Services.Implementations.Teamwork
 
 
         // constructor
-        public TimeLogService(ILogger logger, IHttpClientFactory httpClientFactory, IOptions<TeamworkOptions> options, IMemoryCache memoryCache, ISystemClock systemClock)
+        public TimeLogService(ILogger logger, IHttpClientFactory httpClientFactory, IOptions<TeamworkOptions> options, IMemoryCache memoryCache, TimeProvider timeProvider)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
             this.Options = options ?? throw new ArgumentNullException(nameof(options));
             this.MemoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-            this.SystemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+            this.TimeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         }
 
 

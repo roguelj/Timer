@@ -76,8 +76,16 @@ namespace Timer.WPF
 
             }
 
-
-            return this.Container.Resolve<Shell>();
+            try
+            {
+                return this.Container.Resolve<Shell>();
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+                       
 
         }
 
