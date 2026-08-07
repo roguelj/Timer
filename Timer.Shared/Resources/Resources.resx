@@ -178,10 +178,10 @@ Check out the GitHub page for configuration details and documentation.
     <value>Now</value>
   </data>
   <data name="OkBillableButtonText" xml:space="preserve">
-    <value>Log Billable Time</value>
+    <value>Log Project Time</value>
   </data>
   <data name="OkNonBillableButtonText" xml:space="preserve">
-    <value>Log Non-Billable Time</value>
+    <value>Log Non Project Time</value>
   </data>
   <data name="ProjectLabelText" xml:space="preserve">
     <value>Project</value>
